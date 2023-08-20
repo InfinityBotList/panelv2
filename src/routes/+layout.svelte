@@ -1,0 +1,48 @@
+<script>
+	import '../app.postcss';
+	import { SvelteToast } from '@zerodevx/svelte-toast'
+	import Menubar from '../components/Menubar.svelte';
+
+	const options = {
+	}
+</script>
+
+<div class="flex min-h-screen flex-col justify-between overflow-x-hidden bg-white dark:bg-gray-900">
+	<header>
+		<Menubar />
+	</header>
+	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain p-4">
+		<slot />
+	</main>
+	<SvelteToast {options} />
+	<footer class="mb-auto border-black">
+		<p class="text-center text-gray-900 dark:text-gray-400 text-sm">
+			&copy; 2023 Infinity Development
+		</p>
+	</footer>
+</div>
+
+<style>
+	main {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			margin: 0 auto;
+			box-sizing: border-box;
+	}
+
+	footer {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 12px;
+	}
+
+	@media (min-width: 480px) {
+			footer {
+					padding: 12px 0;
+			}
+	}
+</style>
