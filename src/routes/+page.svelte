@@ -2,21 +2,23 @@
     import OrderedList from "../components/OrderedList.svelte";
     import ListItem from "../components/ListItem.svelte";
 	import InputText from "../components/InputText.svelte";
-    import InputTextArea from "../components/InputTextArea.svelte";
 </script>
 
 <div>
     <h1 class="text-3xl font-semibold">Staff Login</h1>
     <p class="font-semibold text-lg">
-        In order to login to the Arcadia instance, please follow the following steps in 
-        the Infinity Bot List Staff Server ("Staff Center"):
+        In order to login to the Arcadia instance, please input the 'Instance URL'. 
+        <br/>
+        <br/>
+        Note that the default instance URL is <code>https://panel.infinitybots.gg</code> and 
+        should be valid. If you wish to use a custom instance URL, please change this URL here.
     </p>
     <OrderedList>
         <ListItem>
-            Run the following command `/rpc-login`
+            See #info in the staff server to check the status of panel if Login does not work
         </ListItem>
         <ListItem>
-            Copy paste the 'Instance URL' and 'Login Token' given to you here
+            Copy-paste any special 'Instance URL' given to you here
         </ListItem>
     </OrderedList>
     <p class="font-semibold text-lg">
@@ -26,5 +28,4 @@
     <hr class="my-4 text-black" />
 
     <InputText id="url" label="Instance URL" placeholder="https://panel.infinitybots.gg" minlength={1} />
-    <InputTextArea id="url" label="Login Token" placeholder="SJSJSJSJSJSJSJSJJSJSJSJSJSJJ" minlength={1} />
 </div>
