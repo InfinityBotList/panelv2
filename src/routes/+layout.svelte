@@ -46,7 +46,7 @@
 		await sleep(2000);
 
 		if(!authorized) {
-			goto(`/?redirect=${window.location.pathname}`)
+			goto(`/login?redirect=${window.location.pathname}`)
 		}
 
 		loadedLayout = true;
