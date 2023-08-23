@@ -28,6 +28,7 @@
 
         if(!res.ok) {
             error("Failed to get login URL")
+            return
         }
 
         let loginUrl = await res.text()
