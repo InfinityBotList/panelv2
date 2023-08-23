@@ -6,13 +6,15 @@
 	import type { LoginOp } from "../../utils/generated/arcadia/LoginOp";
 	import { toast } from "@zerodevx/svelte-toast";
 	import { error } from "$lib/toast";
+	import type { PanelState } from "$lib/panelState";
 
     let instanceUrl = "https://prod--panel-api.infinitybots.gg"
 
     const login = async () => {
         let lp: LoginOp = {
             GetLoginUrl: {
-                version: 0
+                version: 0,
+                redirect_url: `${window.location.origin}/login/authorize`
             }
         }
 
@@ -34,11 +36,57 @@
         let loginTab = window.open(loginUrl, "_blank")
 
         // Listen to message events
-        window.addEventListener("message", (e) => {
+        window.addEventListener("message", async (e) => {
             // Check if the message is from the login tab
             if(e.source === loginTab) {
-                loginTab?.close()              
-                toast.push(e.data)  
+                loginTab?.close()     
+                
+                // Get URL from message
+                let url = new URLSearchParams(loginTab?.location.search || '')
+
+                let code = url.get("code")
+
+                if(!code) {
+                    error("Failed to get code from login URL")
+                    return
+                }
+
+                let lp: LoginOp = {
+                    Login: {
+                        code: code,
+                        redirect_url: `${window.location.origin}/login/authorize`
+                    },
+                }
+
+                let res = await fetch(`${instanceUrl}/authorize`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(lp)
+                })
+
+                if(!res.ok) {
+                    error("Failed to login")
+                    return
+                }
+
+                let loginRes = await res.text()
+
+                let ps: PanelState = {
+                    url: instanceUrl,
+                    loginToken: loginRes
+                }
+
+                localStorage.setItem("panelStateData", JSON.stringify(ps))
+
+                let redirect = url.get("redirect")
+
+                if(!redirect || !redirect.startsWith("/")) {
+                    redirect = "/"
+                }
+
+                window.location.href = redirect
             }
         })
     }

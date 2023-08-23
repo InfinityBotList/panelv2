@@ -1,6 +1,10 @@
 <!--Tailwind menubar-->
 
-<script lang="ts">  
+<script lang="ts">
+	import { panelState } from "$lib/panelState";
+import ButtonReact from "./ButtonReact.svelte";
+
+  
     function onClickMenu() {
       console.log("clicked");
   
@@ -30,5 +34,14 @@
   <div id="menu" class="hidden">
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
       <a href="/" class="block px-3 py-2 text-base font-medium text-violet-600 rounded-md hover:text-gray-900 hover:bg-gray-50 dark:text-amber-400 dark:hover:text-white dark:hover:bg-gray-700">Home</a>
+      {#if $panelState?.loginToken}
+        <button 
+          class="text-left w-full block px-3 py-2 text-base font-medium text-violet-600 rounded-md hover:text-gray-900 hover:bg-gray-50 dark:text-amber-400 dark:hover:text-white dark:hover:bg-gray-700"
+          on:click={() => {
+            localStorage.clear()
+            window.location.reload()
+          }}
+        >Logout</button>
+    {/if}
     </div>
   </div>

@@ -16,8 +16,11 @@
 	let loadingMsg = 'Waiting for monkeys?'
 
 	onMount(async () => {
-		if($page.url.pathname.startsWith('/login')) {
-			window.postMessage("login", window.location.origin);
+		if($page.url.pathname == '/login/authorize') {
+			console.log(window, top)
+			window?.opener?.postMessage("login", location.origin);
+			loadingMsg = 'Please wait...'
+			return
 		};
 
 		let authorized = false;
