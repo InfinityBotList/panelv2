@@ -16,6 +16,10 @@
 	let loadingMsg = 'Waiting for monkeys?'
 
 	onMount(async () => {
+		if($page.url.pathname.startsWith('/login')) {
+			window.postMessage("login", window.location.origin);
+		};
+
 		let authorized = false;
 
 		logger.info("Panel", "Loading panel...")
