@@ -50,9 +50,6 @@
                 }
             }
 
-            // This serves as a sample delay for how long a fetch will take once that is added
-            await sleep(2000);
-
             if(!authorized) {
                 if($page.url.pathname != "/login") {
                         await goto(`/login?redirect=${window.location.pathname}`)
