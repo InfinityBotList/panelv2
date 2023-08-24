@@ -60,7 +60,6 @@
 
 		if(!authorized) {
 			goto(`/login?redirect=${window.location.pathname}`)
-			loadedLayout = true
 			return
 		}
 
