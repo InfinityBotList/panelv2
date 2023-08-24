@@ -2,6 +2,7 @@ import { writable, type Writable } from "svelte/store";
 
 export interface PanelAuthState {
     url: string;
+    queryPath: string;
     loginToken: string;
 }
 

@@ -27,99 +27,108 @@
 			return
 		};
 
-		let authorized = false;
+        try {
+            let authorized = false;
 
-		logger.info("Panel", "Loading panel...")
+            logger.info("Panel", "Loading panel...")
 
-		// To ensure CLS is low
-		await sleep(1000);
+            // To ensure CLS is low
+            await sleep(1000);
 
-		if($page.error) {
-			loadingMsg = 'Failed to load panel'
-			return;
-		}
+            if($page.error) {
+                loadingMsg = 'Failed to load panel'
+                return;
+            }
 
-		loadingMsg = 'Checking authentication'
+            loadingMsg = 'Checking authentication'
 
-		let panelStateData = localStorage.getItem("panelStateData");
+            let panelStateData = localStorage.getItem("panelStateData");
 
-		if(panelStateData) {
-			try {
-				let json: PanelAuthState = JSON.parse(panelStateData);
-				$panelAuthState = json;
-				authorized = true;
-			} catch(e) {
-				logger.error("Panel", "Failed to load panel state data from localStorage");
-				loadingMsg = "Failed to load panel"
-				return
-			}
-		}
+            if(panelStateData) {
+                try {
+                    let json: PanelAuthState = JSON.parse(panelStateData);
+                    $panelAuthState = json;
+                    authorized = true;
+                } catch(e) {
+                    logger.error("Panel", "Failed to load panel state data from localStorage");
+                    loadingMsg = "Failed to load panel"
+                    return
+                }
+            }
 
-		// This serves as a sample delay for how long a fetch will take once that is added
-		await sleep(2000);
+            // This serves as a sample delay for how long a fetch will take once that is added
+            await sleep(2000);
 
-		if(!authorized) {
-			await goto(`/login?redirect=${window.location.pathname}`)
-			loaded = true;
-			return
-		}
+            if(!authorized) {
+                await goto(`/login?redirect=${window.location.pathname}`)
+                loaded = true;
+                return
+            }
 
-		loadingMsg = "Validating your existence..."
+            loadingMsg = "Validating your existence..."
 
-		let lp: PanelQuery = {
-			GetIdentity: {
-				login_token: $panelAuthState?.loginToken || ''
-			}
-		}
+            let lp: PanelQuery = {
+                GetIdentity: {
+                    login_token: $panelAuthState?.loginToken || ''
+                }
+            }
+            
+            let resp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(lp)
+            })
 
-		let resp = await fetch(`${$panelAuthState?.url}/query`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(lp)
-		})
+            if(!resp.ok) {
+                logger.error("Panel", "Failed to get identity")
+                await goto(`/login?redirect=${window.location.pathname}`)
+                loaded = true
+                return
+            }
 
-		if(!resp.ok) {
-			logger.error("Panel", "Failed to get identity")
-			await goto(`/login?redirect=${window.location.pathname}`)
-			loaded = true
-			return
-		}
+            let identity: AuthData = await resp.json()
 
-		let identity: AuthData = await resp.json()
+            lp = {
+                GetUserDetails: {
+                    user_id: identity.user_id
+                }
+            }
 
-		lp = {
-			GetUserDetails: {
-				user_id: identity.user_id
-			}
-		}
+            let userDetailsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(lp)
+            })
 
-		let userDetailsResp = await fetch(`${$panelAuthState?.url}/query`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(lp)
-		})
+            if(!userDetailsResp.ok) {
+                logger.error("Panel", "Failed to get user details")
+                await goto(`/login?redirect=${window.location.pathname}`)
+                loaded = true
+                return
+            }
 
-		if(!userDetailsResp.ok) {
-			logger.error("Panel", "Failed to get user details")
-			await goto(`/login?redirect=${window.location.pathname}`)
-			loaded = true
-			return
-		}
+            let userDetails: PanelUserDetails = await userDetailsResp.json()
 
-		let userDetails: PanelUserDetails = await userDetailsResp.json()
+            $panelState = {
+                userId: identity.user_id,
+                // @ts-ignore
+                sessionCreatedAt: new Date(identity.created_at),
+                userDetails: userDetails
+            }
 
-		$panelState = {
-			userId: identity.user_id,
-			// @ts-ignore
-			sessionCreatedAt: new Date(identity.created_at),
-			userDetails: userDetails
-		}
+            loaded = true;
+        } catch {
+            logger.error("Panel", "Failed to load panel")
+            $panelAuthState = null
+            await goto(`/login?redirect=${window.location.pathname}`)
+            loaded = true
+            return
 
-		loaded = true;
+        }
     }
 
     onMount(setupState)
