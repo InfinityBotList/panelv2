@@ -13,6 +13,9 @@
         }
         let res = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(lp)
         })
         let bots: QueueBot[] = await res.json()
