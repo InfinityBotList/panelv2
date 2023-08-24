@@ -12,6 +12,7 @@
     import { navigating } from '$app/stores';
 	import type { PartialUser } from "../utils/generated/arcadia/PartialUser";
 	import type { PanelPerms } from "../utils/generated/arcadia/PanelPerms";
+	import type { Capability } from "../utils/generated/arcadia/Capability";
 
 	let loaded = false;
 	let loadingMsg = 'Waiting for monkeys?';
@@ -147,12 +148,39 @@
 
             let userPerms: PanelPerms = await userPermsResp.json()
 
+            lp = {
+                GetCapabilities: {
+                    login_token: $panelAuthState?.loginToken || ''
+                }
+            }
+
+            let capabilitiesResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(lp)
+            })
+
+            if(!capabilitiesResp.ok) {
+                logger.error("Panel", "Failed to get capabilities")
+
+                if($page.url.pathname != "/login") {
+                    await goto(`/login?redirect=${window.location.pathname}`)
+                }   
+                loaded = true
+                return
+            }
+
+            let capabilities: Capability[] = await capabilitiesResp.json()
+
             $panelState = {
                 userId: identity.user_id,
                 // @ts-ignore
                 sessionCreatedAt: new Date(identity.created_at),
                 userDetails,
                 userPerms,
+                capabilities,
             }
 
             loaded = true;
