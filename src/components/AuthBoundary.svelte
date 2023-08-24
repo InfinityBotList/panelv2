@@ -133,7 +133,7 @@
 
     onMount(setupState)
 
-    $: if($navigating) {
+    $: if($navigating?.to) {
         logger.info("Panel", "Navigating, checking auth state")
         if(!$panelAuthState) {
             loaded = false;
