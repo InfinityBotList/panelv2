@@ -89,12 +89,19 @@
             })
 
             if(!resp.ok) {
+                let err = await resp.text()
+
+                if(err == "identityExpired") {
+                    loadingMsg = "Your session has expired, logging you out"
+
+                    await sleep(2000)
+                }
+
+                localStorage.clear()
+
                 logger.error("Panel", "Failed to get identity")
 
-                if($page.url.pathname != "/login") {
-                    await goto(`/login?redirect=${window.location.pathname}`)
-                }
-                loaded = true
+                window.location.reload()
                 return
             }
 
