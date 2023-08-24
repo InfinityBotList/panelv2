@@ -24,7 +24,7 @@
                     quickActions.push({
                         name: "Bot Queue",
                         description: "View the bot queue",
-                        link: "/queue/bots"
+                        link: "/panel/queue/bots"
                     })
                     break;
             }
