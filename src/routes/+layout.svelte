@@ -2,8 +2,6 @@
 	import '../app.postcss';
 	import { SvelteToast } from '@zerodevx/svelte-toast'
 	import Menubar from '../components/Menubar.svelte';
-	import { page } from '$app/stores';
-	import AuthBoundary from '../components/AuthBoundary.svelte';
 
 	const options = {
 	}
@@ -14,15 +12,7 @@
 		<Menubar />
 	</header>
 	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain px-4">
-		{#if $page.error}
-			<slot />
-		{:else}
-			<AuthBoundary>
-				<div class="flex flex-col h-screen border-themable-600">
-					<slot />
-				</div>
-			</AuthBoundary>
-		{/if}
+		<slot />
 	</main>
 	<SvelteToast {options} />
 	<footer class="mb-auto border-black border-t-2">

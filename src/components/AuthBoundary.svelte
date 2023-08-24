@@ -21,13 +21,6 @@
             loaded = true
         }
  
-        if($page.url.pathname == '/login/authorize') {
-			console.log(window, top)
-			window?.opener?.postMessage("login", location.origin);
-			loadingMsg = 'Please wait...'
-			return
-		};
-
         try {
             let authorized = false;
 
@@ -35,11 +28,6 @@
 
             // To ensure CLS is low
             await sleep(1000);
-
-            if($page.error) {
-                loadingMsg = $page.error.message 
-                return;
-            }
 
             loadingMsg = 'Checking authentication'
 
