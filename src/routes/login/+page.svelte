@@ -4,9 +4,8 @@
 	import InputText from "../../components/InputText.svelte";
 	import ButtonReact from "../../components/ButtonReact.svelte";
 	import type { LoginOp } from "../../utils/generated/arcadia/LoginOp";
-	import { toast } from "@zerodevx/svelte-toast";
 	import { error } from "$lib/toast";
-	import type { PanelState } from "$lib/panelState";
+	import type { PanelAuthState } from "$lib/panelAuthState";
 
     let instanceUrl = "https://prod--panel-api.infinitybots.gg"
 
@@ -74,7 +73,7 @@
 
                 let loginRes = await res.text()
 
-                let ps: PanelState = {
+                let ps: PanelAuthState = {
                     url: instanceUrl,
                     loginToken: loginRes
                 }

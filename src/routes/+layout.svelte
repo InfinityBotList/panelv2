@@ -4,10 +4,13 @@
 	import Menubar from '../components/Menubar.svelte';
 	import { onMount } from 'svelte';
 	import logger from '$lib/logger';
-	import { panelState, type PanelState } from '$lib/panelState';
+	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
+	import { panelState } from '$lib/panelData';
 	import { goto } from '$app/navigation';
 	import { sleep } from '$lib/time';
 	import { page } from '$app/stores';
+	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
+	import type { AuthData } from '../utils/generated/arcadia/AuthData';
 
 	const options = {
 	}
@@ -41,11 +44,13 @@
 
 		if(panelStateData) {
 			try {
-				let json: PanelState = JSON.parse(panelStateData);
-				$panelState = json;
+				let json: PanelAuthState = JSON.parse(panelStateData);
+				$panelAuthState = json;
 				authorized = true;
 			} catch(e) {
 				logger.error("Panel", "Failed to load panel state data from localStorage");
+				loadingMsg = "Failed to load panel"
+				return
 			}
 		}
 
@@ -54,6 +59,36 @@
 
 		if(!authorized) {
 			goto(`/login?redirect=${window.location.pathname}`)
+			loadedLayout = true
+			return
+		}
+
+		let lp: PanelQuery = {
+			GetIdentity: {
+				login_token: $panelAuthState?.loginToken || ''
+			}
+		}
+
+		let resp = await fetch(`${$panelAuthState?.url}/query`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(lp)
+		})
+
+		if(!resp.ok) {
+			logger.error("Panel", "Failed to get identity")
+			loadingMsg = "Failed to auth data"
+			return
+		}
+
+		let identity: AuthData = await resp.json()
+
+		$panelState = {
+			userId: identity.user_id,
+			// @ts-ignore
+			sessionCreatedAt: new Date(identity.created_at),
 		}
 
 		loadedLayout = true;
