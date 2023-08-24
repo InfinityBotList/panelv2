@@ -1,20 +1,22 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { SvelteToast } from '@zerodevx/svelte-toast'
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import Menubar from '../components/Menubar.svelte';
 
-	const options = {
-	}
+	const options = {};
 </script>
 
 <div class="flex min-h-screen flex-col justify-between overflow-x-hidden bg-white dark:bg-gray-900">
 	<header>
 		<Menubar />
 	</header>
+
 	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain px-4">
 		<slot />
 	</main>
+
 	<SvelteToast {options} />
+
 	<footer class="mb-auto border-black border-t-2">
 		<p class="text-center text-gray-900 dark:text-gray-400 text-md font-semibold">
 			&copy; 2023 Infinity Development
