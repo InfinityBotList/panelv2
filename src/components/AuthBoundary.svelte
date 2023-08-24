@@ -9,8 +9,9 @@
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
-	import type { PanelUserDetails } from '../utils/generated/arcadia/PanelUserDetails';
     import { navigating } from '$app/stores';
+	import type { PartialUser } from "../utils/generated/arcadia/PartialUser";
+	import type { PanelPerms } from "../utils/generated/arcadia/PanelPerms";
 
 	let loaded = false;
 	let loadingMsg = 'Waiting for monkeys?';
@@ -123,13 +124,40 @@
                 return
             }
 
-            let userDetails: PanelUserDetails = await userDetailsResp.json()
+            let userDetails: PartialUser = await userDetailsResp.json()
+
+            lp = {
+                GetUserPerms: {
+                    user_id: identity.user_id
+                }
+            }
+
+            let userPermsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(lp)
+            })
+
+            if(!userPermsResp.ok) {
+                logger.error("Panel", "Failed to get user perms")
+
+                if($page.url.pathname != "/login") {
+                    await goto(`/login?redirect=${window.location.pathname}`)
+                }   
+                loaded = true
+                return
+            }
+
+            let userPerms: PanelPerms = await userPermsResp.json()
 
             $panelState = {
                 userId: identity.user_id,
                 // @ts-ignore
                 sessionCreatedAt: new Date(identity.created_at),
-                userDetails: userDetails
+                userDetails,
+                userPerms,
             }
 
             loaded = true;

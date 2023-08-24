@@ -3,7 +3,7 @@
 	import ListItem from "../components/ListItem.svelte";
 	import UnorderedList from "../components/UnorderedList.svelte";
 </script>
-<h1 class="text-3xl font-semibold">Hey there {$panelState?.userDetails?.user?.display_name} ({$panelState?.userDetails?.user?.username})</h1>
+<h1 class="text-3xl font-semibold">Hey there {$panelState?.userDetails?.display_name} ({$panelState?.userDetails?.username})</h1>
 
 <h2 class="text-xl font-semibold">Permissions</h2>
 
@@ -11,22 +11,22 @@
     Currently you have the following permissions
 
     <UnorderedList>
-        {#if $panelState?.userDetails?.owner}
+        {#if $panelState?.userPerms?.owner}
             <ListItem>Owner (owner)</ListItem>
         {/if}
-        {#if $panelState?.userDetails?.hadmin}
+        {#if $panelState?.userPerms?.hadmin}
             <ListItem>Head Staff Manager (hadmin)</ListItem>
         {/if}
-        {#if $panelState?.userDetails?.admin}
+        {#if $panelState?.userPerms?.admin}
             <ListItem>Staff Manager (admin)</ListItem>
         {/if}
-        {#if $panelState?.userDetails?.iblhdev}
+        {#if $panelState?.userPerms?.iblhdev}
             <ListItem>Head Developer (iblhdev)</ListItem>
         {/if}
-        {#if $panelState?.userDetails?.ibldev}
+        {#if $panelState?.userPerms?.ibldev}
             <ListItem>Developer (ibldev)</ListItem>
         {/if}
-        {#if $panelState?.userDetails?.staff}
+        {#if $panelState?.userPerms?.staff}
             <ListItem>Staff (staff)</ListItem>
         {/if}
     </UnorderedList>
