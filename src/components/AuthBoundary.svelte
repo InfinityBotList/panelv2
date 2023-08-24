@@ -51,7 +51,11 @@
                     authorized = true;
                 } catch(e) {
                     logger.error("Panel", "Failed to load panel state data from localStorage");
-                    loadingMsg = "Failed to load panel"
+                    
+                    if($page.url.pathname != "/login") {
+                        await goto(`/login?redirect=${window.location.pathname}`)
+                    }   
+                    loaded = true
                     return
                 }
             }
@@ -60,8 +64,10 @@
             await sleep(2000);
 
             if(!authorized) {
-                await goto(`/login?redirect=${window.location.pathname}`)
-                loaded = true;
+                if($page.url.pathname != "/login") {
+                        await goto(`/login?redirect=${window.location.pathname}`)
+                }   
+                loaded = true
                 return
             }
 
@@ -83,7 +89,10 @@
 
             if(!resp.ok) {
                 logger.error("Panel", "Failed to get identity")
-                await goto(`/login?redirect=${window.location.pathname}`)
+
+                if($page.url.pathname != "/login") {
+                    await goto(`/login?redirect=${window.location.pathname}`)
+                }
                 loaded = true
                 return
             }
@@ -106,7 +115,10 @@
 
             if(!userDetailsResp.ok) {
                 logger.error("Panel", "Failed to get user details")
-                await goto(`/login?redirect=${window.location.pathname}`)
+
+                if($page.url.pathname != "/login") {
+                    await goto(`/login?redirect=${window.location.pathname}`)
+                }   
                 loaded = true
                 return
             }
@@ -123,11 +135,11 @@
             loaded = true;
         } catch {
             logger.error("Panel", "Failed to load panel")
-            $panelAuthState = null
-            await goto(`/login?redirect=${window.location.pathname}`)
+            if($page.url.pathname != "/login") {
+                await goto(`/login?redirect=${window.location.pathname}`)
+            }   
             loaded = true
             return
-
         }
     }
 
