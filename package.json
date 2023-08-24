@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@iconify/svelte": "^3.1.4",
 		"@zerodevx/svelte-toast": "^0.9.5"
 	}
 }

@@ -13,17 +13,19 @@
 	<header>
 		<Menubar />
 	</header>
-	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain p-4">
+	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain px-4">
 		{#if $page.error}
 			<slot />
 		{:else}
 			<AuthBoundary>
-				<slot />
+				<div class="flex flex-col h-screen border-themable-600">
+					<slot />
+				</div>
 			</AuthBoundary>
 		{/if}
 	</main>
 	<SvelteToast {options} />
-	<footer class="mb-auto border-black">
+	<footer class="mb-auto border-black border-t-2">
 		<p class="text-center text-gray-900 dark:text-gray-400 text-md font-semibold">
 			&copy; 2023 Infinity Development
 		</p>
