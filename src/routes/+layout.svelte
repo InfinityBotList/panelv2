@@ -20,6 +20,11 @@
 	let loadingMsg = 'Waiting for monkeys?'
 
 	onMount(async () => {
+		if($page.url.pathname == "/login") {
+			loadedLayout = true
+			return
+		}
+
 		if($page.url.pathname == '/login/authorize') {
 			console.log(window, top)
 			window?.opener?.postMessage("login", location.origin);
