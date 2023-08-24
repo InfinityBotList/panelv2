@@ -11,6 +11,7 @@
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
+	import type { PanelUserDetails } from '../utils/generated/arcadia/PanelUserDetails';
 
 	const options = {
 	}
@@ -63,6 +64,8 @@
 			return
 		}
 
+		loadingMsg = "Validating your existence..."
+
 		let lp: PanelQuery = {
 			GetIdentity: {
 				login_token: $panelAuthState?.loginToken || ''
@@ -85,10 +88,33 @@
 
 		let identity: AuthData = await resp.json()
 
+		lp = {
+			GetUserDetails: {
+				user_id: identity.user_id
+			}
+		}
+
+		let userDetailsResp = await fetch(`${$panelAuthState?.url}/query`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(lp)
+		})
+
+		if(!userDetailsResp.ok) {
+			logger.error("Panel", "Failed to get user details")
+			loadingMsg = "Failed to auth data"
+			return
+		}
+
+		let userDetails: PanelUserDetails = await userDetailsResp.json()
+
 		$panelState = {
 			userId: identity.user_id,
 			// @ts-ignore
 			sessionCreatedAt: new Date(identity.created_at),
+			userDetails: userDetails
 		}
 
 		loadedLayout = true;
