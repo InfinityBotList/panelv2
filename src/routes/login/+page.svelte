@@ -19,18 +19,11 @@
     let instanceUrl = "https://prod--panel-api.infinitybots.gg"
 
     const login = async () => {
-        let lp: PanelQuery = {
-            InstanceConfig: {
-                version: 0
-            }
-        }
-
-        let res = await fetch(`${instanceUrl}/query`, {
-            method: "POST",
+        let res = await fetch(instanceUrl, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(lp)
         })
 
         if(!res.ok) {
@@ -47,7 +40,7 @@
             url = `https://${url}`
         }
 
-        lp = {
+        let lp: PanelQuery = {
             GetLoginUrl: {
                 version: 0,
                 redirect_url: `${window.location.origin}/login/authorize`
