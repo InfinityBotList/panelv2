@@ -20,11 +20,6 @@
 	let loadingMsg = 'Waiting for monkeys?'
 
 	onMount(async () => {
-		if($page.url.pathname == "/login") {
-			loadedLayout = true
-			return
-		}
-
 		if($page.url.pathname == '/login/authorize') {
 			console.log(window, top)
 			window?.opener?.postMessage("login", location.origin);
@@ -65,6 +60,7 @@
 
 		if(!authorized) {
 			goto(`/login?redirect=${window.location.pathname}`)
+			loadedLayout = true;
 			return
 		}
 
@@ -108,7 +104,7 @@
 
 		if(!userDetailsResp.ok) {
 			logger.error("Panel", "Failed to get user details")
-			loadingMsg = "Failed to auth data"
+			goto(`/login?redirect=${window.location.pathname}`)
 			return
 		}
 
