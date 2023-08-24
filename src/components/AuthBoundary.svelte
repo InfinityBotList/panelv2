@@ -37,7 +37,7 @@
             await sleep(1000);
 
             if($page.error) {
-                loadingMsg = 'Failed to load panel'
+                loadingMsg = $page.error.message 
                 return;
             }
 
