@@ -5,7 +5,15 @@
 	import ButtonReact from "../../components/ButtonReact.svelte";
 	import type { LoginOp } from "../../utils/generated/arcadia/LoginOp";
 	import { error } from "$lib/toast";
-	import type { PanelAuthState } from "$lib/panelAuthState";
+	import { panelAuthState, type PanelAuthState } from "$lib/panelAuthState";
+	import { onMount } from "svelte";
+	import { goto } from "$app/navigation";
+
+    onMount(() => {
+        if($panelAuthState) {
+            goto("/")
+        }
+    })
 
     let instanceUrl = "https://prod--panel-api.infinitybots.gg"
 
