@@ -59,7 +59,7 @@
 		await sleep(2000);
 
 		if(!authorized) {
-			goto(`/login?redirect=${window.location.pathname}`)
+			await goto(`/login?redirect=${window.location.pathname}`)
 			loadedLayout = true;
 			return
 		}
@@ -82,7 +82,8 @@
 
 		if(!resp.ok) {
 			logger.error("Panel", "Failed to get identity")
-			loadingMsg = "Failed to auth data"
+			await goto(`/login?redirect=${window.location.pathname}`)
+			loadedLayout = true
 			return
 		}
 
@@ -104,7 +105,8 @@
 
 		if(!userDetailsResp.ok) {
 			logger.error("Panel", "Failed to get user details")
-			goto(`/login?redirect=${window.location.pathname}`)
+			await goto(`/login?redirect=${window.location.pathname}`)
+			loadedLayout = true
 			return
 		}
 
