@@ -1,6 +1,7 @@
 <script lang="ts">
     export let link: string;
     export let disabled: boolean = false;
+    export let target: string = "_self"
 
     export let showArrow: boolean = true;
 </script>
@@ -10,7 +11,7 @@
         <slot />
     </button>
 {:else}
-    <a href={link} class="mb-2 inline-flex items-center py-2 px-3 font-medium text-center text-white bg-blue-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <a target={target} href={link} class="mb-2 inline-flex items-center py-2 px-3 font-medium text-center text-white bg-blue-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <slot />
 
         {#if showArrow}

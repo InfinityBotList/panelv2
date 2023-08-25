@@ -22,10 +22,10 @@
 </script>
 
 <div
-    class="card mb-5 mr-3 p-6 bg-white shadow-md rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 md:w-[1/2] lg:w-1/3"
+    class="card md:w-full lg:w-1/3 mb-5 mr-3 p-6 bg-white shadow-md rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
 >
     <h5 class="mb-2 p-3 text-2xl font-bold tracking-tight">{title}</h5>
-    <p class="mb-3 h-[20rem] overflow-y-scroll p-3 font-normal text-slate-50">
+    <p class="mb-3 h-[10rem] overflow-y-scroll p-3 font-normal text-slate-50">
             <slot />
     </p>
     <slot name="post-slot">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	import '$lib/global.css'
 	import { SvelteToast } from '@zerodevx/svelte-toast'
 	import Menubar from '../components/Menubar.svelte';
 

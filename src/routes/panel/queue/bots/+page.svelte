@@ -9,6 +9,8 @@
 	import FlexedArea from "../../../../components/FlexedArea.svelte";
 	import ButtonLink from "../../../../components/ButtonLink.svelte";
 	import { panelState } from "$lib/panelData";
+	import UnorderedList from "../../../../components/UnorderedList.svelte";
+	import ListItem from "../../../../components/ListItem.svelte";
     
     const fetchQueueBots = async () => {
         let lp: PanelQuery = {
@@ -33,18 +35,27 @@
     <Loading msg={"Fetching bots in queue..."} />    
 {:then bots}
     <FlexedArea>
-        {#each bots as bot}
-            <Card title={bot?.user?.username}>
+        {#each bots as bot, i}
+            <Card title={`#${i+1}: ${bot?.user?.username}`}>
                 <GreyText>{bot?.short}</GreyText>
                 <span slot="post-slot" class="block mt-5 text-xl font-bold text-black tracking-tight my-2">
-                        <div class="flex flex-wrap justify-evenly items-center">
-                            <ButtonLink link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}>View</ButtonLink>
-                            <ButtonLink link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}>Invite</ButtonLink>
-                        </div>
-                        <!--
-                            {#if bot?.claimed_by}
-                            {/if}
-                        -->
+                    <h3 class="text-2xl font-bold tracking-tight">Bot Info</h3>
+                    <UnorderedList>
+                        {#if bot?.claimed_by}
+                            <ListItem><span class="font-semibold">Claimed By: </span>{bot?.claimed_by}</ListItem>
+                        {:else}
+                            <ListItem><span class="font-semibold">Bot Pending Review</span></ListItem>
+                        {/if}
+                    </UnorderedList>
+
+                    <div class="flex flex-wrap justify-evenly items-center">
+                        <ButtonLink target="_blank" link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}>View</ButtonLink>
+                        <ButtonLink target="_blank" link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}>Invite</ButtonLink>
+                    </div>
+                    <!--
+                        {#if bot?.claimed_by}
+                        {/if}
+                    -->
                 </span>
             </Card>    
         {/each}
