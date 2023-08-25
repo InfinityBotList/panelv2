@@ -14,6 +14,7 @@
 	import type { PanelPerms } from "../utils/generated/arcadia/PanelPerms";
 	import type { Capability } from "../utils/generated/arcadia/Capability";
 	import Loading from "./Loading.svelte";
+	import type { CoreConstants } from "../utils/generated/arcadia/CoreConstants";
 
 	let loaded = false;
 	let loadingMsg = 'Waiting for monkeys?';
@@ -172,6 +173,32 @@
 
             let capabilities: Capability[] = await capabilitiesResp.json()
 
+            lp = {
+                GetCoreConstants: {
+                    login_token: $panelAuthState?.loginToken || ''
+                }
+            }
+
+            let constantsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(lp)
+            })
+
+            if(!constantsResp.ok) {
+                logger.error("Panel", "Failed to get constants")
+
+                if($page.url.pathname != "/login") {
+                    await goto(`/login?redirect=${window.location.pathname}`)
+                }   
+                loaded = true
+                return
+            }
+
+            let coreConstants: CoreConstants = await constantsResp.json()
+
             $panelState = {
                 userId: identity.user_id,
                 // @ts-ignore
@@ -179,6 +206,7 @@
                 userDetails,
                 userPerms,
                 capabilities,
+                coreConstants
             }
 
             loaded = true;
