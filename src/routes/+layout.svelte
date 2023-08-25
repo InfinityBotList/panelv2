@@ -13,8 +13,8 @@
 	</header>
 	<main class="bg-white dark:bg-gray-900 text-black dark:text-white bg-contain px-4">
 		<slot />
+		<SvelteToast {options} />
 	</main>
-	<SvelteToast {options} />
 	<footer class="mb-auto border-black border-t-2">
 		<p class="text-center text-gray-900 dark:text-gray-400 text-md font-semibold">
 			&copy; 2023 Infinity Development

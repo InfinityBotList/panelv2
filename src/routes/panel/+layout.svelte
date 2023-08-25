@@ -10,7 +10,7 @@
 </script>
 
 <AuthBoundary>
-    <div class="flex flex-col h-screen border-themable-600">
+    <div class="flex flex-col border-themable-600">
         <PaneWrapper>
             <InfoPane title="Permissions" description="Your Permissions?">
                 <PaneData>            
