@@ -9,19 +9,17 @@
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
-	import { navigating } from '$app/stores';
 	import type { PartialUser } from '../utils/generated/arcadia/PartialUser';
 	import type { PanelPerms } from '../utils/generated/arcadia/PanelPerms';
 	import type { Capability } from '../utils/generated/arcadia/Capability';
 	import Loading from './Loading.svelte';
 	import type { CoreConstants } from '../utils/generated/arcadia/CoreConstants';
 
-	let loaded = false;
 	let loadingMsg = 'Waiting for monkeys?';
 
 	const setupState = async () => {
-		if ($panelAuthState) {
-			loaded = true;
+		if ($panelState) {
+			return
 		}
 
 		try {
@@ -47,7 +45,6 @@
 					if ($page.url.pathname != '/login') {
 						await goto(`/login?redirect=${window.location.pathname}`);
 					}
-					loaded = true;
 					return;
 				}
 			}
@@ -56,7 +53,6 @@
 				if ($page.url.pathname != '/login') {
 					await goto(`/login?redirect=${window.location.pathname}`);
 				}
-				loaded = true;
 				return;
 			}
 
@@ -115,7 +111,6 @@
 				if ($page.url.pathname != '/login') {
 					await goto(`/login?redirect=${window.location.pathname}`);
 				}
-				loaded = true;
 				return;
 			}
 
@@ -141,7 +136,6 @@
 				if ($page.url.pathname != '/login') {
 					await goto(`/login?redirect=${window.location.pathname}`);
 				}
-				loaded = true;
 				return;
 			}
 
@@ -167,7 +161,6 @@
 				if ($page.url.pathname != '/login') {
 					await goto(`/login?redirect=${window.location.pathname}`);
 				}
-				loaded = true;
 				return;
 			}
 
@@ -193,7 +186,6 @@
 				if ($page.url.pathname != '/login') {
 					await goto(`/login?redirect=${window.location.pathname}`);
 				}
-				loaded = true;
 				return;
 			}
 
@@ -208,36 +200,19 @@
 				capabilities,
 				coreConstants
 			};
-
-			loaded = true;
 		} catch {
 			logger.error('Panel', 'Failed to load panel');
 			if ($page.url.pathname != '/login') {
 				await goto(`/login?redirect=${window.location.pathname}`);
 			}
-			loaded = true;
 			return;
 		}
 	};
 
 	onMount(setupState);
-
-	$: if ($navigating?.from?.url?.pathname != $navigating?.to?.url?.pathname) {
-		logger.info(
-			'Panel',
-			'Navigating, checking auth state',
-			$navigating,
-			$navigating?.from?.url?.pathname,
-			$navigating?.to?.url?.pathname
-		);
-		if (!$panelAuthState) {
-			loaded = false;
-			setupState();
-		}
-	}
 </script>
 
-{#if loaded}
+{#if $panelState}
 	<slot />
 {:else}
 	<Loading msg={loadingMsg} />
