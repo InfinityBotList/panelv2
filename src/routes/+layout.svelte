@@ -14,7 +14,7 @@
 		<Menubar />
 	</header>
 
-	<main class="text-white bg-contain px-4">
+	<main class="text-white bg-contain">
 		<slot />
 		<SvelteToast {options} />
 	</main>
