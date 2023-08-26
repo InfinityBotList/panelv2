@@ -14,6 +14,7 @@
 	import type { PanelPerms } from '../utils/generated/arcadia/PanelPerms';
 	import type { Capability } from '../utils/generated/arcadia/Capability';
 	import Loading from './Loading.svelte';
+	import type { CoreConstants } from '../utils/generated/arcadia/CoreConstants';
 
 	let loaded = false;
 	let loadingMsg = 'Waiting for monkeys?';

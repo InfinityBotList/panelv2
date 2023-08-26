@@ -7,4 +7,5 @@ export type PanelQuery =
 	| { GetUserDetails: { user_id: string } }
 	| { GetUserPerms: { user_id: string } }
 	| { GetCapabilities: { login_token: string } }
+	| { GetCoreConstants: { login_token: string } }
 	| { BotQueue: { login_token: string } };
