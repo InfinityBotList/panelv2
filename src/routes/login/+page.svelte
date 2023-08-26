@@ -140,7 +140,7 @@
 	</OrderedList>
 	<p class="font-semibold text-lg">And if you're not staff... then keep out!</p>
 
-	<hr class="my-4 text-black" />
+	<hr class="my-4" />
 
 	<InputText
 		bind:value={instanceUrl}

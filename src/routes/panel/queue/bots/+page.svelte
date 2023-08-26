@@ -5,12 +5,11 @@
 	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
 	import Card from '../../../../components/Card.svelte';
-	import GreyText from '../../../../components/GreyText.svelte';
-	import FlexedArea from '../../../../components/FlexedArea.svelte';
 	import ButtonLink from '../../../../components/ButtonLink.svelte';
 	import { panelState } from '$lib/panelData';
 	import UnorderedList from '../../../../components/UnorderedList.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
+	import Column from '../../../../components/Column.svelte';
 
 	const fetchQueueBots = async () => {
 		let lp: PanelQuery = {
@@ -34,11 +33,19 @@
 {#await fetchQueueBots()}
 	<Loading msg={'Fetching bots in queue...'} />
 {:then bots}
-	<FlexedArea>
+	<Column>
 		{#each bots as bot, i}
-			<Card title={`#${i + 1}: ${bot?.user?.username}`}>
-				<GreyText>{bot?.short}</GreyText>
-				<span slot="post-slot" class="block mt-5 text-xl font-bold text-black tracking-tight my-2">
+			<Card>
+                <span slot="avatar">
+                    <img
+                        class="rounded-full w-16 h-16"
+                        src={bot?.user?.avatar}
+                        alt="Bot Avatar"
+                    />
+                </span>
+                <span slot="display-name">#{i + 1} {bot?.user?.username}</span>
+                <span slot="short">{bot?.short}</span>
+				<span slot="post-slot" class="block mt-5 text-xl font-bold tracking-tight my-2">
 					<h3 class="text-2xl font-bold tracking-tight">Bot Info</h3>
 					<UnorderedList>
 						{#if bot?.claimed_by}
@@ -67,7 +74,7 @@
 				</span>
 			</Card>
 		{/each}
-	</FlexedArea>
+	</Column>
 {:catch err}
 	<Error msg={`Failed to fetch bots in queue: ${err}`} />
 {/await}

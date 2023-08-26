@@ -2,7 +2,7 @@
 	export let msg: string;
 </script>
 
-<section class="text-black">
+<section>
 	<h3 aria-live="polite" class="text-center text-6xl font-semibold p-10">
 		Welcome to Infinity Panel
 	</h3>

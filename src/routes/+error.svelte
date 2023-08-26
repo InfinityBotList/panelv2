@@ -238,14 +238,14 @@
 	</div>
 
 	{#if $page.error && $page.error.message}
-		<h2 class="font-bold text-center text-black dark:text-white text-4xl">
+		<h2 class="font-bold text-center text-black text-4xl">
 			{$page.status}: {$page.error.message}
 		</h2>
 	{:else}
-		<h2 class="font-semibold text-center text-black dark:text-white text-4xl">{$page.error}</h2>
+		<h2 class="font-semibold text-center text-black text-4xl">{$page.error}</h2>
 	{/if}
 
-	<p class="mt-2 text-center italic text-md text-black dark:text-white font-semibold">
+	<p class="mt-2 text-center italic text-md text-black font-semibold">
 		Oops! Something went wrong, This error has been logged!
 	</p>
 

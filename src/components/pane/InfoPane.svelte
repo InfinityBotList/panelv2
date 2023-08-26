@@ -9,14 +9,14 @@
 	<div
 		class="h-auto top-20 transition-all duration-200 w-full bg-gray-500 bg-opacity-10 border border-red-700/50 rounded-lg p-4 lg:sticky"
 	>
-		<div class="bg-gradient-to-br text-black dark:text-white rounded-lg h-max">
-			<p class="text-xl font-medium text-black dark:text-white text-center">
+		<div class="bg-gradient-to-br text-white rounded-lg h-max">
+			<p class="text-xl font-medium text-white text-center">
 				<Icon inline={true} icon="fa-solid:info-circle" class="text-red-400 mr-2" />
 				{title}
 			</p>
-			<p class="text-black dark:text-white text-sm text-opacity-80 text-center">{description}</p>
+			<p class="text-white text-sm text-opacity-80 text-center">{description}</p>
 			<hr />
-			<div class="mt-5"><slot /></div>
+			<div class="mt-5 text-white"><slot /></div>
 		</div>
 	</div>
 </div>

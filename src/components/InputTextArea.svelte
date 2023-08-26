@@ -31,7 +31,7 @@
 </script>
 
 <div class={inpClass}>
-	<label for={id} class="block mb-1 font-medium text-gray-900 dark:text-gray-300">{label}</label>
+	<label for={id} class="text-white text-xl text-left">{label}</label>
 	{#if description}
 		<span class="text-md text-gray-500 dark:text-gray-400 mb-2">{{ description }}</span>
 	{/if}
@@ -39,7 +39,7 @@
 		on:change={checkLength}
 		{minlength}
 		{id}
-		class="h-36 bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		class="'w-full mx-auto mt-2 flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6"
 		{placeholder}
 		required
 		bind:value
