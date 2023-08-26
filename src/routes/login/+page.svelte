@@ -97,7 +97,8 @@
 				});
 
 				if (!res.ok) {
-					error('Failed to login');
+					let err = await res.text();
+					error(err || 'Failed to login');
 					return;
 				}
 
