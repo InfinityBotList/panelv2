@@ -1,3 +1,3 @@
 <div class="flex flex-wrap items-center justify-evenly">
-    <slot />
+	<slot />
 </div>
