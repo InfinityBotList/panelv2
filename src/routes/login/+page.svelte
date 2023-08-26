@@ -124,7 +124,7 @@
 	};
 </script>
 
-<article>
+<article class="p-4">
 	<h1 class="text-3xl font-semibold">Staff Login</h1>
 	<p class="font-semibold text-lg">
 		In order to login to the Arcadia instance, please input the 'Instance URL'.

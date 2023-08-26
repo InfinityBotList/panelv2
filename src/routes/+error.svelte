@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<div class="mt-8 bg-white dark:bg-transparent h-full w-full p-2 rounded-md">
+<div class="mt-8  h-full w-full p-2 rounded-md">
 	{#if $page.error && $page.error.message}
 		<h2 class="font-bold text-center text-white text-4xl">
 			{$page.status}: {$page.error.message}
