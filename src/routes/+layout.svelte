@@ -7,6 +7,17 @@
 	import Menubar from '../components/Menubar.svelte';
 
 	const options = {};
+
+	const buildInfo = {
+		// @ts-ignore
+		nodeEnv: I_NODE_ENV,
+		// @ts-ignore
+		publicCommit: I_COMMIT,
+		// @ts-ignore
+		lastMod: I_LAST_MOD,
+		// @ts-ignore
+		version: I_VERSION
+	}
 </script>
 
 <div data-theme="violet" class="flex min-h-screen flex-col justify-between overflow-x-hidden">
@@ -21,6 +32,10 @@
 
 	<footer class="mb-auto border-white border-t-2">
 		<p class="text-center text-white text-md font-semibold">&copy; 2023 Infinity Development</p>
+		<small class="text-center text-white text-sm font-semibold">
+			{buildInfo?.version}-{buildInfo?.publicCommit}-
+			{buildInfo?.nodeEnv?.substring(0, 4)}
+		</small>
 	</footer>
 </div>
 
