@@ -1,8 +1,8 @@
 <script lang="ts">
 	import '../app.postcss';
 	import '$lib/styles/global.css';
-	import "$lib/styles/mainsite/customColors.css";
-	import "$lib/styles/mainsite/global.css"
+	import '$lib/styles/mainsite/customColors.css';
+	import '$lib/styles/mainsite/global.css';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import Menubar from '../components/Menubar.svelte';
 
@@ -20,9 +20,7 @@
 	</main>
 
 	<footer class="mb-auto border-white border-t-2">
-		<p class="text-center text-white text-md font-semibold">
-			&copy; 2023 Infinity Development
-		</p>
+		<p class="text-center text-white text-md font-semibold">&copy; 2023 Infinity Development</p>
 	</footer>
 </div>
 

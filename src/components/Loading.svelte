@@ -27,5 +27,5 @@
 		</linearGradient>
 		<title id="___panelLoad">Loading the panel, please wait</title>
 	</svg>
-	<p class="mt-3 text-4xl font-semibold text-center">{msg}</p>
+	<p class="mt-3 text-4xl font-semibold text-center dark:text-white">{msg}</p>
 </section>
