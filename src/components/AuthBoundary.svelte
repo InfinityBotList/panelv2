@@ -173,31 +173,31 @@
 
 			let capabilities: Capability[] = await capabilitiesResp.json();
 
-            lp = {
-                GetCoreConstants: {
-                    login_token: $panelAuthState?.loginToken || ''
-                }
-            };
+			lp = {
+				GetCoreConstants: {
+					login_token: $panelAuthState?.loginToken || ''
+				}
+			};
 
-            let coreConstantsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(lp)
-            });
+			let coreConstantsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(lp)
+			});
 
-            if (!coreConstantsResp.ok) {
-                logger.error('Panel', 'Failed to get core constants');
+			if (!coreConstantsResp.ok) {
+				logger.error('Panel', 'Failed to get core constants');
 
-                if ($page.url.pathname != '/login') {
-                    await goto(`/login?redirect=${window.location.pathname}`);
-                }
-                loaded = true;
-                return;
-            }
+				if ($page.url.pathname != '/login') {
+					await goto(`/login?redirect=${window.location.pathname}`);
+				}
+				loaded = true;
+				return;
+			}
 
-            let coreConstants: CoreConstants = await coreConstantsResp.json();
+			let coreConstants: CoreConstants = await coreConstantsResp.json();
 
 			$panelState = {
 				userId: identity.user_id,
@@ -206,7 +206,7 @@
 				userDetails,
 				userPerms,
 				capabilities,
-                coreConstants
+				coreConstants
 			};
 
 			loaded = true;

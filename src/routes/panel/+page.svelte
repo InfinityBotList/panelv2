@@ -2,7 +2,11 @@
 	import { panelState } from '$lib/panelData';
 	import ButtonLink from '../../components/ButtonLink.svelte';
 	import GreyText from '../../components/GreyText.svelte';
+	import ListItem from '../../components/ListItem.svelte';
+	import UnorderedList from '../../components/UnorderedList.svelte';
+	import InfoPane from '../../components/pane/InfoPane.svelte';
 	import PaneContent from '../../components/pane/PaneContent.svelte';
+	import PaneData from '../../components/pane/PaneData.svelte';
 	import PaneWrapper from '../../components/pane/PaneWrapper.svelte';
 
 	interface QuickAction {
@@ -28,14 +32,13 @@
 			}
 		}
 
-        if ($panelState?.userPerms?.owner) perms.push('Owner');
-        if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
-        if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
-        if ($panelState?.userPerms?.iblhdev) perms.push('Head Developer');
-        if ($panelState?.userPerms?.ibldev) perms.push('Developer');
-        if ($panelState?.userPerms?.staff) perms.push('Staff');
+		if ($panelState?.userPerms?.owner) perms.push('Owner');
+		if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
+		if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
+		if ($panelState?.userPerms?.iblhdev) perms.push('Head Developer');
+		if ($panelState?.userPerms?.ibldev) perms.push('Developer');
+		if ($panelState?.userPerms?.staff) perms.push('Staff');
 	}
-
 </script>
 
 <div class="mt-14">
@@ -49,25 +52,56 @@
 				<span class="font-semibold">Permissions:</span>&nbsp;{perms.join(', ')}
 			</p>
 
-			<h2 class="text-2xl font-semibold mt-24 ">Quick Actions:</h2>
+			<fieldset class="mt-10 border border-solid border-gray-300 p-3 rounded-md">
+				<legend class="text-md font-bold mt-24">Quick Actions</legend>
 
-				{#each quickActions as action}
-					<div class="flex flex-row items-center justify-between">
-						<div class="flex flex-col">
-							<h2 class="text-lg font-semibold">{action.name}</h2>
-							<GreyText>{action.description}</GreyText>
+				<div class="mt-4">
+					{#each quickActions as action}
+						<div class="flex flex-row items-center justify-between">
+							<div class="flex flex-col">
+								<h2 class="text-lg font-semibold">{action.name}</h2>
+								<GreyText>{action.description}</GreyText>
+							</div>
+
+							<div class="flex flex-row items-center">
+								<ButtonLink link={action.link}>Open</ButtonLink>
+							</div>
 						</div>
 
-						<div class="flex flex-row items-center">
-							<ButtonLink link={action.link}>
-								{action.name}
-							</ButtonLink>
-						</div>
-					</div>
-
-					<hr class="my-4" />
-				{/each}
+						<hr class="my-4" />
+					{/each}
+				</div>
 			</fieldset>
 		</PaneContent>
+
+		<!--<InfoPane title="Permissions" description="Your Permissions?">
+			<PaneData>
+				<UnorderedList>
+					{#if $panelState?.userPerms?.owner}
+						<ListItem>Owner (owner)</ListItem>
+					{/if}
+
+					{#if $panelState?.userPerms?.hadmin}
+						<ListItem>Head Staff Manager (hadmin)</ListItem>
+					{/if}
+
+					{#if $panelState?.userPerms?.admin}
+						<ListItem>Staff Manager (admin)</ListItem>
+					{/if}
+
+					{#if $panelState?.userPerms?.iblhdev}
+						<ListItem>Head Developer (iblhdev)</ListItem>
+					{/if}
+
+					{#if $panelState?.userPerms?.ibldev}
+						<ListItem>Developer (ibldev)</ListItem>
+					{/if}
+
+					{#if $panelState?.userPerms?.staff}
+						<ListItem>Staff (staff)</ListItem>
+					{/if}
+				</UnorderedList>
+			</PaneData>
+		</InfoPane>-->
 	</PaneWrapper>
 </div>
