@@ -3,7 +3,7 @@
 </script>
 
 <section class="text-black">
-	<h3 aria-live="polite" class="text-center text-6xl font-semibold p-10">
+	<h3 aria-live="polite" class="text-center text-6xl font-semibold p-10 dark:text-white">
 		Welcome to Infinity Panel
 	</h3>
 	<svg
@@ -27,5 +27,5 @@
 		</linearGradient>
 		<title id="___panelLoad">Loading the panel, please wait</title>
 	</svg>
-	<p class="mt-3 text-4xl font-semibold text-center">{msg}</p>
+	<p class="mt-3 text-4xl font-semibold text-center dark:text-white">{msg}</p>
 </section>

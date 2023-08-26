@@ -3,7 +3,7 @@
 </script>
 
 <section class="text-black">
-	<h3 aria-live="polite" class="text-center text-6xl font-semibold p-10">
+	<h3 aria-live="polite" class="text-center text-6xl font-semibold p-10 dark:text-white">
 		Welcome to Infinity Panel
 	</h3>
 	<p class="mt-3 text-4xl font-semibold text-center text-red-400">{msg}</p>
