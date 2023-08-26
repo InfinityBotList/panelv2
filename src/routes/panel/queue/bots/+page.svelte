@@ -48,7 +48,7 @@
 					<span slot="display-name">{bot?.user?.username}</span>
 
 					<span slot="short">{bot?.short}</span>
-					<span slot="post-slot" class="block mt-5 text-xl font-bold tracking-tight my-2">
+					<span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
 						<!--<h3 class="text-2xl font-bold tracking-tight">Bot Info</h3>
 						<UnorderedList>
 							{#if bot?.claimed_by}

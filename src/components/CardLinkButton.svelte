@@ -11,7 +11,7 @@
 	<button
 		disabled={true}
 		aria-disabled={true}
-		class="mb-2 inline-flex items-center py-2 px-3 font-medium text-center text-white bg-blue-600 hover:cursor-not-allowed rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300"
+		class="mb-2 inline-flex items-center py-2 px-3 text-center text-white bg-blue-600 hover:cursor-not-allowed rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300"
 	>
 		<slot />
 	</button>
