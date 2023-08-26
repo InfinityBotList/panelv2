@@ -13,6 +13,8 @@
 
 	let quickActions: QuickAction[] = [];
 
+	let perms: String[] = [];
+
 	$: {
 		for (let cap of $panelState?.capabilities || []) {
 			switch (cap) {
@@ -25,35 +27,34 @@
 					break;
 			}
 		}
+
+        if ($panelState?.userPerms?.owner) perms.push('Owner');
+        if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
+        if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
+        if ($panelState?.userPerms?.iblhdev) perms.push('Head Developer');
+        if ($panelState?.userPerms?.ibldev) perms.push('Developer');
+        if ($panelState?.userPerms?.staff) perms.push('Staff');
 	}
 
-	let perms: String[] = [];
-	if ($panelState?.userPerms?.owner) perms.push('Owner');
-	if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
-	if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
-	if ($panelState?.userPerms?.iblhdev) perms.push('Head Developer');
-	if ($panelState?.userPerms?.ibldev) perms.push('Developer');
-	if ($panelState?.userPerms?.staff) perms.push('Staff');
 </script>
 
 <div class="mt-14">
 	<PaneWrapper>
 		<PaneContent>
-			<h1 class="text-3xl font-semibold dark:text-white">
+			<h1 class="text-3xl font-semibold">
 				Welcome Back, {$panelState?.userDetails?.display_name}!
 			</h1>
 
-			<p class="flex text-black dark:text-white">
-				Permissions: {perms.join(', ')}
+			<p class="flex">
+				<span class="font-semibold">Permissions:</span>&nbsp;{perms.join(', ')}
 			</p>
 
-			<fieldset class="mt-4 border border-solid border-gray-300 p-3 rounded-md">
-				<legend class="text-xl font-bold dark:text-white">Quick Actions</legend>
+			<h2 class="text-2xl font-semibold mt-24 ">Quick Actions:</h2>
 
 				{#each quickActions as action}
 					<div class="flex flex-row items-center justify-between">
 						<div class="flex flex-col">
-							<h2 class="text-lg font-semibold dark:text-white">{action.name}</h2>
+							<h2 class="text-lg font-semibold">{action.name}</h2>
 							<GreyText>{action.description}</GreyText>
 						</div>
 
