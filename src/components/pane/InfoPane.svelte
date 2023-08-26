@@ -7,7 +7,7 @@
 
 <div class="h-auto w-full text-white lg:col-span-3 mt-24">
 	<div
-		class="h-auto top-20 transition-all duration-200 w-full bg-gray-500 bg-opacity-10 border border-red-700/50 rounded-lg p-4 lg:sticky"
+		class="h-auto top-20 transition-all duration-200 w-full bg-gray-500 bg-opacity-10 border border-themable-700/50 rounded-lg p-4 lg:sticky"
 	>
 		<div class="bg-gradient-to-br text-white rounded-lg h-max">
 			<p class="text-xl font-medium text-white text-center">
