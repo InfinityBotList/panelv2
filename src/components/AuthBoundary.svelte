@@ -207,7 +207,36 @@
 			}
 			return;
 		}
+
+		setInterval(checkAuth, 1000 * 60 * 1)
 	};
+
+	const checkAuth = async () => {
+		logger.info('Panel.CheckAuth', 'Checking auth...')
+
+		let lp: PanelQuery = {
+			GetIdentity: {
+				login_token: $panelAuthState?.loginToken || ''
+			}
+		};
+
+		let resp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(lp)
+		});
+
+		if (!resp.ok) {
+			let err = await resp.text();
+			logger.error('Panel.CheckAuth', err);
+			if (err == 'identityExpired') {
+				localStorage.clear();
+				window.location.reload();
+			}
+		}
+	}
 
 	onMount(setupState);
 </script>
