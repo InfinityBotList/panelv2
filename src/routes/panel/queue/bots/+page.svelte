@@ -9,7 +9,8 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient } from '$lib/fetch';
-	import CardButtonDropbox from '../../../../components/CardButtonDropbox.svelte';
+	import QueueActions from '../../../../components/QueueActions.svelte';
+	import type QueueActionTypes from '$lib/comp_types/QueueActions';
 	import type { RPCMethod } from '../../../../utils/generated/arcadia/RPCMethod';
 
 	const fetchQueueBots = async () => {
@@ -69,7 +70,7 @@
 			}
 		};
 
-        let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -77,11 +78,34 @@
 			body: JSON.stringify(lp)
 		});
 
-        if (res.ok) {
-            // Success
-            console.log("success");
-        } else console.log("bruh");
+		if (res.ok) {
+			// Success
+			console.log('success');
+		} else console.log('bruh');
 	};
+
+	const Actions: QueueActionTypes[] = [
+		{
+			Name: 'Claim',
+			Fields: null,
+			Disabled: false
+		},
+		{
+			Name: 'Unclaim',
+			Fields: null,
+			Disabled: true
+		},
+		{
+			Name: 'Approve',
+			Fields: null,
+			Disabled: true
+		},
+		{
+			Name: 'Deny',
+			Fields: null,
+			Disabled: true
+		}
+	];
 </script>
 
 {#await fetchQueueBots()}
@@ -124,9 +148,7 @@
 							>
 						</div>
 
-						<div class="flex justify-center items-center">
-							<CardButtonDropbox fullButton={true}>Actions</CardButtonDropbox>
-						</div>
+						<QueueActions fullButton={true} {Actions}>Actions</QueueActions>
 					</span>
 				</Card>
 			{/each}
