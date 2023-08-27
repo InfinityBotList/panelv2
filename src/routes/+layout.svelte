@@ -4,6 +4,7 @@
 	import '$lib/styles/mainsite/customColors.css';
 	import '$lib/styles/mainsite/global.css';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
+	import * as Sentry from '@sentry/browser';
 	import Menubar from '../components/Menubar.svelte';
 
 	const options = {};
@@ -18,6 +19,15 @@
 		// @ts-ignore
 		version: I_VERSION
 	};
+
+	Sentry.init({
+		dsn: 'https://6082a6ab84bbf336310cf22dfc26f0ab@trace.infinitybots.gg/2',
+		tunnel: `https://spider.infinitybots.gg/failure-management?to=br0`,
+		replaysSessionSampleRate: 1.0,
+		tracesSampleRate: 1.0,
+		integrations: [new Sentry.Replay()],
+		release: `panelv2@${buildInfo?.version}-${buildInfo?.publicCommit})`
+	});
 </script>
 
 <div data-theme="violet" class="flex min-h-screen flex-col justify-between overflow-x-hidden">
