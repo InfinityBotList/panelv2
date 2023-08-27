@@ -19,14 +19,14 @@
 	let perms: String[] = [];
 
 	$: {
-        quickActions = []
-        perms = []
+		quickActions = [];
+		perms = [];
 
-        quickActions.push({
-            name: 'Index',
-            description: 'Index Page',
-            link: '/panel'
-        })
+		quickActions.push({
+			name: 'Index',
+			description: 'Index Page',
+			link: '/panel'
+		});
 
 		for (let cap of $panelState?.capabilities || []) {
 			switch (cap) {
@@ -50,28 +50,29 @@
 </script>
 
 <AuthBoundary>
-    <PaneWrapper>
+	<PaneWrapper>
 		<InfoPane title="Navigation" description="Welcome to the panel">
-            {#each quickActions as action}
-                <button class="w-full border border-themable-700/50 p-3 text-xl rounded-md bg-black hover:bg-slate-800" on:click={() => goto(action.link)}>
-                    {action.name}
-                    <small class="text-sm text-gray-400 block">{action.description}</small>
-                </button>
-            {/each}
-			<div class="mt-4"></div>
-            <span class="font-semibold">Permissions:</span>
-            <UnorderedList>
-                {#each perms as perm}
-                    <ListItem>{perm}</ListItem>
-                {/each}
-            </UnorderedList>
-        </InfoPane>
-        <PaneContent>
-            <div class="block">
-                <slot />
-            </div>
-        </PaneContent>
-    </PaneWrapper>  
-
-
+			{#each quickActions as action}
+				<button
+					class="w-full border border-themable-700/50 p-3 text-xl rounded-md bg-black hover:bg-slate-800"
+					on:click={() => goto(action.link)}
+				>
+					{action.name}
+					<small class="text-sm text-gray-400 block">{action.description}</small>
+				</button>
+			{/each}
+			<div class="mt-4" />
+			<span class="font-semibold">Permissions:</span>
+			<UnorderedList>
+				{#each perms as perm}
+					<ListItem>{perm}</ListItem>
+				{/each}
+			</UnorderedList>
+		</InfoPane>
+		<PaneContent>
+			<div class="block">
+				<slot />
+			</div>
+		</PaneContent>
+	</PaneWrapper>
 </AuthBoundary>
