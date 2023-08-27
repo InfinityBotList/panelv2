@@ -12,7 +12,10 @@
 				{title}
 			</p>
 			<p class="text-white text-sm text-opacity-80 text-center">{description}</p>
+
+			<div class="p-2" />
 			<hr />
+
 			<div class="mt-5 text-white"><slot /></div>
 		</div>
 	</div>

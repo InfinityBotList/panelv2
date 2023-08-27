@@ -19,7 +19,7 @@
 
 	const setupState = async () => {
 		if ($panelState) {
-			return
+			return;
 		}
 
 		try {

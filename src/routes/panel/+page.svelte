@@ -3,13 +3,13 @@
 </script>
 
 <div class="mt-14">
-			<h1 class="text-3xl font-semibold">
-				Welcome Back, {$panelState?.userDetails?.display_name}!
-			</h1>
+	<h1 class="text-3xl font-semibold">
+		Welcome Back, {$panelState?.userDetails?.display_name}!
+	</h1>
 
-            <p>Pretty empty right now, isn't it?</p>
+	<p>Pretty empty right now, isn't it?</p>
 
-		<!--<InfoPane title="Permissions" description="Your Permissions?">
+	<!--<InfoPane title="Permissions" description="Your Permissions?">
 			<PaneData>
 				<UnorderedList>
 					{#if $panelState?.userPerms?.owner}

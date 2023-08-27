@@ -17,11 +17,11 @@
 		lastMod: I_LAST_MOD,
 		// @ts-ignore
 		version: I_VERSION
-	}
+	};
 </script>
 
 <div data-theme="violet" class="flex min-h-screen flex-col justify-between overflow-x-hidden">
-	<header>
+	<header class="mt-1">
 		<Menubar />
 	</header>
 
