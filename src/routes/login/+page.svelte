@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
+	import { fetchClient } from '$lib/fetch';
 
 	onMount(() => {
 		if ($panelAuthState) {
@@ -19,7 +20,7 @@
 	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
 
 	const login = async () => {
-		let res = await fetch(instanceUrl, {
+		let res = await fetchClient(instanceUrl, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
@@ -47,7 +48,7 @@
 			}
 		};
 
-		res = await fetch(`${url}${queryPath}`, {
+		res = await fetchClient(`${url}${queryPath}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -88,7 +89,7 @@
 					}
 				};
 
-				let res = await fetch(`${url}${queryPath}`, {
+				let res = await fetchClient(`${url}${queryPath}`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -154,5 +155,11 @@
 		minlength={1}
 	/>
 
-	<ButtonReact onclick={() => login()}>Login</ButtonReact>
+	<ButtonReact onclick={() => {
+		try {
+			login()
+		} catch (err) {
+			error(err?.toString() || 'Failed to login due to unknown error');
+		}
+	}}>Login</ButtonReact>
 </article>

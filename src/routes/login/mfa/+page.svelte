@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { page } from "$app/stores";
 	import logger from "$lib/logger";
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
 	import { onMount } from "svelte";
 	import type { PanelQuery } from "../../../utils/generated/arcadia/PanelQuery";
-	import Error from "../../../components/Error.svelte";
+	import ErrorComponent from "../../../components/Error.svelte";
 	import Loading from "../../../components/Loading.svelte";
 	import type { MfaLogin } from "../../../utils/generated/arcadia/MfaLogin";
 	import InputText from "../../../components/InputText.svelte";
 	import ButtonReact from "../../../components/ButtonReact.svelte";
     import {error as errorToast } from '$lib/toast';
+	import { fetchClient } from "$lib/fetch";
 
     let msg: string = 'Loading MFA...'
-    let error: boolean = false;
-    let mfaData: MfaLogin | null = null;
 
     let inputtedCode: string = '';
 
@@ -54,7 +52,7 @@
             }
         }
 
-        let res = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+        let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -63,20 +61,11 @@
         });
 
         if (!res.ok) {
-            if(res.status == 408) {
-                msg = 'Server down for maintenance';
-                error = true;
-                return;
-            }
-
             let err = await res.text();
-            msg = err;
-            error = true;
-            return;
+            throw new Error(err)
         }  
 
-        msg = ''
-        mfaData = await res.json();
+        return await res.json();
     }
 
 
@@ -93,7 +82,7 @@
             }
         }
 
-        let res = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+        let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -102,11 +91,6 @@
         });
 
         if (!res.ok) {
-            if(res.status == 408) {
-                errorToast('Server down for maintenance');
-                return;
-            }
-
             let err = await res.text();
             errorToast(err);
             return;
@@ -123,13 +107,9 @@
     onMount(loadMfa);
 </script>
 
-{#if msg}
-    {#if error}
-        <Error msg={msg} />
-    {:else}
-        <Loading msg={msg} />
-    {/if}
-{:else}
+{#await loadMfa()}
+    <Loading msg={msg} />
+{:then mfaData}
     <article class="p-4">
         <h1 class="text-3xl font-semibold">MFA</h1>
 
@@ -149,4 +129,6 @@
 
         <ButtonReact onclick={authorizeMfa}>Verify OTP</ButtonReact>
     </article>
-{/if}
+{:catch e}
+        <ErrorComponent msg={e?.toString() || 'Unknown error'} />
+{/await}

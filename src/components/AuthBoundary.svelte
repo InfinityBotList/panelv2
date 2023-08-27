@@ -14,8 +14,10 @@
 	import type { Capability } from '../utils/generated/arcadia/Capability';
 	import Loading from './Loading.svelte';
 	import type { CoreConstants } from '../utils/generated/arcadia/CoreConstants';
+	import { fetchClient } from '$lib/fetch';
 
 	let loadingMsg = 'Waiting for monkeys?';
+	let error = false;
 
 	const setupState = async () => {
 		if ($panelState) {
@@ -26,9 +28,6 @@
 			let authorized = false;
 
 			logger.info('Panel', 'Loading panel...');
-
-			// To ensure CLS is low
-			await sleep(1000);
 
 			loadingMsg = 'Checking authentication';
 
@@ -70,8 +69,8 @@
 					login_token: $panelAuthState?.loginToken || ''
 				}
 			};
-
-			let resp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			
+			let resp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -80,19 +79,8 @@
 			});
 
 			if (!resp.ok) {
-				let err = await resp.text();
-
-				if (err == 'identityExpired') {
-					loadingMsg = 'Your session has expired, logging you out';
-
-					await sleep(2000);
-				}
-
-				localStorage.clear();
-
-				logger.error('Panel', 'Failed to get identity');
-
-				window.location.reload();
+				loadingMsg = await resp.text();
+				error = true;
 				return;
 			}
 
@@ -104,7 +92,7 @@
 				}
 			};
 
-			let userDetailsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			let userDetailsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -113,11 +101,8 @@
 			});
 
 			if (!userDetailsResp.ok) {
-				logger.error('Panel', 'Failed to get user details');
-
-				if ($page.url.pathname != '/login') {
-					await goto(`/login?redirect=${window.location.pathname}`);
-				}
+				loadingMsg = await resp.text();
+				error = true;
 				return;
 			}
 
@@ -129,7 +114,7 @@
 				}
 			};
 
-			let userPermsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			let userPermsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -138,11 +123,8 @@
 			});
 
 			if (!userPermsResp.ok) {
-				logger.error('Panel', 'Failed to get user perms');
-
-				if ($page.url.pathname != '/login') {
-					await goto(`/login?redirect=${window.location.pathname}`);
-				}
+				loadingMsg = await resp.text();
+				error = true;
 				return;
 			}
 
@@ -154,7 +136,7 @@
 				}
 			};
 
-			let capabilitiesResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			let capabilitiesResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -163,11 +145,8 @@
 			});
 
 			if (!capabilitiesResp.ok) {
-				logger.error('Panel', 'Failed to get capabilities');
-
-				if ($page.url.pathname != '/login') {
-					await goto(`/login?redirect=${window.location.pathname}`);
-				}
+				loadingMsg = await resp.text();
+				error = true;
 				return;
 			}
 
@@ -179,7 +158,7 @@
 				}
 			};
 
-			let coreConstantsResp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			let coreConstantsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -188,11 +167,8 @@
 			});
 
 			if (!coreConstantsResp.ok) {
-				logger.error('Panel', 'Failed to get core constants');
-
-				if ($page.url.pathname != '/login') {
-					await goto(`/login?redirect=${window.location.pathname}`);
-				}
+				loadingMsg = await resp.text();
+				error = true;
 				return;
 			}
 
@@ -207,11 +183,9 @@
 				capabilities,
 				coreConstants
 			};
-		} catch {
-			logger.error('Panel', 'Failed to load panel');
-			if ($page.url.pathname != '/login') {
-				await goto(`/login?redirect=${window.location.pathname}`);
-			}
+		} catch (err) {
+			loadingMsg = await err?.toString() || 'Unknown error';
+			error = true;
 			return;
 		}
 
@@ -227,21 +201,21 @@
 			}
 		};
 
-		let resp = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
-		});
+		try {
+			let resp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(lp)
+			});
 
-		if (!resp.ok) {
-			let err = await resp.text();
-			logger.error('Panel.CheckAuth', err);
-			if (err == 'identityExpired') {
-				localStorage.clear();
-				window.location.reload();
+			if (!resp.ok) {
+				let err = await resp.text();
+				logger.error('Panel.CheckAuth', err);
 			}
+		} catch (err) {
+			logger.error('Panel.CheckAuth', err);
 		}
 	}
 

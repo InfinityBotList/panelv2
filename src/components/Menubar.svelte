@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { logoutUser } from '$lib/logout';
 	import { panelAuthState } from '$lib/panelAuthState';
 
 	interface MenuItem {
@@ -27,8 +28,7 @@
 				{
 					Name: 'Logout',
 					Href: () => {
-						localStorage.clear();
-						window.location.reload();
+						logoutUser()
 						return true;
 					}
 				}

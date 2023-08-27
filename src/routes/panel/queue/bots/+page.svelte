@@ -8,6 +8,7 @@
 	import { panelState } from '$lib/panelData';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
+	import { fetchClient } from '$lib/fetch';
 
 	const fetchQueueBots = async () => {
 		let lp: PanelQuery = {
@@ -15,7 +16,7 @@
 				login_token: $panelAuthState?.loginToken || ''
 			}
 		};
-		let res = await fetch(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
