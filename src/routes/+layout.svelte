@@ -21,7 +21,7 @@
 	};
 
 	Sentry.init({
-		dsn: 'https://6082a6ab84bbf336310cf22dfc26f0ab@trace.infinitybots.gg/2',
+		dsn: 'https://8d6d3598571136c2a6c7dcba71ca0363@trace.infinitybots.gg/5',
 		tunnel: `https://spider.infinitybots.gg/failure-management?to=br0`,
 		replaysSessionSampleRate: 1.0,
 		tracesSampleRate: 1.0,

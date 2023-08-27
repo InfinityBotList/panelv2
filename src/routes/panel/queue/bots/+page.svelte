@@ -9,6 +9,8 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient } from '$lib/fetch';
+	import CardButtonDropbox from '../../../../components/CardButtonDropbox.svelte';
+	import type { RPCMethod } from '../../../../utils/generated/arcadia/RPCMethod';
 
 	const fetchQueueBots = async () => {
 		let lp: PanelQuery = {
@@ -16,6 +18,7 @@
 				login_token: $panelAuthState?.loginToken || ''
 			}
 		};
+
 		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
 			headers: {
@@ -26,6 +29,58 @@
 		let bots: QueueBot[] = await res.json();
 
 		return bots;
+	};
+
+	enum RPCAction {
+		Claim = 0,
+		Unclaim = 1,
+		Approve = 2,
+		Deny = 3
+	}
+
+	const QueueRPCActions = async (
+		TargetID: string,
+		ForceAction: boolean = false,
+		Reason: string,
+		Action: RPCAction
+	) => {
+		let Method: RPCMethod;
+
+		switch (Action) {
+			case RPCAction.Claim:
+				Method = { Claim: { target_id: TargetID, force: ForceAction } };
+				break;
+			case RPCAction.Unclaim:
+				Method = { Unclaim: { target_id: TargetID, reason: Reason } };
+				break;
+			case RPCAction.Approve:
+				Method = { Approve: { target_id: TargetID, reason: Reason } };
+				break;
+			case RPCAction.Deny:
+				Method = { Deny: { target_id: TargetID, reason: Reason } };
+				break;
+		}
+
+		let lp: PanelQuery = {
+			ExecuteRpc: {
+				login_token: $panelAuthState?.loginToken || '',
+				target_type: 'Bot',
+				method: Method
+			}
+		};
+
+        let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(lp)
+		});
+
+        if (res.ok) {
+            // Success
+            console.log("success");
+        } else console.log("bruh");
 	};
 </script>
 
@@ -67,6 +122,10 @@
 								showArrow={false}
 								seperate={true}>Invite</CardLinkButton
 							>
+						</div>
+
+						<div class="flex justify-center items-center">
+							<CardButtonDropbox fullButton={true}>Actions</CardButtonDropbox>
 						</div>
 					</span>
 				</Card>
