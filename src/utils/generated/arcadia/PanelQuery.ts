@@ -7,6 +7,7 @@ export type PanelQuery =
 	| { Login: { code: string; redirect_url: string } }
 	| { LoginMfaCheckStatus: { login_token: string } }
 	| { LoginActivateSession: { login_token: string; otp: string } }
+	| { LoginResetMfa: { login_token: string; otp: string } }
 	| { GetIdentity: { login_token: string } }
 	| { GetUserDetails: { user_id: string } }
 	| { GetUserPerms: { user_id: string } }

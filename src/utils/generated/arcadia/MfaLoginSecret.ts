@@ -2,5 +2,6 @@
 
 export interface MfaLoginSecret {
 	secret: string;
+	otp_url: string;
 	qr_code: string;
 }

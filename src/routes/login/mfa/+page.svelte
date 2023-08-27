@@ -105,8 +105,6 @@
 
 		await goto(redirect());
 	};
-
-	onMount(loadMfa);
 </script>
 
 {#await loadMfa()}

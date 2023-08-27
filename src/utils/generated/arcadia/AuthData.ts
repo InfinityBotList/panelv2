@@ -3,4 +3,5 @@
 export interface AuthData {
 	user_id: string;
 	created_at: bigint;
+	state: string;
 }
