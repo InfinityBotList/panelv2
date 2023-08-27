@@ -83,6 +83,7 @@
     const authorizeMfa = async () => {
         if(inputtedCode?.length != 6) {
             errorToast('Please enter a valid OTP');
+            return
         }
 
         let lp : PanelQuery = {
