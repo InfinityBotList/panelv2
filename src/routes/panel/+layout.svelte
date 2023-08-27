@@ -52,16 +52,23 @@
 <AuthBoundary>
 	<PaneWrapper>
 		<InfoPane title="Navigation" description="Welcome to the panel">
-			{#each quickActions as action}
-				<button
-					class="w-full border border-themable-700/50 p-3 text-xl rounded-md bg-black hover:bg-slate-800"
-					on:click={() => goto(action.link)}
-				>
-					{action.name}
-					<small class="text-sm text-gray-400 block">{action.description}</small>
-				</button>
-			{/each}
+			<div>
+				{#each quickActions as action, index}
+					<button
+						class="w-full border border-themable-700/50 p-3 text-xl bg-black hover:bg-slate-800 {index ===
+						0
+							? 'rounded-t-md'
+							: ''} {index === quickActions.length - 1 ? 'rounded-b-md' : ''}"
+						on:click={() => goto(action.link)}
+					>
+						{action.name}
+						<small class="text-sm text-gray-400 block">{action.description}</small>
+					</button>
+				{/each}
+			</div>
+
 			<div class="mt-4" />
+
 			<span class="font-semibold">Permissions:</span>
 			<UnorderedList>
 				{#each perms as perm}
@@ -69,6 +76,7 @@
 				{/each}
 			</UnorderedList>
 		</InfoPane>
+
 		<PaneContent>
 			<div class="block">
 				<slot />
