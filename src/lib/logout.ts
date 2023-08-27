@@ -1,4 +1,4 @@
 export const logoutUser = async () => {
-    localStorage.clear();
-    window.location.reload()
-}
+	localStorage.clear();
+	window.location.reload();
+};

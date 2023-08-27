@@ -122,7 +122,7 @@
 					redirect = '/';
 				}
 
-				goto(`/login/mfa?redirect=${redirect}`)
+				goto(`/login/mfa?redirect=${redirect}`);
 			}
 		});
 	};
@@ -155,11 +155,13 @@
 		minlength={1}
 	/>
 
-	<ButtonReact onclick={() => {
-		try {
-			login()
-		} catch (err) {
-			error(err?.toString() || 'Failed to login due to unknown error');
-		}
-	}}>Login</ButtonReact>
+	<ButtonReact
+		onclick={() => {
+			try {
+				login();
+			} catch (err) {
+				error(err?.toString() || 'Failed to login due to unknown error');
+			}
+		}}>Login</ButtonReact
+	>
 </article>
