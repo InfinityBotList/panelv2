@@ -33,7 +33,7 @@
 <div class={inpClass}>
 	<label for={id} class="text-white text-xl text-left">{label}</label>
 	{#if description}
-		<span class="text-md mb-2">{description}</span>
+		<p class="text-md mb-2 opacity-80">{description}</p>
 	{/if}
 
 	<input

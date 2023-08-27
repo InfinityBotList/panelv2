@@ -42,7 +42,7 @@
 
 		let lp: PanelQuery = {
 			GetLoginUrl: {
-				version: 0,
+				version: 1,
 				redirect_url: `${window.location.origin}/login/authorize`
 			}
 		};
@@ -63,7 +63,7 @@
 		let loginUrl = await res.text();
 
 		// Open login URL in new tab using window.open
-		let loginTab = window.open(loginUrl, '_blank');
+		let loginTab = window.open(loginUrl, '_blank', 'popup');
 
 		// Listen to message events
 		window.addEventListener('message', async (e) => {
@@ -107,18 +107,21 @@
 				let ps: PanelAuthState = {
 					url,
 					queryPath,
-					loginToken
+					loginToken,
+					sessionState: 'pending'
 				};
 
 				localStorage.setItem('panelStateData', JSON.stringify(ps));
 
-				let redirect = urlSearchParams.get('redirect');
+				let redirectSearchParams = new URLSearchParams(window.location.search);
+
+				let redirect = redirectSearchParams?.get('redirect');
 
 				if (!redirect || !redirect.startsWith('/')) {
 					redirect = '/';
 				}
 
-				window.location.href = redirect;
+				goto(`/login/mfa?redirect=${redirect}`)
 			}
 		});
 	};

@@ -4,6 +4,7 @@ export interface PanelAuthState {
 	url: string;
 	queryPath: string;
 	loginToken: string;
+	sessionState: string;
 }
 
 export const panelAuthState: Writable<PanelAuthState | null> = writable(null);

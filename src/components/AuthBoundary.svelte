@@ -38,6 +38,13 @@
 				try {
 					let json: PanelAuthState = JSON.parse(panelStateData);
 					$panelAuthState = json;
+
+					switch ($panelAuthState?.sessionState) {
+						case 'pending':
+							goto(`/login/mfa?redirect=${window.location.pathname}`);
+							return;
+					}
+
 					authorized = true;
 				} catch (e) {
 					logger.error('Panel', 'Failed to load panel state data from localStorage');
