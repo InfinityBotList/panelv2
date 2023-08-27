@@ -82,7 +82,7 @@
 
     const authorizeMfa = async () => {
         if(inputtedCode?.length != 6) {
-            errorToast('Please enter a valid OTP');
+            errorToast('Please enter a valid 6-digit OTP');
             return
         }
 
