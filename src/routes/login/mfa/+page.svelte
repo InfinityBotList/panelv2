@@ -9,7 +9,6 @@
 	import ButtonReact from '../../../components/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
 	import { fetchClient } from '$lib/fetch';
-	import Error from '../../../components/Error.svelte';
 
 	let msg: string = 'Loading MFA...';
 
