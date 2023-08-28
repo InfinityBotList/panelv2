@@ -8,27 +8,27 @@
 	import { goto } from '$app/navigation';
 	import { hexToUtf8 } from '$lib/strings';
 
-	let msg: string = "Logging you in now..."
+	let msg: string = 'Logging you in now...';
 
 	const authorize = async () => {
 		let searchParams = new URLSearchParams(window.location.search);
 
 		let code = searchParams.get('code');
 
-		if(!code) {
-			throw new Error("Failed to get code from URL");
+		if (!code) {
+			throw new Error('Failed to get code from URL');
 		}
 
 		let state = searchParams.get('state');
 
-		if(!state) {
-			throw new Error("Failed to get state from URL");
+		if (!state) {
+			throw new Error('Failed to get state from URL');
 		}
 
-		let loginState: LoginState = JSON.parse(hexToUtf8(state))
+		let loginState: LoginState = JSON.parse(hexToUtf8(state));
 
-		if(!loginState) {
-			throw new Error("Failed to parse login state");
+		if (!loginState) {
+			throw new Error('Failed to parse login state');
 		}
 
 		let lp: PanelQuery = {
@@ -44,10 +44,10 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(lp)
-		})
+		});
 
-		if(!res.ok) {
-			throw new Error(await res.text() || "Failed to login")
+		if (!res.ok) {
+			throw new Error((await res.text()) || 'Failed to login');
 		}
 
 		let loginToken = await res.text();
@@ -59,20 +59,20 @@
 			sessionState: 'pending'
 		};
 
-		localStorage.setItem('panelStateData', JSON.stringify(ps))
+		localStorage.setItem('panelStateData', JSON.stringify(ps));
 
-		if(window.opener) {
+		if (window.opener) {
 			window?.opener?.postMessage('login', location.origin);
 		} else {
-			goto(`/login/mfa?redirect=${loginState?.redirectUrl}`)
+			goto(`/login/mfa?redirect=${loginState?.redirectUrl}`);
 		}
-	}
+	};
 </script>
 
 {#await authorize()}
-	<Loading msg={msg} />
+	<Loading {msg} />
 {:then}
 	<Loading msg="Just one moment..." />
 {:catch err}
-	<ErrorComponent msg={err?.toString() || "Unknown error occurred"} />
+	<ErrorComponent msg={err?.toString() || 'Unknown error occurred'} />
 {/await}

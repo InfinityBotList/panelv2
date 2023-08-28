@@ -85,11 +85,11 @@
 		try {
 			let loginTab = window.open(loginUrl, '_blank', 'popup');
 
-			if(!loginTab) {
-				throw new Error("No popups allowed")
+			if (!loginTab) {
+				throw new Error('No popups allowed');
 			}
 
-			loginTab?.focus()
+			loginTab?.focus();
 
 			// Listen to message events
 			window.addEventListener('message', async (e) => {
@@ -100,7 +100,7 @@
 				}
 			});
 		} catch (err) {
-			logger.error("Popups seem to be disabled, falling back to redirect auth")
+			logger.error('Popups seem to be disabled, falling back to redirect auth');
 
 			// Open login URL in current tab using goto
 			await goto(loginUrl);

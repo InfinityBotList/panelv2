@@ -8,9 +8,16 @@
 	export let fullButton: boolean = false;
 	export let open: boolean = false;
 
+	export let selectOpen: boolean = false;
+
 	const openDropdown = () => {
 		if (open) open = false;
 		else open = true;
+	};
+
+	const openSelect = () => {
+		if (selectOpen) selectOpen = false;
+		else selectOpen = true;
 	};
 </script>
 
@@ -50,13 +57,16 @@
 	</button>
 
 	<div
-		class="{open ? 'flex' : 'hidden'} mt-1 focus:outline-none {fullButton
+		class="{open
+			? 'flex'
+			: 'hidden'} justify-center items-center mt-1 focus:outline-none {fullButton
 			? 'w-full'
-			: 'w-1/2'} rounded-b-lg bg-black/90 h-40 text-center text-white"
+			: 'w-1/2'} pb-2 rounded-b-lg bg-black/90 text-center text-white {selectOpen ? 'pb-24' : ''}"
 	>
-		<h2 class="mt-1 ml-4 text-white font-bold text-xl">Actions</h2>
-
-		<select class="mt-16 ml-4 h-8 rounded-md text-black outline-none">
+		<select
+			class="w-2/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
+			on:click={openSelect}
+		>
 			{#each Actions as Action}
 				<option value={Action.Name}>{Action.Name}</option>
 			{/each}

@@ -30,7 +30,7 @@
 			integrations: [new Sentry.Replay()],
 			release: `panelv2@${buildInfo?.version}-${buildInfo?.publicCommit})`
 		});
-	})
+	});
 </script>
 
 <div data-theme="violet" class="flex min-h-screen flex-col justify-between overflow-x-hidden">
