@@ -1,5 +1,6 @@
 import type { PanelQuery } from "../utils/generated/arcadia/PanelQuery";
 import { fetchClient } from "./fetch";
+import logger from "./logger";
 import type { PanelAuthState } from "./panelAuthState";
 import { sleep } from "./time";
 import { error } from "./toast";
@@ -29,6 +30,10 @@ export const logoutUser = async (sendLogout: boolean) => {
 
                 throw new Error(err)
             }
+
+            let numSessionsDestroyed = await resp.text()
+
+            logger.info("Panel.Logout", `Destroyed ${numSessionsDestroyed} sessions associated with this login token`)
         } catch (err) {
             error(err?.toString() || "Unknown error")
 
