@@ -4,13 +4,14 @@
 	import InputText from '../../components/InputText.svelte';
 	import ButtonReact from '../../components/ButtonReact.svelte';
 	import { error } from '$lib/toast';
-	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
+	import { panelAuthState } from '$lib/panelAuthState';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
 	import { fetchClient } from '$lib/fetch';
 	import logger from '$lib/logger';
+	import { utf8ToHex } from '$lib/strings';
 
 	onMount(() => {
 		if ($panelAuthState) {
