@@ -9,6 +9,9 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient } from '$lib/fetch';
+	import QueueActions from '../../../../components/QueueActions.svelte';
+	import type QueueActionTypes from '$lib/comp_types/QueueActions';
+	import type { RPCMethod } from '../../../../utils/generated/arcadia/RPCMethod';
 
 	const fetchQueueBots = async () => {
 		let lp: PanelQuery = {
@@ -16,6 +19,7 @@
 				login_token: $panelAuthState?.loginToken || ''
 			}
 		};
+
 		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
 			headers: {
@@ -27,6 +31,81 @@
 
 		return bots;
 	};
+
+	enum RPCAction {
+		Claim = 0,
+		Unclaim = 1,
+		Approve = 2,
+		Deny = 3
+	}
+
+	const QueueRPCActions = async (
+		TargetID: string,
+		ForceAction: boolean = false,
+		Reason: string,
+		Action: RPCAction
+	) => {
+		let Method: RPCMethod;
+
+		switch (Action) {
+			case RPCAction.Claim:
+				Method = { Claim: { target_id: TargetID, force: ForceAction } };
+				break;
+			case RPCAction.Unclaim:
+				Method = { Unclaim: { target_id: TargetID, reason: Reason } };
+				break;
+			case RPCAction.Approve:
+				Method = { Approve: { target_id: TargetID, reason: Reason } };
+				break;
+			case RPCAction.Deny:
+				Method = { Deny: { target_id: TargetID, reason: Reason } };
+				break;
+		}
+
+		let lp: PanelQuery = {
+			ExecuteRpc: {
+				login_token: $panelAuthState?.loginToken || '',
+				target_type: 'Bot',
+				method: Method
+			}
+		};
+
+		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(lp)
+		});
+
+		if (res.ok) {
+			// Success
+			console.log('success');
+		} else console.log('bruh');
+	};
+
+	const Actions: QueueActionTypes[] = [
+		{
+			Name: 'Claim',
+			Fields: null,
+			Disabled: false
+		},
+		{
+			Name: 'Unclaim',
+			Fields: null,
+			Disabled: true
+		},
+		{
+			Name: 'Approve',
+			Fields: null,
+			Disabled: true
+		},
+		{
+			Name: 'Deny',
+			Fields: null,
+			Disabled: true
+		}
+	];
 </script>
 
 {#await fetchQueueBots()}
@@ -68,6 +147,8 @@
 								seperate={true}>Invite</CardLinkButton
 							>
 						</div>
+
+						<QueueActions fullButton={true} {Actions}>Actions</QueueActions>
 					</span>
 				</Card>
 			{/each}

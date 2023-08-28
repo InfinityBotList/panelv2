@@ -69,7 +69,7 @@
 					login_token: $panelAuthState?.loginToken || ''
 				}
 			};
-			
+
 			let resp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 				method: 'POST',
 				headers: {
@@ -92,13 +92,16 @@
 				}
 			};
 
-			let userDetailsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
-			});
+			let userDetailsResp = await fetchClient(
+				`${$panelAuthState?.url}${$panelAuthState?.queryPath}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(lp)
+				}
+			);
 
 			if (!userDetailsResp.ok) {
 				loadingMsg = await resp.text();
@@ -114,13 +117,16 @@
 				}
 			};
 
-			let userPermsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
-			});
+			let userPermsResp = await fetchClient(
+				`${$panelAuthState?.url}${$panelAuthState?.queryPath}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(lp)
+				}
+			);
 
 			if (!userPermsResp.ok) {
 				loadingMsg = await resp.text();
@@ -136,13 +142,16 @@
 				}
 			};
 
-			let capabilitiesResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
-			});
+			let capabilitiesResp = await fetchClient(
+				`${$panelAuthState?.url}${$panelAuthState?.queryPath}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(lp)
+				}
+			);
 
 			if (!capabilitiesResp.ok) {
 				loadingMsg = await resp.text();
@@ -158,13 +167,16 @@
 				}
 			};
 
-			let coreConstantsResp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
-			});
+			let coreConstantsResp = await fetchClient(
+				`${$panelAuthState?.url}${$panelAuthState?.queryPath}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(lp)
+				}
+			);
 
 			if (!coreConstantsResp.ok) {
 				loadingMsg = await resp.text();
@@ -184,16 +196,16 @@
 				coreConstants
 			};
 		} catch (err) {
-			loadingMsg = await err?.toString() || 'Unknown error';
+			loadingMsg = (await err?.toString()) || 'Unknown error';
 			error = true;
 			return;
 		}
 
-		setInterval(checkAuth, 1000 * 60 * 1)
+		setInterval(checkAuth, 1000 * 60 * 1);
 	};
 
 	const checkAuth = async () => {
-		logger.info('Panel.CheckAuth', 'Checking auth...')
+		logger.info('Panel.CheckAuth', 'Checking auth...');
 
 		let lp: PanelQuery = {
 			GetIdentity: {
@@ -217,7 +229,7 @@
 		} catch (err) {
 			logger.error('Panel.CheckAuth', err);
 		}
-	}
+	};
 
 	onMount(setupState);
 </script>
