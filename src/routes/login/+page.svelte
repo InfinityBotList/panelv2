@@ -10,6 +10,7 @@
 	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
 	import { fetchClient } from '$lib/fetch';
+	import logger from '$lib/logger';
 
 	onMount(() => {
 		if ($panelAuthState) {
@@ -20,6 +21,14 @@
 	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
 
 	const login = async () => {
+		let redirectSearchParams = new URLSearchParams(window.location.search);
+
+		let redirect = redirectSearchParams?.get('redirect');
+
+		if (!redirect || !redirect.startsWith('/')) {
+			redirect = '/';
+		}
+
 		let res = await fetchClient(instanceUrl, {
 			method: 'GET',
 			headers: {
@@ -63,68 +72,38 @@
 
 		let loginUrl = await res.text();
 
+		let loginState: LoginState = {
+			instanceUrl: url,
+			queryPath,
+			redirectUrl: redirect
+		};
+
+		loginUrl = `${loginUrl}&state=${utf8ToHex(JSON.stringify(loginState))}`;
+
 		// Open login URL in new tab using window.open
-		let loginTab = window.open(loginUrl, '_blank', 'popup');
+		try {
+			let loginTab = window.open(loginUrl, '_blank', 'popup');
 
-		// Listen to message events
-		window.addEventListener('message', async (e) => {
-			// Check if the message is from the login tab
-			if (e.source === loginTab) {
-				loginTab?.close();
-
-				// Get URL from message
-				let urlSearchParams = new URLSearchParams(loginTab?.location.search || '');
-
-				let code = urlSearchParams.get('code');
-
-				if (!code) {
-					error('Failed to get code from login URL');
-					return;
-				}
-
-				let lp: PanelQuery = {
-					Login: {
-						code: code,
-						redirect_url: `${window.location.origin}/login/authorize`
-					}
-				};
-
-				let res = await fetchClient(`${url}${queryPath}`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(lp)
-				});
-
-				if (!res.ok) {
-					let err = await res.text();
-					error(err || 'Failed to login');
-					return;
-				}
-
-				let loginToken = await res.text();
-
-				let ps: PanelAuthState = {
-					url,
-					queryPath,
-					loginToken,
-					sessionState: 'pending'
-				};
-
-				localStorage.setItem('panelStateData', JSON.stringify(ps));
-
-				let redirectSearchParams = new URLSearchParams(window.location.search);
-
-				let redirect = redirectSearchParams?.get('redirect');
-
-				if (!redirect || !redirect.startsWith('/')) {
-					redirect = '/';
-				}
-
-				goto(`/login/mfa?redirect=${redirect}`);
+			if(!loginTab) {
+				throw new Error("No popups allowed")
 			}
-		});
+
+			loginTab?.focus()
+
+			// Listen to message events
+			window.addEventListener('message', async (e) => {
+				// Check if the message is from the login tab
+				if (e.source === loginTab) {
+					loginTab?.close();
+					goto(`/login/mfa?redirect=${redirect}`);
+				}
+			});
+		} catch (err) {
+			logger.error("Popups seem to be disabled, falling back to redirect auth")
+
+			// Open login URL in current tab using goto
+			await goto(loginUrl);
+		}
 	};
 </script>
 
