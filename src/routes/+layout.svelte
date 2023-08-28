@@ -6,6 +6,7 @@
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import * as Sentry from '@sentry/browser';
 	import Menubar from '../components/Menubar.svelte';
+	import { onMount } from 'svelte';
 
 	const options = {};
 
@@ -20,14 +21,16 @@
 		version: I_VERSION
 	};
 
-	Sentry.init({
-		dsn: 'https://8d6d3598571136c2a6c7dcba71ca0363@trace.infinitybots.gg/5',
-		tunnel: `https://spider.infinitybots.gg/failure-management?to=br0`,
-		replaysSessionSampleRate: 1.0,
-		tracesSampleRate: 1.0,
-		integrations: [new Sentry.Replay()],
-		release: `panelv2@${buildInfo?.version}-${buildInfo?.publicCommit})`
-	});
+	onMount(() => {
+		Sentry.init({
+			dsn: 'https://8d6d3598571136c2a6c7dcba71ca0363@trace.infinitybots.gg/5',
+			tunnel: `https://spider.infinitybots.gg/failure-management?to=br0`,
+			replaysSessionSampleRate: 1.0,
+			tracesSampleRate: 1.0,
+			integrations: [new Sentry.Replay()],
+			release: `panelv2@${buildInfo?.version}-${buildInfo?.publicCommit})`
+		});
+	})
 </script>
 
 <div data-theme="violet" class="flex min-h-screen flex-col justify-between overflow-x-hidden">
