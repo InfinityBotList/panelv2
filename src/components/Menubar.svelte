@@ -28,7 +28,7 @@
 				{
 					Name: 'Logout',
 					Href: () => {
-						logoutUser();
+						logoutUser(true);
 						return true;
 					}
 				}

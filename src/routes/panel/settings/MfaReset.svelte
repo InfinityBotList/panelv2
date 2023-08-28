@@ -32,7 +32,7 @@
         }
 
         success('MFA reset successfully')
-        logoutUser()
+        logoutUser(false)
     }
 </script>
 

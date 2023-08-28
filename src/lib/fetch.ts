@@ -15,7 +15,7 @@ export const fetchClient = async (url: string, init?: RequestInit) => {
 		const body = await response.clone().text();
 
 		if (body == 'identityExpired') {
-			logoutUser();
+			logoutUser(false);
 			throw new Error('Session expired...');
 		}
 	}
