@@ -40,6 +40,12 @@
 			}
 		}
 
+		quickActions.push({
+			name: 'Settings',
+			description: 'Customize your experience!',
+			link: '/panel/settings'
+		});
+
 		if ($panelState?.userPerms?.owner) perms.push('Owner');
 		if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
 		if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
