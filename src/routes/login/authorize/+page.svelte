@@ -6,6 +6,7 @@
 	import { fetchClient } from '$lib/fetch';
 	import type { PanelAuthState } from '$lib/panelAuthState';
 	import { goto } from '$app/navigation';
+	import { hexToUtf8 } from '$lib/strings';
 
 	let msg: string = "Logging you in now..."
 
