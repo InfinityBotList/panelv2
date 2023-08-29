@@ -11,13 +11,11 @@
 	export let selectOpen: boolean = false;
 
 	const openDropdown = () => {
-		if (open) open = false;
-		else open = true;
+		open = !open
 	};
 
 	const openSelect = () => {
-		if (selectOpen) selectOpen = false;
-		else selectOpen = true;
+		selectOpen = true;
 	};
 </script>
 
