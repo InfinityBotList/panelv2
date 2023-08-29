@@ -5,7 +5,6 @@
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelData';
 	import { goto } from '$app/navigation';
-	import { sleep } from '$lib/time';
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
