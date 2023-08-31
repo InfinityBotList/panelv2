@@ -8,5 +8,5 @@ export default interface Action {
 	Name: string;
 	Fields: ActionField[] | null;
 	Disabled: boolean;
- onSelect: async () => Promise<void>;
+ onSelect: async (targetID: string, reason: string | null) => Promise<void>;
 }
