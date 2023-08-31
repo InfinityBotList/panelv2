@@ -3,11 +3,9 @@
 
 	export let Actions: QueueActions[] = [];
 	export let disabled: boolean = false;
-
 	export let seperate: boolean = false;
 	export let fullButton: boolean = false;
 	export let open: boolean = false;
-
 	export let selectOpen: boolean = false;
 
 	const openDropdown = () => {
