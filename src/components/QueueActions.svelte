@@ -64,6 +64,7 @@
 		<select
 			class="w-2/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
 			on:click={openSelect}
+   on:change={() => { Action.onSelect("", "") }}
 		>
 			{#each Actions as Action}
 				<option value={Action.Name}>{Action.Name}</option>
