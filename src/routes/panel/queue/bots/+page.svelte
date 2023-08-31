@@ -80,8 +80,8 @@
 
 		if (res.ok) {
 			// Success
-			console.log('success');
-		} else console.log('bruh');
+			window.alert("[RPC Action] => Success!");
+		} else window.alert(`[RPC Action] => Failed! ({await res.json()})`);
 	};
 
 	const Actions: QueueActionTypes[] = [
@@ -93,19 +93,19 @@
 		},
 		{
 			Name: 'Unclaim',
-			Fields: [{ reason: string }],
+			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
 			Disabled: true,
    onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Unclaim) }
 		},
 		{
 			Name: 'Approve',
-			Fields: [{ reason: string }],
+			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
 			Disabled: true,
    onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Approve) }
 		},
 		{
 			Name: 'Deny',
-			Fields: [{ reason: string }],
+			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
 			Disabled: true,
    onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Deny) }
 		}
