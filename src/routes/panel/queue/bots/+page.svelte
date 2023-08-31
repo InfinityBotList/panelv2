@@ -88,22 +88,26 @@
 		{
 			Name: 'Claim',
 			Fields: null,
-			Disabled: false
+			Disabled: false,
+   onSelect: async (targetID, reason = "") => { await QueueRPCActions(targetID, false, reason, RPCAction.Claim) }
 		},
 		{
 			Name: 'Unclaim',
-			Fields: null,
-			Disabled: true
+			Fields: [{ reason: string }],
+			Disabled: true,
+   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Unclaim) }
 		},
 		{
 			Name: 'Approve',
-			Fields: null,
-			Disabled: true
+			Fields: [{ reason: string }],
+			Disabled: true,
+   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Approve) }
 		},
 		{
 			Name: 'Deny',
-			Fields: null,
-			Disabled: true
+			Fields: [{ reason: string }],
+			Disabled: true,
+   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Deny) }
 		}
 	];
 </script>
