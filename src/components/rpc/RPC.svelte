@@ -118,10 +118,8 @@
 
 	<div
 		class="{open
-			? 'flex'
-			: 'hidden'} justify-center items-center mt-1 focus:outline-none {fullButton
-			? 'w-full'
-			: 'w-1/2'} pb-2 rounded-b-lg bg-black/90 text-center text-white {selectOpen ? 'pb-24' : ''}"
+			? 'block'
+			: 'hidden'} justify-center items-center mt-1 focus:outline-none w-full rounded-b-lg bg-black/90 text-center text-white pb-24"
 	>
 		<select
 			class="w-2/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
