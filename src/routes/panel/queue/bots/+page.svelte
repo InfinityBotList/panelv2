@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
-	import Error from '../../../../components/Error.svelte';
+	import ErrorComponent from '../../../../components/Error.svelte';
 	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
 	import Card from '../../../../components/Card.svelte';
@@ -9,9 +9,8 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient } from '$lib/fetch';
-	import QueueActions from '../../../../components/QueueActions.svelte';
-	import type QueueActionTypes from '$lib/comp_types/QueueActions';
-	import type { RPCMethod } from '../../../../utils/generated/arcadia/RPCMethod';
+	import RPC from '../../../../components/rpc/RPC.svelte';
+	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
 
 	const fetchQueueBots = async () => {
 		let lp: PanelQuery = {
@@ -27,50 +26,19 @@
 			},
 			body: JSON.stringify(lp)
 		});
+
+		if(!res.ok) throw new Error('Failed to fetch bots in queue');
+
 		let bots: QueueBot[] = await res.json();
 
-		return bots;
-	};
-
-	enum RPCAction {
-		Claim = 0,
-		Unclaim = 1,
-		Approve = 2,
-		Deny = 3
-	}
-
-	const QueueRPCActions = async (
-		TargetID: string,
-		ForceAction: boolean = false,
-		Reason: string,
-		Action: RPCAction
-	) => {
-		let Method: RPCMethod;
-
-		switch (Action) {
-			case RPCAction.Claim:
-				Method = { Claim: { target_id: TargetID, force: ForceAction } };
-				break;
-			case RPCAction.Unclaim:
-				Method = { Unclaim: { target_id: TargetID, reason: Reason } };
-				break;
-			case RPCAction.Approve:
-				Method = { Approve: { target_id: TargetID, reason: Reason } };
-				break;
-			case RPCAction.Deny:
-				Method = { Deny: { target_id: TargetID, reason: Reason } };
-				break;
+		lp = {
+			GetRpcMethods: {
+				login_token: $panelAuthState?.loginToken || '',
+				filtered: true
+			}
 		}
 
-		let lp: PanelQuery = {
-			ExecuteRpc: {
-				login_token: $panelAuthState?.loginToken || '',
-				target_type: 'Bot',
-				method: Method
-			}
-		};
-
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+		let actionsRes = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -78,38 +46,15 @@
 			body: JSON.stringify(lp)
 		});
 
-		if (res.ok) {
-			// Success
-			window.alert("[RPC Action] => Success!");
-		} else window.alert(`[RPC Action] => Failed! ({await res.json()})`);
-	};
+		if(!actionsRes.ok) throw new Error('Failed to fetch actions');
 
-	const Actions: QueueActionTypes[] = [
-		{
-			Name: 'Claim',
-			Fields: null,
-			Disabled: false,
-   onSelect: async (targetID, reason = "") => { await QueueRPCActions(targetID, false, reason, RPCAction.Claim) }
-		},
-		{
-			Name: 'Unclaim',
-			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
-			Disabled: true,
-   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Unclaim) }
-		},
-		{
-			Name: 'Approve',
-			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
-			Disabled: true,
-   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Approve) }
-		},
-		{
-			Name: 'Deny',
-			Fields: [{ Name: "Reason", Answer: "", Validate: () => { return true } }],
-			Disabled: true,
-   onSelect: async (targetID, reason) => { await QueueRPCActions(targetID, false, reason, RPCAction.Deny) }
-		}
-	];
+		let actions: RPCWebAction[] = await actionsRes.json();
+
+		return {
+			bots,
+			actions
+		};
+	};
 </script>
 
 {#await fetchQueueBots()}
@@ -121,7 +66,7 @@
 		<div class="p-3" />
 
 		<Column>
-			{#each bots as bot, i}
+			{#each bots.bots as bot, i}
 				<Card>
 					<span slot="avatar">
 						<img class="rounded-full w-10 h-10" src={bot?.user?.avatar} alt="Bot Avatar" />
@@ -152,12 +97,12 @@
 							>
 						</div>
 
-						<QueueActions fullButton={true} {Actions}>Actions</QueueActions>
+						<RPC fullButton={true} actions={bots.actions} targetType={"Bot"}>Actions</RPC>
 					</span>
 				</Card>
 			{/each}
 		</Column>
 	</div>
 {:catch err}
-	<Error msg={`Failed to fetch bots in queue: ${err}`} />
+	<ErrorComponent msg={`Failed to fetch bots in queue: ${err}`} />
 {/await}
