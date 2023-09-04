@@ -97,7 +97,7 @@
 							>
 						</div>
 
-						<RPC fullButton={true} actions={bots.actions} targetType={"Bot"} actionData={
+						<RPC fullButton={true} actions={bots.actions} targetType={"Bot"} initialData={
 							{
 								target_id: bot?.bot_id,
 							}
