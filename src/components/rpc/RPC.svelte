@@ -23,7 +23,7 @@
 	export let fullButton: boolean = false;
 	export let open: boolean = false;
 	export let selectOpen: boolean = false;
-	export const initialData: ActionData = {};
+	export let initialData: ActionData;
 
 	const openDropdown = () => {
 		open = !open
