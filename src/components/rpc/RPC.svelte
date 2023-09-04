@@ -146,25 +146,32 @@
 		<div class="p-1">
 			{#key selected}
 				{#if selected}
-					{#each (actions.find(a => a.id == selected)?.fields || []) as action}
-						{#if action.field_type == "Text"}
-							<InputText 
-								id={action.id}
-								label={action.label}
-								placeholder={action.placeholder}
-								bind:value={actionData[action.id]}
-								minlength={5}
-							/>
-						{:else if action.field_type == "Textarea"}
-							<InputTextArea
-								id={action.id}
-								label={action.label}
-								placeholder={action.placeholder}
-								bind:value={actionData[action.id]}
-								minlength={5}
-							/>
+					{#each (actions.find(a => a.id == selected)?.fields || []) as field}
+						{#if initialData && initialData[field.id]}
+							<p>
+								<span class="font-semibold">{field.label} [{field.id}]: </span>
+								{initialData[field.id]}
+							</p>
 						{:else}
-							<p class="text-red-500 break-words break-all">Unknown field type: {action.field_type} for id {action.id} [{JSON.stringify(action)}]</p>
+							{#if field.field_type == "Text"}
+								<InputText 
+									id={field.id}
+									label={field.label}
+									placeholder={field.placeholder}
+									bind:value={actionData[field.id]}
+									minlength={5}
+								/>
+							{:else if field.field_type == "Textarea"}
+								<InputTextArea
+									id={field.id}
+									label={field.label}
+									placeholder={field.placeholder}
+									bind:value={actionData[field.id]}
+									minlength={5}
+								/>
+							{:else}
+								<p class="text-red-500 break-words break-all">Unknown field type: {field.field_type} for id {field.id} [{JSON.stringify(field)}]</p>
+							{/if}
 						{/if}
 					{/each}
 				{/if}
