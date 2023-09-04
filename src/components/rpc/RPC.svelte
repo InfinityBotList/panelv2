@@ -2,6 +2,7 @@
 	import { fetchClient } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
+	import { onMount } from 'svelte';
 	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { RPCMethod } from '../../utils/generated/arcadia/RPCMethod';
 	import type { RPCWebAction } from '../../utils/generated/arcadia/RPCWebAction';
@@ -22,8 +23,7 @@
 	export let fullButton: boolean = false;
 	export let open: boolean = false;
 	export let selectOpen: boolean = false;
-
-	export let actionData: ActionData = {}
+	export let initialData: ActionData = {};
 
 	const openDropdown = () => {
 		open = !open
@@ -81,6 +81,12 @@
 
 		success('Successfully executed action [200]');
 	};
+
+	let actionData: ActionData = {}
+
+	onMount(() => {
+		actionData = initialData;
+	})
 </script>
 
 {#if disabled}
@@ -128,7 +134,7 @@
 			on:click={openSelect}
 			bind:value={selected}
 			on:change={() => {
-				actionData = {}
+				actionData = initialData || {}
 			}}
 		>
 			<option value="">Select an action</option>
