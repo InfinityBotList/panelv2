@@ -97,7 +97,11 @@
 							>
 						</div>
 
-						<RPC fullButton={true} actions={bots.actions} targetType={"Bot"}>Actions</RPC>
+						<RPC fullButton={true} actions={bots.actions} targetType={"Bot"} actionData={
+							{
+								target_id: bot?.bot_id,
+							}
+						}>Actions</RPC>
 					</span>
 				</Card>
 			{/each}

@@ -9,6 +9,10 @@
 	import ButtonReact from '../ButtonReact.svelte';
 	import InputText from '../InputText.svelte';
 	import InputTextArea from '../InputTextArea.svelte';
+	
+	interface ActionData {
+		[key: string]: any;
+	}
 
 	export let actions: RPCWebAction[];
 	export let targetType: TargetType;
@@ -19,6 +23,8 @@
 	export let open: boolean = false;
 	export let selectOpen: boolean = false;
 
+	export let actionData: ActionData = {}
+
 	const openDropdown = () => {
 		open = !open
 	};
@@ -28,12 +34,6 @@
 	};
 
 	let selected: string = '';
-
-	interface ActionData {
-		[key: string]: any;
-	}
-
-	let actionData: ActionData = {}
 
 	const sendRpc = async () => {
 		if (!selected) return;
@@ -59,6 +59,7 @@
 		if (!res.ok) {
 			let err = await res.text();
 			error(err);
+			return
 		}
 
 		if(res.status == 204) {
