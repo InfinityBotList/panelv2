@@ -8,6 +8,7 @@
 	import type { TargetType } from '../../utils/generated/arcadia/TargetType';
 	import ButtonReact from '../ButtonReact.svelte';
 	import InputText from '../InputText.svelte';
+	import InputTextArea from '../InputTextArea.svelte';
 
 	export let actions: RPCWebAction[];
 	export let targetType: TargetType;
@@ -119,10 +120,10 @@
 	<div
 		class="{open
 			? 'block'
-			: 'hidden'} justify-center items-center mt-1 focus:outline-none w-full rounded-b-lg bg-black/90 text-center text-white pb-24"
+			: 'hidden'} mt-1 focus:outline-none w-full rounded-b-lg bg-black/90 text-center text-white pb-24"
 	>
 		<select
-			class="w-2/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
+			class="w-3/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
 			on:click={openSelect}
 			bind:value={selected}
 			on:change={() => {
@@ -135,31 +136,33 @@
 			{/each}
 		</select>
 
-		{#key selected}
-			{#if selected}
-				{#each (actions.find(a => a.id == selected)?.fields || []) as action}
-					{#if action.field_type == "Text"}
-						<InputText 
-							id={action.id}
-							label={action.label}
-							placeholder={action.placeholder}
-							bind:value={actionData[action.id]}
-							minlength={5}
-						/>
-					{:else if action.field_type == "Textarea"}
-						<InputText 
-							id={action.id}
-							label={action.label}
-							placeholder={action.placeholder}
-							bind:value={actionData[action.id]}
-							minlength={5}
-						/>
-					{:else}
-						<p class="text-red-500 break-words break-all">Unknown field type: {action.field_type} for id {action.id} [{JSON.stringify(action)}]</p>
-					{/if}
-				{/each}
-			{/if}
-		{/key}
+		<div class="p-1">
+			{#key selected}
+				{#if selected}
+					{#each (actions.find(a => a.id == selected)?.fields || []) as action}
+						{#if action.field_type == "Text"}
+							<InputText 
+								id={action.id}
+								label={action.label}
+								placeholder={action.placeholder}
+								bind:value={actionData[action.id]}
+								minlength={5}
+							/>
+						{:else if action.field_type == "Textarea"}
+							<InputTextArea
+								id={action.id}
+								label={action.label}
+								placeholder={action.placeholder}
+								bind:value={actionData[action.id]}
+								minlength={5}
+							/>
+						{:else}
+							<p class="text-red-500 break-words break-all">Unknown field type: {action.field_type} for id {action.id} [{JSON.stringify(action)}]</p>
+						{/if}
+					{/each}
+				{/if}
+			{/key}
+		</div>
 			
 		<div class="mt-4"></div>
 		<ButtonReact onclick={() => sendRpc()}>
