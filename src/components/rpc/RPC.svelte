@@ -85,7 +85,9 @@
 	let actionData: ActionData = {}
 
 	onMount(() => {
-		actionData = initialData;
+		actionData = {
+			...initialData
+		};
 	})
 </script>
 
@@ -134,7 +136,9 @@
 			on:click={openSelect}
 			bind:value={selected}
 			on:change={() => {
-				actionData = initialData || {}
+				actionData = {
+					...initialData
+				}
 			}}
 		>
 			<option value="">Select an action</option>
