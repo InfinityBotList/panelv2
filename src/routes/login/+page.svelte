@@ -2,7 +2,7 @@
 	import OrderedList from '../../components/OrderedList.svelte';
 	import ListItem from '../../components/ListItem.svelte';
 	import InputText from '../../components/InputText.svelte';
-	import ButtonReact from '../../components/ButtonReact.svelte';
+	import ButtonReact from '../../components/button/ButtonReact.svelte';
 	import { error } from '$lib/toast';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { onMount } from 'svelte';
@@ -12,6 +12,7 @@
 	import { fetchClient } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
+	import { Color } from '../../components/button/colors';
 
 	onMount(() => {
 		if ($panelAuthState) {
@@ -136,12 +137,21 @@
 	/>
 
 	<ButtonReact
-		onclick={() => {
+		color={Color.Themable}
+		icon={"mdi:login"}
+		text={"Login"}
+		states={{
+			loading: 'Contacting instance...',
+			success: 'Redirecting you...',
+			error: 'Failed to login'
+		}}
+		onClick={async () => {
 			try {
-				login();
+				await login();
+				return true
 			} catch (err) {
 				error(err?.toString() || 'Failed to login due to unknown error');
+				return false
 			}
-		}}>Login</ButtonReact
-	>
+		}} />
 </article>

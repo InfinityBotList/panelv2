@@ -6,9 +6,10 @@
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import InputText from '../../../components/InputText.svelte';
-	import ButtonReact from '../../../components/ButtonReact.svelte';
+	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
 	import { fetchClient } from '$lib/fetch';
+	import { Color } from '../../../components/button/colors';
 
 	let msg: string = 'Loading MFA...';
 
@@ -69,7 +70,7 @@
 	const authorizeMfa = async () => {
 		if (inputtedCode?.length != 6) {
 			errorToast('Please enter a valid 6-digit OTP');
-			return;
+			return false;
 		}
 
 		let lp: PanelQuery = {
@@ -79,18 +80,24 @@
 			}
 		};
 
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
-		});
+		let res: Response;
+		try {
+			res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(lp)
+			});
+		} catch (e) {
+			errorToast(e?.toString() || 'Unknown error');
+			return false;
+		}
 
 		if (!res.ok) {
 			let err = await res.text();
 			errorToast(err);
-			return;
+			return false;
 		}
 
 		localStorage.setItem(
@@ -101,7 +108,8 @@
 			})
 		);
 
-		await goto(redirect());
+		goto(redirect());
+		return true;
 	};
 </script>
 
@@ -134,7 +142,17 @@
 			bind:value={inputtedCode}
 		/>
 
-		<ButtonReact onclick={authorizeMfa}>Verify OTP</ButtonReact>
+		<ButtonReact
+			color={Color.Themable}
+			icon={"mdi:key"}
+			text={"Verify OTP"}
+			states={{
+				loading: 'Activating session...',
+				success: 'Successfully activated session!',
+				error: 'Failed to verify OTP and/or log you in!'
+			}}
+			onClick={authorizeMfa} />
+
 	</article>
 {:catch e}
 	<ErrorComponent msg={e?.toString() || 'Unknown error'} />

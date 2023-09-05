@@ -7,10 +7,11 @@
 	import type { RPCMethod } from '../../utils/generated/arcadia/RPCMethod';
 	import type { RPCWebAction } from '../../utils/generated/arcadia/RPCWebAction';
 	import type { TargetType } from '../../utils/generated/arcadia/TargetType';
-	import ButtonReact from '../ButtonReact.svelte';
+	import ButtonReact from '../button/ButtonReact.svelte';
 	import InputText from '../InputText.svelte';
 	import InputTextArea from '../InputTextArea.svelte';
 	import BoolInput from '../BoolInput.svelte';
+	import { Color } from '../button/colors';
 	
 	interface ActionData {
 		[key: string]: any;
@@ -23,7 +24,10 @@
 	let selected: string = '';
 
 	const sendRpc = async () => {
-		if (!selected) return;
+		if (!selected) {
+			error('Please select an action');
+			return false;
+		};
 
 		let lp: PanelQuery = {
 			ExecuteRpc: {
@@ -35,30 +39,37 @@
 			}
 		};
 
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
-		});
+		let res: Response
+
+		try {
+			res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(lp)
+			});
+		} catch (e) {
+			error('Failed to execute action');
+			return false;
+		}
 
 		if (!res.ok) {
 			let err = await res.text();
 			error(err);
-			return
+			return false
 		}
 
 		if(res.status == 204) {
 			success('Successfully executed action [204]');
-			return;
+			return true;
 		}
 
 		let data = await res.text();
 
 		if (data) {
 			success(`${data} [200]`);
-			return;
+			return true;
 		}
 
 		if(selected == 'Approve') {
@@ -67,6 +78,7 @@
 		}
 
 		success('Successfully executed action [200]');
+		return true;
 	};
 
 	let actionData: ActionData = {}
@@ -145,8 +157,19 @@
 		{/if}
 	{/key}
 </div>
-	
-<div class="mt-4"></div>
-<ButtonReact onclick={() => sendRpc()}>
-	Submit
-</ButtonReact>
+
+<div class="mt-1"></div>
+
+{#if selected}
+	<ButtonReact
+		color={Color.Themable}
+		states={{
+			loading: 'Executing action...',
+			success: 'Successfully executed action',
+			error: 'Failed to execute action'
+		}}
+		onClick={sendRpc}
+		icon="mdi:send"
+		text="Execute"
+	/>
+{/if}
