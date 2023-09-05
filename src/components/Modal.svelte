@@ -30,6 +30,8 @@
 		border-radius: 0.2em;
 		border: none;
 		padding: 0;
+        background: rgb(31, 31, 31);
+        color: white;
 	}
 	dialog::backdrop {
 		background: rgba(0, 0, 0, 0.05);

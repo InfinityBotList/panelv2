@@ -10,6 +10,7 @@
 	import ButtonReact from '../ButtonReact.svelte';
 	import InputText from '../InputText.svelte';
 	import InputTextArea from '../InputTextArea.svelte';
+	import BoolInput from '../BoolInput.svelte';
 	
 	interface ActionData {
 		[key: string]: any;
@@ -78,12 +79,22 @@
 </script>
 
 <select
-	class="w-3/4 mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
+	class="w-full mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
 	bind:value={selected}
 	on:change={() => {
 		actionData = {
 			...initialData
 		}
+
+		let action = actions.find(a => a.id == selected);
+
+		action?.fields.forEach((f) => {
+			switch (f.field_type) {
+				case "Boolean":
+					actionData[f.id] = false;
+					break;
+			}
+		})
 	}}
 >
 	<option value="">Select an action</option>
@@ -117,6 +128,14 @@
 							placeholder={field.placeholder}
 							bind:value={actionData[field.id]}
 							minlength={5}
+						/>
+					{:else if field.field_type == "Boolean"}
+						<BoolInput
+							id={field.id}
+							label={field.label}
+							description={field.placeholder}
+							bind:value={actionData[field.id]}
+							disabled={false}
 						/>
 					{:else}
 						<p class="text-red-500 break-words break-all">Unknown field type: {field.field_type} for id {field.id} [{JSON.stringify(field)}]</p>

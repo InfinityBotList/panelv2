@@ -39,7 +39,7 @@
 		on:change={checkLength}
 		{minlength}
 		{id}
-		class="'w-full mx-auto mt-2 flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6"
+		class="w-full mt-2 flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6"
 		{placeholder}
 		required
 		bind:value
