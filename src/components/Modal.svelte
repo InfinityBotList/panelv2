@@ -9,18 +9,19 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
+	class="px-4 py-2 rounded-md"
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
+		<!-- svelte-ignore a11y-autofocus -->
+		<button class="close-btn font-semibold" autofocus on:click={() => dialog.close()}>Close</button>
 		<slot name="header" />
 		<hr />
 		<slot />
-		<hr />
-		<!-- svelte-ignore a11y-autofocus -->
-		<button class="close-btn" autofocus on:click={() => dialog.close()}>Close Modal</button>
+		<div class="mb-4"></div>
 	</div>
 </dialog>
 
@@ -29,12 +30,11 @@
 		width: 32em;
 		border-radius: 0.2em;
 		border: none;
-		padding: 0;
-        background: rgb(31, 31, 31);
         color: white;
+		background: rgb(31, 31, 31);
 	}
 	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.05);
+		background: rgba(0, 0, 0, 0.2);
 	}
 	dialog > div {
 		padding: 1em;
@@ -63,6 +63,7 @@
 	}
 
     .close-btn {
-        display: block;
+		margin-left: auto;
+		float: right;
     }
 </style>
