@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { error } from '$lib/toast';
+	import ButtonReact from './button/ButtonReact.svelte';
+	import { Color } from './button/colors';
+
 	interface Step {
 		ID: number;
 		Name: string;
@@ -13,31 +17,42 @@
 	let currentStep: number;
 	currentStep = steps.findIndex((step) => step.Current === true) || 0;
 
-	const completeStep = () => {
+	const completeStep = async () => {
 		if (currentStep + 1 === steps.length && steps[currentStep].Current === true) {
 			steps[currentStep].Current = false;
 			steps[currentStep].Completed = true;
+			return true;
+		} else return false;
+	};
+
+	const nextStep = async () => {
+		const validate = steps[currentStep].Validate();
+
+		if (validate === true) {
+			if (currentStep < steps.length - 1) {
+				steps[currentStep].Current = false;
+				steps[currentStep].Completed = true;
+				currentStep++;
+				steps[currentStep].Current = true;
+			} else if (currentStep === steps.length - 1 && !steps[currentStep].Completed) {
+				steps[currentStep].Completed = true;
+			}
+
+			return true;
+		} else {
+			error('You have not finished this step. Ensure all fields are filled.');
+			return false;
 		}
 	};
 
-	const nextStep = () => {
-		if (currentStep < steps.length - 1) {
-			steps[currentStep].Current = false;
-			steps[currentStep].Completed = true;
-			currentStep++;
-			steps[currentStep].Current = true;
-		} else if (currentStep === steps.length - 1 && !steps[currentStep].Completed) {
-			steps[currentStep].Completed = true;
-		}
-	};
-
-	const prevStep = () => {
+	const prevStep = async () => {
 		if (currentStep > 0) {
 			currentStep--;
 			steps[currentStep].Current = true;
 			steps[currentStep].Completed = false;
 			steps[currentStep + 1].Current = false;
-		}
+			return true;
+		} else return false;
 	};
 </script>
 
@@ -125,27 +140,47 @@
 <div class="p-2" />
 
 <div class="flex justify-center items-center">
-	{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-		<button on:click={prevStep} class="bg-red-600 text-base text-white p-2 border-none rounded-md">
-			Back
-		</button>
-	{/if}
+	<div class="grid justify-center items-center sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-4 mt-4 ">
+		{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
+			<ButtonReact
+				color={Color.Themable}
+				states={{
+					loading: 'Transporting...',
+					success: 'Transported!',
+					error: 'Failed to transport to previous step!'
+				}}
+				onClick={prevStep}
+				icon="mdi:send"
+				text="Previous!"
+			/>
+		{/if}
 
-	{#if steps.length != currentStep + 1}
-		<button
-			on:click={nextStep}
-			class="ml-2 bg-green-600 text-base text-white p-2 border-none rounded-md"
-		>
-			Next
-		</button>
-	{/if}
+		{#if steps.length != currentStep + 1}
+			<ButtonReact
+				color={Color.Themable}
+				states={{
+					loading: 'Transporting...',
+					success: 'Transported!',
+					error: 'Failed to transport to next step!'
+				}}
+				onClick={nextStep}
+				icon="mdi:send"
+				text="Next!"
+			/>
+		{/if}
 
-	{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-		<button
-			on:click={completeStep}
-			class="ml-2 bg-green-600 text-base text-white p-2 border-none rounded-md"
-		>
-			Complete
-		</button>
-	{/if}
+		{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
+			<ButtonReact
+				color={Color.Themable}
+				states={{
+					loading: 'Finishing RPC Action...',
+					success: 'Finished RPC Action!',
+					error: 'Failed to finish RPC Action!'
+				}}
+				onClick={completeStep}
+				icon="mdi:send"
+				text="Complete!"
+			/>
+		{/if}
+	</div>
 </div>

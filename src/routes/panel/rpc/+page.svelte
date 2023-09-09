@@ -30,8 +30,8 @@
 			Completed: false,
 			AllowBack: true,
 			Validate: () => {
-				if (!botData) return false;
-				else return true;
+				if (botData) return true;
+				else return false;
 			}
 		},
 		{
@@ -46,7 +46,7 @@
 		},
 		{
 			ID: 2,
-			Name: 'Advanced',
+			Name: 'Action',
 			Current: false,
 			Completed: false,
 			AllowBack: false,
@@ -171,12 +171,12 @@
 							bind:value={query}
 							id="searchBar"
 							class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slbg focus:border-slbg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slbg dark:focus:border-slbg"
-							placeholder="What is the name of the bot?"
+							placeholder="What are you searching for?"
 						/>
 
 						<button
 							type="submit"
-							class="absolute right-2.5 bottom-2.5 bg-slbg hover:bg-opacity-75 focus:ring-4 focus:outline-none focus:ring-slbg rounded-lg px-4 py-2 dark:bg-gray-900 dark:hover:bg-opacity-100 dark:focus:ring-gray-900"
+							class="absolute right-2.5 top-2 bottom-2.5 bg-themable-500 text-themable-100 focus:ring-4 focus:outline-none focus:ring-themable-400 rounded-lg px-4"
 							on:click={fetchSearchBots}>Search</button
 						>
 					</div>
@@ -287,7 +287,7 @@
 				</h2>
 
 				<button
-					class="ml-2 bg-green-600 text-base text-white p-2 border-none rounded-md"
+					class="ml-2 bg-themable-600 text-lg px-4 text-themable-100 p-2 border-none rounded-md focus:ring-4 focus:outline-none focus:ring-themable-400"
 					on:click={() => location.reload()}>Perform Another!</button
 				>
 			{/if}
