@@ -1,7 +1,7 @@
 <script lang="ts">
 	import OrderedList from '../../components/OrderedList.svelte';
 	import ListItem from '../../components/ListItem.svelte';
-	import InputText from '../../components/InputText.svelte';
+	import InputText from '../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../components/button/ButtonReact.svelte';
 	import { error } from '$lib/toast';
 	import { panelAuthState } from '$lib/panelAuthState';

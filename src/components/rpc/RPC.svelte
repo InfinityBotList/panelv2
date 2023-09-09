@@ -8,13 +8,16 @@
 	import type { RPCWebAction } from '../../utils/generated/arcadia/RPCWebAction';
 	import type { TargetType } from '../../utils/generated/arcadia/TargetType';
 	import ButtonReact from '../button/ButtonReact.svelte';
-	import InputText from '../InputText.svelte';
-	import InputTextArea from '../InputTextArea.svelte';
+	import InputText from '../inputs/InputText.svelte';
+	import InputTextArea from '../inputs/InputTextArea.svelte';
 	import BoolInput from '../BoolInput.svelte';
 	import { Color } from '../button/colors';
+	import InputNumber from '../inputs/InputNumber.svelte';
+	import logger from '$lib/logger';
+	import Hour from './Hour.svelte';
 	
 	interface ActionData {
-		[key: string]: any;
+		[key: string]: any
 	}
 
 	export let actions: RPCWebAction[];
@@ -29,12 +32,79 @@
 			return false;
 		};
 
+		let action = actions.find(a => a.id == selected);
+
+		if(!action) {
+			error('Unknown action');
+			return false;
+		}
+
+		let parsedData: ActionData = {};
+
+		logger.info('RPC', actionData)
+
+		for(let field of action.fields) {
+			switch (field.field_type) {
+				case 'Boolean':
+					parsedData[field.id] = actionData[field.id];
+					break;
+				case 'Hour':
+					if(!Array.isArray(actionData[field.id])) {
+						error(`Internal error: not an array: ${field.label}`);
+						return false
+					}
+					
+					logger.info('RPC', actionData[field.id])
+
+					if(!actionData[field.id][1]) {
+						error(`Please select a time unit for ${field.label}`);
+						return false
+					}
+
+					if(!actionData[field.id][0]) {
+						error(`Please enter a value for ${field.label}`);
+						return false
+					}
+
+					let unit = actionData[field.id][1] as string;
+					
+					switch (unit) {
+						case 'hour':
+							parsedData[field.id] = actionData[field.id][0];
+							break;
+						case 'day':
+							parsedData[field.id] = actionData[field.id][0] * 24;
+							break;
+						case 'week':
+							parsedData[field.id] = actionData[field.id][0] * 24 * 7;
+							break;
+						case 'month':
+							parsedData[field.id] = actionData[field.id][0] * 24 * 30;
+							break;
+						case 'year':
+							parsedData[field.id] = actionData[field.id][0] * 24 * 365;
+							break;
+						default:
+							error(`Unknown time unit ${unit}`);
+							return false;
+					}
+					break;
+				default:
+					if(!actionData[field.id]) {
+						error(`Please enter a value for ${field.label}`);
+						return false
+					}
+					parsedData[field.id] = actionData[field.id];
+					break;
+			}
+		}
+
 		let lp: PanelQuery = {
 			ExecuteRpc: {
 				login_token: $panelAuthState?.loginToken || '',
 				target_type: targetType,
 				method: {
-					[selected]: actionData
+					[selected]: parsedData
 				} as RPCMethod
 			}
 		};
@@ -86,14 +156,18 @@
 	onMount(() => {
 		actionData = {
 			...initialData
-		};
+		}
 	})
+
+	let readyToRender = false
 </script>
 
 <select
 	class="w-full mx-auto mt-4 flex transition duration-200 hover:bg-gray-800 bg-gray-700 bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-2 px-6"
 	bind:value={selected}
 	on:change={() => {
+		readyToRender = false
+
 		actionData = {
 			...initialData
 		}
@@ -103,10 +177,15 @@
 		action?.fields.forEach((f) => {
 			switch (f.field_type) {
 				case "Boolean":
-					actionData[f.id] = false;
+					actionData[f.id] = false
+					break;
+				case "Hour":
+					actionData[f.id] = [0, 'hour']
 					break;
 			}
 		})
+
+		readyToRender = true
 	}}
 >
 	<option value="">Select an action</option>
@@ -119,7 +198,7 @@
 
 <div class="p-1">
 	{#key selected}
-		{#if selected}
+		{#if selected && readyToRender}
 			{#each (actions.find(a => a.id == selected)?.fields || []) as field}
 				{#if initialData && initialData[field.id]}
 					<p>
@@ -150,6 +229,19 @@
 							description={field.placeholder}
 							bind:value={actionData[field.id]}
 							disabled={false}
+						/>
+					{:else if field.field_type == "Number"}
+						<InputNumber 
+							id={field.id}
+							label={field.label}
+							placeholder={field.placeholder}
+							bind:value={actionData[field.id]}
+							minlength={5}
+						/>
+					{:else if field.field_type == "Hour"}
+						<Hour
+							bind:value={actionData[field.id]}
+							field={field}
 						/>
 					{:else}
 						<p class="text-red-500 break-words break-all">Unknown field type: {field.field_type} for id {field.id} [{JSON.stringify(field)}]</p>

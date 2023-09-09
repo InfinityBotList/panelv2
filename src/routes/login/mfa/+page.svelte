@@ -5,7 +5,7 @@
 	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
-	import InputText from '../../../components/InputText.svelte';
+	import InputText from '../../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
 	import { fetchClient } from '$lib/fetch';

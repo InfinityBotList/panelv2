@@ -14,7 +14,7 @@
 	import { error } from '$lib/toast';
 	import ButtonReact from '../../../../components/button/ButtonReact.svelte';
 	import { Color } from '../../../../components/button/colors';
-	import InputText from '../../../../components/InputText.svelte';
+	import InputText from '../../../../components/inputs/InputText.svelte';
 	import { title } from '$lib/strings';
 
 	const fetchRpcMethods = async () => {
