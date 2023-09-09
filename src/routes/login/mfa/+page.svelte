@@ -140,6 +140,7 @@
 			description="Please open your authenticator app and enter the <span class='font-bold'>One-Time Password</span> you have recieved now!"
 			placeholder="Code"
 			bind:value={inputtedCode}
+			showErrors={false}
 		/>
 
 		<ButtonReact

@@ -11,3 +11,9 @@ export function utf8ToHex(str: string) {
 export function hexToUtf8(hex: string) {
 	return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
 }
+
+export function title(str: string) {
+    return str.replace(/(^|\s)\S/g, function (t) {
+        return t.toUpperCase()
+    })
+}

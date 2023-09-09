@@ -9,9 +9,7 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient } from '$lib/fetch';
-	import RPC from '../../../../components/rpc/RPC.svelte';
 	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
-	import Modal from '../../../../components/Modal.svelte';
 	import QueueAction from './QueueAction.svelte';
 
 	const fetchQueueBots = async () => {
@@ -57,8 +55,6 @@
 			actions
 		};
 	};
-
-	let showActionsModal = false;
 </script>
 
 {#await fetchQueueBots()}

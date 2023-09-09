@@ -34,7 +34,21 @@
 					quickActions.push({
 						name: 'Bot Queue',
 						description: 'View the bot queue',
-						link: '/panel/queue/bots'
+						link: '/panel/bots/queue'
+					});
+					break;
+				case 'BotManagement':
+					quickActions.push({
+						name: 'Bot Management',
+						description: 'Manage the bots on the list',
+						link: '/panel/bots/manage'
+					});
+					break;
+				case 'ManagePartners':
+					quickActions.push({
+						name: 'Manage Partners',
+						description: 'Manage the partners on the list',
+						link: '/panel/partners/manage'
 					});
 					break;
 			}

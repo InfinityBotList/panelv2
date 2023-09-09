@@ -6,7 +6,7 @@
 	export let value: string = '';
 	export let showErrors: boolean = true;
 	export let description: string = '';
-	export let inpClass: string = 'mb-6';
+	export let inpClass: string = 'mb-4';
 
 	let success: boolean | null = null;
 

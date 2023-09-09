@@ -20,10 +20,3 @@
 	</div>
 	<slot name="post-slot" />
 </div>
-
-<!--
-                <p class="mb-3 h-[10rem] overflow-y-scroll p-3 font-normal text-slate-50">
-                        <slot />
-                </p>
-
--->

@@ -23,6 +23,11 @@
 	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
 
 	const login = async () => {
+		if(!instanceUrl) {
+			error('Please enter an instance URL');
+			return;
+		}
+
 		let redirectSearchParams = new URLSearchParams(window.location.search);
 
 		let redirect = redirectSearchParams?.get('redirect');
@@ -134,6 +139,7 @@
 		label="Instance URL"
 		placeholder="https://prod--panel-api.infinitybots.gg"
 		minlength={1}
+		showErrors={false}
 	/>
 
 	<ButtonReact
