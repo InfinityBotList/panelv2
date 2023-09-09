@@ -1,22 +1,22 @@
 <script lang="ts">
-	import StepProgress from '../../../components/StepProgress.svelte';
+	import StepProgress from '../../../../components/StepProgress.svelte';
 	import { panelAuthState } from '$lib/panelAuthState';
-	import Loading from '../../../components/Loading.svelte';
-	import ErrorComponent from '../../../components/Error.svelte';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
-	import type { SearchBot } from '../../../utils/generated/arcadia/SearchBot';
+	import Loading from '../../../../components/Loading.svelte';
+	import ErrorComponent from '../../../../components/Error.svelte';
+	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
+	import type { SearchBot } from '../../../../utils/generated/arcadia/SearchBot';
 	import { error } from '$lib/toast';
 	import { fetchClient } from '$lib/fetch';
-	import type { RPCWebAction } from '../../../utils/generated/arcadia/RPCWebAction';
-	import Column from '../../../components/Column.svelte';
-	import Card from '../../../components/Card.svelte';
-	import CardLinkButton from '../../../components/CardLinkButton.svelte';
+	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
+	import Column from '../../../../components/Column.svelte';
+	import Card from '../../../../components/Card.svelte';
+	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import { panelState } from '$lib/panelData';
 	import { title } from '$lib/strings';
-	import Select from './Select.svelte';
-	import type { QueueBot } from '../../../utils/generated/arcadia/QueueBot';
-	import Modal from '../../../components/Modal.svelte';
-	import RPC from '../../../components/rpc/RPC.svelte';
+	import Select from '../Select.svelte';
+	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
+	import Modal from '../../../../components/Modal.svelte';
+	import RPC from '../../../../components/rpc/RPC.svelte';
 
 	let query: string | null = null;
 	let botData: QueueBot | null = null;

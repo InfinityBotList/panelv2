@@ -3,15 +3,25 @@
 	import { panelState } from '$lib/panelData';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
+	import QuickActionsSubMenu from '../../components/QuickActionsSubMenu.svelte';
 	import UnorderedList from '../../components/UnorderedList.svelte';
 	import InfoPane from '../../components/pane/InfoPane.svelte';
 	import PaneContent from '../../components/pane/PaneContent.svelte';
 	import PaneWrapper from '../../components/pane/PaneWrapper.svelte';
 
+	let subMenuOpened: boolean = false;
+
+	interface QuickOptions {
+		name: string;
+		description: string;
+		link: string;
+	}
+
 	interface QuickAction {
 		name: string;
 		description: string;
 		link: string;
+		options: QuickOptions[] | null;
 	}
 
 	let quickActions: QuickAction[] = [];
@@ -25,7 +35,8 @@
 		quickActions.push({
 			name: 'Index',
 			description: 'Index Page',
-			link: '/panel'
+			link: '/panel',
+			options: null
 		});
 
 		for (let cap of $panelState?.capabilities || []) {
@@ -34,36 +45,63 @@
 					quickActions.push({
 						name: 'Bot Queue',
 						description: 'View the bot queue',
-						link: '/panel/bots/queue'
+						link: '/panel/bots/queue',
+						options: null
 					});
 					break;
 				case 'BotManagement':
 					quickActions.push({
 						name: 'Bot Management',
 						description: 'Manage the bots on the list',
-						link: '/panel/bots/manage'
+						link: '/panel/bots/manage',
+						options: null
 					});
 					break;
 				case 'ManagePartners':
 					quickActions.push({
 						name: 'Manage Partners',
 						description: 'Manage the partners on the list',
-						link: '/panel/partners/manage'
+						link: '/panel/partners/manage',
+						options: null
+					});
+					break;
+				case 'Rpc':
+					quickActions.push({
+						name: 'RPC Actions',
+						description: 'Manage entities!',
+						link: '/panel/rpc',
+						options: [
+							{
+								name: 'Bots',
+								description: 'Manage bots!',
+								link: '/panel/rpc/bots'
+							},
+							{
+								name: 'Servers',
+								description: 'Manage servers!',
+								link: '/panel/rpc/servers'
+							},
+							{
+								name: 'Teams',
+								description: 'Manage teams!',
+								link: '/panel/rpc/teams'
+							},
+							{
+								name: 'Packs',
+								description: 'Manage packs!',
+								link: '/panel/rpc/packs'
+							}
+						]
 					});
 					break;
 			}
 		}
 
 		quickActions.push({
-			name: 'RPC Actions',
-			description: 'Manage bots!',
-			link: '/panel/rpc'
-		});
-
-		quickActions.push({
 			name: 'Settings',
 			description: 'Customize your experience!',
-			link: '/panel/settings'
+			link: '/panel/settings',
+			options: null
 		});
 
 		if ($panelState?.userPerms?.owner) perms.push('Owner');
@@ -85,11 +123,18 @@
 						0
 							? 'rounded-t-md'
 							: ''} {index === quickActions.length - 1 ? 'rounded-b-md' : ''}"
-						on:click={() => goto(action.link)}
+						on:click={() => {
+							if (action.options != null) {
+								if (subMenuOpened) subMenuOpened = false;
+								else subMenuOpened = true;
+							} else goto(action.link);
+						}}
 					>
 						{action.name}
 						<small class="text-sm text-gray-400 block">{action.description}</small>
 					</button>
+
+					<QuickActionsSubMenu Options={action.options} bind:Open={subMenuOpened} />
 				{/each}
 			</div>
 

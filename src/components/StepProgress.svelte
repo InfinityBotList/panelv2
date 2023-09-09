@@ -139,48 +139,48 @@
 
 <div class="p-2" />
 
-<div class="flex justify-center items-center">
-	<div class="grid justify-center items-center sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-4 mt-4 ">
-		{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-			<ButtonReact
-				color={Color.Themable}
-				states={{
-					loading: 'Transporting...',
-					success: 'Transported!',
-					error: 'Failed to transport to previous step!'
-				}}
-				onClick={prevStep}
-				icon="mdi:send"
-				text="Previous!"
-			/>
-		{/if}
+<div
+	class="grid justify-center items-center sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-4 mt-4"
+>
+	{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
+		<ButtonReact
+			color={Color.Themable}
+			states={{
+				loading: 'Transporting...',
+				success: 'Transported!',
+				error: 'Failed to transport to previous step!'
+			}}
+			onClick={prevStep}
+			icon="mdi:send"
+			text="Previous!"
+		/>
+	{/if}
 
-		{#if steps.length != currentStep + 1}
-			<ButtonReact
-				color={Color.Themable}
-				states={{
-					loading: 'Transporting...',
-					success: 'Transported!',
-					error: 'Failed to transport to next step!'
-				}}
-				onClick={nextStep}
-				icon="mdi:send"
-				text="Next!"
-			/>
-		{/if}
+	{#if steps.length != currentStep + 1}
+		<ButtonReact
+			color={Color.Themable}
+			states={{
+				loading: 'Transporting...',
+				success: 'Transported!',
+				error: 'Failed to transport to next step!'
+			}}
+			onClick={nextStep}
+			icon="mdi:send"
+			text="Next!"
+		/>
+	{/if}
 
-		{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-			<ButtonReact
-				color={Color.Themable}
-				states={{
-					loading: 'Finishing RPC Action...',
-					success: 'Finished RPC Action!',
-					error: 'Failed to finish RPC Action!'
-				}}
-				onClick={completeStep}
-				icon="mdi:send"
-				text="Complete!"
-			/>
-		{/if}
-	</div>
+	{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
+		<ButtonReact
+			color={Color.Themable}
+			states={{
+				loading: 'Finishing RPC Action...',
+				success: 'Finished RPC Action!',
+				error: 'Failed to finish RPC Action!'
+			}}
+			onClick={completeStep}
+			icon="mdi:send"
+			text="Complete!"
+		/>
+	{/if}
 </div>
