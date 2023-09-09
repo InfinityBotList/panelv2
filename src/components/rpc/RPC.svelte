@@ -111,7 +111,9 @@
 >
 	<option value="">Select an action</option>
 	{#each actions as action}
-		<option id={action.id} value={action.id}>{action.label}</option>
+		{#if action.supported_target_types.includes(targetType)}
+			<option id={action.id} value={action.id}>{action.label}</option>
+		{/if}
 	{/each}
 </select>
 
