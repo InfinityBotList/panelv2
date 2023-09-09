@@ -5,7 +5,7 @@
 	import { error, success } from '$lib/toast';
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import GreyText from '../../../components/GreyText.svelte';
-	import InputText from '../../../components/InputText.svelte';
+	import InputText from '../../../components/inputs/InputText.svelte';
 	import { Color } from '../../../components/button/colors';
 	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 
