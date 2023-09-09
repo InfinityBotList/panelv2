@@ -21,7 +21,7 @@
 			return;
 		}
 
-		if (value < 10**minlength) {
+		if (value < 10 ** minlength) {
 			success = false;
 			errorMsg = `Must be at least ${minlength} characters long`;
 		} else {

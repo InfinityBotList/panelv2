@@ -145,15 +145,15 @@
 
 		<ButtonReact
 			color={Color.Themable}
-			icon={"mdi:key"}
-			text={"Verify OTP"}
+			icon={'mdi:key'}
+			text={'Verify OTP'}
 			states={{
 				loading: 'Activating session...',
 				success: 'Successfully activated session!',
 				error: 'Failed to verify OTP and/or log you in!'
 			}}
-			onClick={authorizeMfa} />
-
+			onClick={authorizeMfa}
+		/>
 	</article>
 {:catch e}
 	<ErrorComponent msg={e?.toString() || 'Unknown error'} />

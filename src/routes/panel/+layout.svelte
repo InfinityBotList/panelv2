@@ -55,6 +55,12 @@
 		}
 
 		quickActions.push({
+			name: 'RPC Actions',
+			description: 'Manage bots!',
+			link: '/panel/rpc'
+		});
+
+		quickActions.push({
 			name: 'Settings',
 			description: 'Customize your experience!',
 			link: '/panel/settings'

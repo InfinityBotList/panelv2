@@ -13,7 +13,7 @@ export function hexToUtf8(hex: string) {
 }
 
 export function title(str: string) {
-    return str.replace(/(^|\s)\S/g, function (t) {
-        return t.toUpperCase()
-    })
+	return str.replace(/(^|\s)\S/g, function (t) {
+		return t.toUpperCase();
+	});
 }

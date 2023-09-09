@@ -9,140 +9,140 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
-	import ButtonInner from "./ButtonInner.svelte";
-	import type { Color } from "./colors";
+	import ButtonInner from './ButtonInner.svelte';
+	import type { Color } from './colors';
 
-    interface States {
-        loading: string
-        success: string
-        error: string
-    }
+	interface States {
+		loading: string;
+		success: string;
+		error: string;
+	}
 
-    let className: string = '';
-    export { className as class };
-    export let color: Color;
-    export let icon: string;
-    export let text: string;
-    export let type: 'button' | 'submit' = 'button';
-    export let states: States;
-    export let noRevertState: boolean = false;
-    export let disableBtnAfter: string = "";
-    export let onClick: () => Promise<boolean>
+	let className: string = '';
+	export { className as class };
+	export let color: Color;
+	export let icon: string;
+	export let text: string;
+	export let type: 'button' | 'submit' = 'button';
+	export let states: States;
+	export let noRevertState: boolean = false;
+	export let disableBtnAfter: string = '';
+	export let onClick: () => Promise<boolean>;
 
-    // Internal state
-    enum ReactState {
-        Normal,
-        Loading,
-        Clicked,
-        Error
-    }
+	// Internal state
+	enum ReactState {
+		Normal,
+		Loading,
+		Clicked,
+		Error
+	}
 
-    interface Display {
-        icon: string
-        text: string
-        className: string
-        disabled: boolean
-    }
-    
-    let state: ReactState = ReactState.Normal; // Current state of the button
-    let display: Display = { icon, text, className, disabled: false }; // Current display of the button
+	interface Display {
+		icon: string;
+		text: string;
+		className: string;
+		disabled: boolean;
+	}
 
-    $: {
-        switch (state) {
-            case ReactState.Normal:
-                display = {
-                    ...display,
-                    icon,
-                    text,
-                    className,
-                }
-                break
-            case ReactState.Loading:
-                display = {
-                    ...display,
-                    icon: "mdi:loading",
-                    text: states.loading,
-                    className: (className ? (className + " ") : '') + 'cursor-not-allowed animate-pulse'
-                }
-                break
-            case ReactState.Clicked:
-                display = {
-                    ...display,
-                    icon: "mdi:check",
-                    text: states.success,
-                    className: (className + display.disabled ? 'cursor-not-allowed animate-pulse' : '')
-                }
+	let state: ReactState = ReactState.Normal; // Current state of the button
+	let display: Display = { icon, text, className, disabled: false }; // Current display of the button
 
-                if (!disableBtnAfter) {
-                    display.disabled = false
-                } else {
-                    display = {
-                        ...display,
-                        text: disableBtnAfter,
-                        icon: 'mdi:refresh',
-                        disabled: true
-                    }
-                }
+	$: {
+		switch (state) {
+			case ReactState.Normal:
+				display = {
+					...display,
+					icon,
+					text,
+					className
+				};
+				break;
+			case ReactState.Loading:
+				display = {
+					...display,
+					icon: 'mdi:loading',
+					text: states.loading,
+					className: (className ? className + ' ' : '') + 'cursor-not-allowed animate-pulse'
+				};
+				break;
+			case ReactState.Clicked:
+				display = {
+					...display,
+					icon: 'mdi:check',
+					text: states.success,
+					className: className + display.disabled ? 'cursor-not-allowed animate-pulse' : ''
+				};
 
-                break
-            case ReactState.Error:
-                display = {
-                    ...display,
-                    icon: "mdi:alert-circle",
-                    text: states.error,
-                    className: (className + display.disabled ? 'cursor-not-allowed animate-pulse' : '')
-                }
-                break
-        }
-    }
+				if (!disableBtnAfter) {
+					display.disabled = false;
+				} else {
+					display = {
+						...display,
+						text: disableBtnAfter,
+						icon: 'mdi:refresh',
+						disabled: true
+					};
+				}
+
+				break;
+			case ReactState.Error:
+				display = {
+					...display,
+					icon: 'mdi:alert-circle',
+					text: states.error,
+					className: className + display.disabled ? 'cursor-not-allowed animate-pulse' : ''
+				};
+				break;
+		}
+	}
 </script>
 
 <button
-    class="w-full"
-    disabled={display.disabled}
-    aria-disabled={display.disabled}
-    type={type}
-    on:click|preventDefault
-    on:click={() => {
-        display.disabled = true // Disable the button
-        if (state == ReactState.Loading) return
+	class="w-full"
+	disabled={display.disabled}
+	aria-disabled={display.disabled}
+	{type}
+	on:click|preventDefault
+	on:click={() => {
+		display.disabled = true; // Disable the button
+		if (state == ReactState.Loading) return;
 
-        state = ReactState.Loading
+		state = ReactState.Loading;
 
-        setTimeout(() => {
-            let resp = onClick().catch(() => {
-                state = ReactState.Error
+		setTimeout(() => {
+			let resp = onClick().catch(() => {
+				state = ReactState.Error;
 
-                // Wait 2 seconds
-                if (!noRevertState && !disableBtnAfter) {
-                    setTimeout(() => {
-                        state = ReactState.Normal
-                        display.disabled = false
-                    }, 4000)
-                }
-            })
+				// Wait 2 seconds
+				if (!noRevertState && !disableBtnAfter) {
+					setTimeout(() => {
+						state = ReactState.Normal;
+						display.disabled = false;
+					}, 4000);
+				}
+			});
 
-            // Check if Promise
-            if (resp && resp.then) {
-                resp.then(out => {
-                    state = out ? ReactState.Clicked : ReactState.Error
+			// Check if Promise
+			if (resp && resp.then) {
+				resp.then((out) => {
+					state = out ? ReactState.Clicked : ReactState.Error;
 
-                    // Wait 2 seconds
-                    if (!noRevertState && !disableBtnAfter) {
-                        setTimeout(() => {
-                            state = ReactState.Normal
-                            display.disabled = false
-                        }, 4000)
-                    }
-                })
-            } else {
-                if (!noRevertState && !disableBtnAfter) {
-                    state = ReactState.Normal
-                    display.disabled = false
-                }
-            }
-        }, 300)
-    }}
+					// Wait 2 seconds
+					if (!noRevertState && !disableBtnAfter) {
+						setTimeout(() => {
+							state = ReactState.Normal;
+							display.disabled = false;
+						}, 4000);
+					}
+				});
+			} else {
+				if (!noRevertState && !disableBtnAfter) {
+					state = ReactState.Normal;
+					display.disabled = false;
+				}
+			}
+		}, 300);
+	}}
 >
-    <ButtonInner {color} icon={display.icon} text={display.text} class={display.className} />
+	<ButtonInner {color} icon={display.icon} text={display.text} class={display.className} />
 </button>
