@@ -45,7 +45,7 @@
 
 		success('MFA reset successfully');
 		logoutUser(false);
-		return true
+		return true;
 	};
 </script>
 
@@ -66,12 +66,12 @@
 
 <ButtonReact
 	color={Color.Themable}
-	icon={"mdi:key"}
-	text={"Verify OTP & Reset MFA"}
+	icon={'mdi:key'}
+	text={'Verify OTP & Reset MFA'}
 	states={{
 		loading: 'Resetting MFA...',
 		success: 'Successfully reset MFA!',
 		error: 'Failed to reset MFA'
 	}}
-	onClick={resetMfa} 
+	onClick={resetMfa}
 />

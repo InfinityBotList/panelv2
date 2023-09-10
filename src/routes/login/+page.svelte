@@ -23,7 +23,7 @@
 	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
 
 	const login = async () => {
-		if(!instanceUrl) {
+		if (!instanceUrl) {
 			error('Please enter an instance URL');
 			return;
 		}
@@ -144,8 +144,8 @@
 
 	<ButtonReact
 		color={Color.Themable}
-		icon={"mdi:login"}
-		text={"Login"}
+		icon={'mdi:login'}
+		text={'Login'}
 		states={{
 			loading: 'Contacting instance...',
 			success: 'Redirecting you...',
@@ -154,10 +154,11 @@
 		onClick={async () => {
 			try {
 				await login();
-				return true
+				return true;
 			} catch (err) {
 				error(err?.toString() || 'Failed to login due to unknown error');
-				return false
+				return false;
 			}
-		}} />
+		}}
+	/>
 </article>

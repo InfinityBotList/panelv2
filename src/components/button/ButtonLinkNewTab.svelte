@@ -9,17 +9,17 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
-	import ButtonInner from "./ButtonInner.svelte";
-    import type { Color } from "./colors";
+	import ButtonInner from './ButtonInner.svelte';
+	import type { Color } from './colors';
 
-    let className: string = '';
-    export { className as class };
-    export let color: Color;
-    export let icon: string;
-    export let text: string;
-    export let href: string;
+	let className: string = '';
+	export { className as class };
+	export let color: Color;
+	export let icon: string;
+	export let text: string;
+	export let href: string;
 </script>
 
-<a href={href} target="_blank" rel="noreferrer">
-    <ButtonInner {color} {icon} {text} class={className} />
+<a {href} target="_blank" rel="noreferrer">
+	<ButtonInner {color} {icon} {text} class={className} />
 </a>

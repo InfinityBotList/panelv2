@@ -27,7 +27,7 @@
 			body: JSON.stringify(lp)
 		});
 
-		if(!res.ok) throw new Error('Failed to fetch bots in queue');
+		if (!res.ok) throw new Error('Failed to fetch bots in queue');
 
 		let bots: QueueBot[] = await res.json();
 
@@ -36,7 +36,7 @@
 				login_token: $panelAuthState?.loginToken || '',
 				filtered: true
 			}
-		}
+		};
 
 		let actionsRes = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
 			method: 'POST',
@@ -46,7 +46,7 @@
 			body: JSON.stringify(lp)
 		});
 
-		if(!actionsRes.ok) throw new Error('Failed to fetch actions');
+		if (!actionsRes.ok) throw new Error('Failed to fetch actions');
 
 		let actions: RPCWebAction[] = await actionsRes.json();
 
@@ -95,8 +95,8 @@
 								seperate={true}>Invite</CardLinkButton
 							>
 						</div>
-						
-						<QueueAction bot={bot} actions={bots.actions} />
+
+						<QueueAction {bot} actions={bots.actions} />
 					</span>
 				</Card>
 			{/each}

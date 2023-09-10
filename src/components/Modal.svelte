@@ -21,7 +21,7 @@
 		<slot name="header" />
 		<hr />
 		<slot />
-		<div class="mb-4"></div>
+		<div class="mb-4" />
 	</div>
 </dialog>
 
@@ -30,7 +30,7 @@
 		width: 35em;
 		border-radius: 0.2em;
 		border: none;
-        color: white;
+		color: white;
 		background: rgb(31, 31, 31);
 	}
 	dialog::backdrop {
@@ -62,8 +62,8 @@
 		}
 	}
 
-    .close-btn {
+	.close-btn {
 		margin-left: auto;
 		float: right;
-    }
+	}
 </style>
