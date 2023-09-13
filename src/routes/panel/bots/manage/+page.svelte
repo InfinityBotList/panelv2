@@ -52,9 +52,10 @@
 		}
 
 		let lp: PanelQuery = {
-			SearchBots: {
+			SearchEntitys: {
 				login_token: $panelAuthState?.loginToken || '',
-				query: searchQuery
+				query: searchQuery,
+				target_type: 'Bot'
 			}
 		};
 

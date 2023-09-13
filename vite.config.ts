@@ -22,5 +22,8 @@ export default defineConfig({
 		I_COMMIT: version,
 		I_LAST_MOD: lastmod,
 		I_VERSION: `"${pkg?.version}"`
+	},
+	build: {
+		sourcemap: true
 	}
 });

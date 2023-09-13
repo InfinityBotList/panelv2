@@ -17,6 +17,8 @@
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
+	import { page } from '$app/stores';
+	import type { TargetType } from '../../../../utils/generated/arcadia/TargetType';
 
 	let query: string | null = null;
 	let botData: QueueBot | null = null;
@@ -82,15 +84,23 @@
 	};
 
 	const fetchSearchBots = async () => {
+        let targetType = title($page.params.targetType?.toString());
+
+        if(!$panelState?.rpcSupportedTargetTypes?.includes(targetType as TargetType)) {
+            error('This target type is not supported!');
+            return false;
+        }
+
 		if (!query) {
 			error('Please enter a search query');
 			return false;
 		}
 
 		let lp: PanelQuery = {
-			SearchBots: {
+			SearchEntitys: {
 				login_token: $panelAuthState?.loginToken || '',
-				query: query
+				query: query,
+                target_type: targetType as TargetType
 			}
 		};
 
