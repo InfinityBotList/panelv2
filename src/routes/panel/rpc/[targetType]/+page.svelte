@@ -59,6 +59,8 @@
 	];
 
 	const fetchRpcMethods = async () => {
+        query = ""
+
 		let lp = {
 			GetRpcMethods: {
 				login_token: $panelAuthState?.loginToken || '',
@@ -112,7 +114,11 @@
 			body: JSON.stringify(lp)
 		});
 
-		if (!res.ok) throw new Error('Failed to fetch bots in queue');
+		if (!res.ok) {
+            let err = await res.text()
+
+            error(err || "Unknown error while fetching");
+        }
 
 		let bots: SearchBot[] = await res.json();
 
@@ -144,8 +150,8 @@
         <div class="mt-10">
             <StepProgress bind:steps={Steps}>
                 {#if Steps.findIndex((p) => p.Current) === 0}
-                    <h2 class="text-black dark:text-gray-400 font-black text-xl">Let's get Started!</h2>
-                    <p class="text-base text-black dark:text-gray-400 font-bold">
+                    <h2 class="text-white dark:text-gray-400 font-black text-xl">Let's get started!</h2>
+                    <p class="text-base text-white dark:text-gray-400 font-bold">
                         Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
                     </p>
 
@@ -154,7 +160,7 @@
                     <div id="findEntity">
                         <label
                             for="searchBar"
-                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                            class="mb-2 text-sm font-medium text-white sr-only"
                             >Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!</label
                         >
 
