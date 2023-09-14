@@ -59,8 +59,6 @@
 	];
 
 	const fetchRpcMethods = async () => {
-        query = ""
-
 		let lp = {
 			GetRpcMethods: {
 				login_token: $panelAuthState?.loginToken || '',
