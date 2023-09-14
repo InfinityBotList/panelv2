@@ -137,183 +137,185 @@
 	};
 </script>
 
-{#await fetchRpcMethods()}
-	<Loading msg={'Fetching available actions...'} />
-{:then meta}
-	<div class="mt-10">
-		<StepProgress bind:steps={Steps}>
-			{#if Steps.findIndex((p) => p.Current) === 0}
-				<h2 class="text-black dark:text-gray-400 font-black text-xl">Let's get Started!</h2>
-				<p class="text-base text-black dark:text-gray-400 font-bold">
-					Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
-				</p>
+{#key $page?.params}
+    {#await fetchRpcMethods()}
+        <Loading msg={'Fetching available actions...'} />
+    {:then meta}
+        <div class="mt-10">
+            <StepProgress bind:steps={Steps}>
+                {#if Steps.findIndex((p) => p.Current) === 0}
+                    <h2 class="text-black dark:text-gray-400 font-black text-xl">Let's get Started!</h2>
+                    <p class="text-base text-black dark:text-gray-400 font-bold">
+                        Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
+                    </p>
 
-				<div class="p-2" />
+                    <div class="p-2" />
 
-				<div id="findEntity">
-					<label
-						for="searchBar"
-						class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-						>Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!</label
-					>
+                    <div id="findEntity">
+                        <label
+                            for="searchBar"
+                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                            >Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!</label
+                        >
 
-					<div class="relative">
-						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-							<svg
-								class="w-4 h-4 text-gray-500 dark:text-gray-400"
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 20 20"
-							>
-								<path
-									stroke="currentColor"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-								/>
-							</svg>
-						</div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg
+                                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                                    />
+                                </svg>
+                            </div>
 
-						<input
-							type="search"
-							bind:value={query}
-							id="searchBar"
-                            name="searchBar"
-							class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slbg focus:border-slbg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slbg dark:focus:border-slbg"
-							placeholder="What are you searching for?"
-						/>
+                            <input
+                                type="search"
+                                bind:value={query}
+                                id="searchBar"
+                                name="searchBar"
+                                class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slbg focus:border-slbg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slbg dark:focus:border-slbg"
+                                placeholder="What are you searching for?"
+                            />
 
-						<button
-							type="submit"
-							class="absolute right-2.5 top-2 bottom-2.5 bg-themable-500 text-themable-100 focus:ring-4 focus:outline-none focus:ring-themable-400 rounded-lg px-4"
-							on:click={searchEntity}>Search</button
-						>
-					</div>
+                            <button
+                                type="submit"
+                                class="absolute right-2.5 top-2 bottom-2.5 bg-themable-500 text-themable-100 focus:ring-4 focus:outline-none focus:ring-themable-400 rounded-lg px-4"
+                                on:click={searchEntity}>Search</button
+                            >
+                        </div>
 
-					{#if results}
-						<div class="p-3" />
+                        {#if results}
+                            <div class="p-3" />
 
-						<Column>
-							{#each results as bot, i}
-								<Card>
-									<span slot="avatar">
-										<img class="rounded-full w-10 h-10" src={bot?.user?.avatar} alt="Bot Avatar" />
-									</span>
+                            <Column>
+                                {#each results as bot, i}
+                                    <Card>
+                                        <span slot="avatar">
+                                            <img class="rounded-full w-10 h-10" src={bot?.user?.avatar} alt="Bot Avatar" />
+                                        </span>
 
-									<span slot="display-name">{bot?.user?.username}</span>
+                                        <span slot="display-name">{bot?.user?.username}</span>
 
-									<span slot="short">{bot?.short}</span>
-									<span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
-										<div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
-											<span class="font-extrabold">#{i + 1}</span>
-											{getType(bot)}
-										</div>
+                                        <span slot="short">{bot?.short}</span>
+                                        <span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
+                                            <div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
+                                                <span class="font-extrabold">#{i + 1}</span>
+                                                {getType(bot)}
+                                            </div>
 
-										<div class="flex justify-evenly items-center">
-											<CardLinkButton
-												target="_blank"
-												link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
-												showArrow={false}>View</CardLinkButton
-											>
-
-                                            {#if $page?.params?.targetType == "Bot"}
+                                            <div class="flex justify-evenly items-center">
                                                 <CardLinkButton
                                                     target="_blank"
-                                                    link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-                                                    showArrow={false}
-                                                    seperate={true}>Invite</CardLinkButton
+                                                    link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
+                                                    showArrow={false}>View</CardLinkButton
                                                 >
-                                            {:else}
-                                                <CardLinkButton
-                                                    disabled={true}
-                                                    target="_blank"
-                                                    link={``}
-                                                    showArrow={false}
-                                                    seperate={true}>-</CardLinkButton
-                                                >
-                                            {/if}
-										</div>
 
-										<Select {bot} bind:selected={botData} />
-									</span>
-								</Card>
-							{/each}
-						</Column>
-					{:else}
-						<p class="font-semibold text-xl text-red-500">
-							There are no bots matching your query! Try making another search?
-						</p>
-					{/if}
-				</div>
-			{/if}
+                                                {#if $page?.params?.targetType == "Bot"}
+                                                    <CardLinkButton
+                                                        target="_blank"
+                                                        link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+                                                        showArrow={false}
+                                                        seperate={true}>Invite</CardLinkButton
+                                                    >
+                                                {:else}
+                                                    <CardLinkButton
+                                                        disabled={true}
+                                                        target="_blank"
+                                                        link={``}
+                                                        showArrow={false}
+                                                        seperate={true}>-</CardLinkButton
+                                                    >
+                                                {/if}
+                                            </div>
 
-			{#if Steps.findIndex((p) => p.Current) === 1}
-				<h2 class="text-black dark:text-gray-400 font-black text-xl">
-					Alright! Let's make sure we have the right bot in mind!
-				</h2>
+                                            <Select {bot} bind:selected={botData} />
+                                        </span>
+                                    </Card>
+                                {/each}
+                            </Column>
+                        {:else}
+                            <p class="font-semibold text-xl text-red-500">
+                                There are no bots matching your query! Try making another search?
+                            </p>
+                        {/if}
+                    </div>
+                {/if}
 
-				<div class="p-3" />
+                {#if Steps.findIndex((p) => p.Current) === 1}
+                    <h2 class="text-black dark:text-gray-400 font-black text-xl">
+                        Alright! Let's make sure we have the right bot in mind!
+                    </h2>
 
-				<Card>
-					<span slot="avatar">
-						<img class="rounded-full w-10 h-10" src={botData?.user?.avatar} alt="Bot Avatar" />
-					</span>
+                    <div class="p-3" />
 
-					<span slot="display-name">{botData?.user?.username}</span>
+                    <Card>
+                        <span slot="avatar">
+                            <img class="rounded-full w-10 h-10" src={botData?.user?.avatar} alt="Bot Avatar" />
+                        </span>
 
-					<span slot="short">{botData?.short}</span>
-					<span slot="post-slot" class="block mt-3 text-md tracking-tight my-2">
-						<div class="flex justify-evenly items-center">
-							<CardLinkButton
-								target="_blank"
-								link={`${$panelState?.coreConstants?.frontend_url}/bots/${botData?.bot_id}`}
-								showArrow={false}>View</CardLinkButton
-							>
+                        <span slot="display-name">{botData?.user?.username}</span>
 
-							<CardLinkButton
-								target="_blank"
-								link={`https://discord.com/api/v10/oauth2/authorize?client_id=${botData?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-								showArrow={false}
-								seperate={true}>Invite</CardLinkButton
-							>
-						</div>
-					</span>
-				</Card>
-			{/if}
+                        <span slot="short">{botData?.short}</span>
+                        <span slot="post-slot" class="block mt-3 text-md tracking-tight my-2">
+                            <div class="flex justify-evenly items-center">
+                                <CardLinkButton
+                                    target="_blank"
+                                    link={`${$panelState?.coreConstants?.frontend_url}/bots/${botData?.bot_id}`}
+                                    showArrow={false}>View</CardLinkButton
+                                >
 
-			{#if Steps.findIndex((p) => p.Current) === 2}
-				<h2 class="text-black dark:text-gray-400 font-black text-xl">
-					Alright! What action would you like to perform?
-				</h2>
+                                <CardLinkButton
+                                    target="_blank"
+                                    link={`https://discord.com/api/v10/oauth2/authorize?client_id=${botData?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+                                    showArrow={false}
+                                    seperate={true}>Invite</CardLinkButton
+                                >
+                            </div>
+                        </span>
+                    </Card>
+                {/if}
 
-				<Modal showModal={true}>
-					<h1 slot="header" class="font-semibold text-2xl">Perform RPC Action</h1>
+                {#if Steps.findIndex((p) => p.Current) === 2}
+                    <h2 class="text-black dark:text-gray-400 font-black text-xl">
+                        Alright! What action would you like to perform?
+                    </h2>
 
-					<RPC
-						actions={meta?.actions}
-						targetType={'Bot'}
-						initialData={{
-							target_id: botData?.bot_id
-						}}
-					/>
-				</Modal>
-			{/if}
+                    <Modal showModal={true}>
+                        <h1 slot="header" class="font-semibold text-2xl">Perform RPC Action</h1>
 
-			{#if Steps[Steps.findIndex((p) => p.ID === 2)].Completed === true}
-				<h2 class="text-black dark:text-gray-400 font-black text-base">
-					You have completed this RPC Action! If you would like to perform another one, click the
-					button down below.
-				</h2>
+                        <RPC
+                            actions={meta?.actions}
+                            targetType={'Bot'}
+                            initialData={{
+                                target_id: botData?.bot_id
+                            }}
+                        />
+                    </Modal>
+                {/if}
 
-				<button
-					class="ml-2 bg-themable-600 text-lg px-4 text-themable-100 p-2 border-none rounded-md focus:ring-4 focus:outline-none focus:ring-themable-400"
-					on:click={() => location.reload()}>Perform Another!</button
-				>
-			{/if}
-		</StepProgress>
-	</div>
-{:catch err}
-	<ErrorComponent msg={`Failed to fetch bots: ${err}`} />
-{/await}
+                {#if Steps[Steps.findIndex((p) => p.ID === 2)].Completed === true}
+                    <h2 class="text-black dark:text-gray-400 font-black text-base">
+                        You have completed this RPC Action! If you would like to perform another one, click the
+                        button down below.
+                    </h2>
+
+                    <button
+                        class="ml-2 bg-themable-600 text-lg px-4 text-themable-100 p-2 border-none rounded-md focus:ring-4 focus:outline-none focus:ring-themable-400"
+                        on:click={() => location.reload()}>Perform Another!</button
+                    >
+                {/if}
+            </StepProgress>
+        </div>
+    {:catch err}
+        <ErrorComponent msg={`Failed to fetch bots: ${err}`} />
+    {/await}
+{/key}
