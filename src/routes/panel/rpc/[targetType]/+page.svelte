@@ -83,8 +83,8 @@
 		};
 	};
 
-	const fetchSearchBots = async () => {
-        let targetType = title($page.params.targetType?.toString());
+	const searchEntity = async () => {
+        let targetType = $page.params.targetType?.toString()
 
         if(!$panelState?.rpcSupportedTargetTypes?.includes(targetType as TargetType)) {
             error('This target type is not supported!');
@@ -127,7 +127,7 @@
 		return true;
 	};
 
-	const getBotType = (bot: SearchBot) => {
+	const getType = (bot: SearchBot) => {
 		switch (bot?.type) {
 			case 'claimed':
 				return `Claimed by ${bot?.claimed_by}`;
@@ -145,16 +145,16 @@
 			{#if Steps.findIndex((p) => p.Current) === 0}
 				<h2 class="text-black dark:text-gray-400 font-black text-xl">Let's get Started!</h2>
 				<p class="text-base text-black dark:text-gray-400 font-bold">
-					Let's find what bot you are taking action on!
+					Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
 				</p>
 
 				<div class="p-2" />
 
-				<div id="findBot">
+				<div id="findEntity">
 					<label
 						for="searchBar"
 						class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-						>Let's find what bot you are taking action on!</label
+						>Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!</label
 					>
 
 					<div class="relative">
@@ -180,6 +180,7 @@
 							type="search"
 							bind:value={query}
 							id="searchBar"
+                            name="searchBar"
 							class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slbg focus:border-slbg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slbg dark:focus:border-slbg"
 							placeholder="What are you searching for?"
 						/>
@@ -187,7 +188,7 @@
 						<button
 							type="submit"
 							class="absolute right-2.5 top-2 bottom-2.5 bg-themable-500 text-themable-100 focus:ring-4 focus:outline-none focus:ring-themable-400 rounded-lg px-4"
-							on:click={fetchSearchBots}>Search</button
+							on:click={searchEntity}>Search</button
 						>
 					</div>
 
@@ -207,7 +208,7 @@
 									<span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
 										<div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
 											<span class="font-extrabold">#{i + 1}</span>
-											{getBotType(bot)}
+											{getType(bot)}
 										</div>
 
 										<div class="flex justify-evenly items-center">
@@ -217,12 +218,22 @@
 												showArrow={false}>View</CardLinkButton
 											>
 
-											<CardLinkButton
-												target="_blank"
-												link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-												showArrow={false}
-												seperate={true}>Invite</CardLinkButton
-											>
+                                            {#if $page?.params?.targetType == "Bot"}
+                                                <CardLinkButton
+                                                    target="_blank"
+                                                    link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+                                                    showArrow={false}
+                                                    seperate={true}>Invite</CardLinkButton
+                                                >
+                                            {:else}
+                                                <CardLinkButton
+                                                    disabled={true}
+                                                    target="_blank"
+                                                    link={``}
+                                                    showArrow={false}
+                                                    seperate={true}>-</CardLinkButton
+                                                >
+                                            {/if}
 										</div>
 
 										<Select {bot} bind:selected={botData} />

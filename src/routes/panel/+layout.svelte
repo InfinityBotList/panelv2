@@ -70,28 +70,13 @@
 						name: 'RPC Actions',
 						description: 'Manage entities!',
 						link: '/panel/rpc',
-						options: [
-							{
-								name: 'Bots',
-								description: 'Manage bots!',
-								link: '/panel/rpc/bots'
-							},
-							{
-								name: 'Servers',
-								description: 'Manage servers!',
-								link: '/panel/rpc/servers'
-							},
-							{
-								name: 'Teams',
-								description: 'Manage teams!',
-								link: '/panel/rpc/teams'
-							},
-							{
-								name: 'Packs',
-								description: 'Manage packs!',
-								link: '/panel/rpc/packs'
-							}
-						]
+						options: ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
+							return {
+								name: type,
+								description: `Manage ${type}s!`,
+								link: `/panel/rpc/${type}`
+							};
+						})
 					});
 					break;
 			}
