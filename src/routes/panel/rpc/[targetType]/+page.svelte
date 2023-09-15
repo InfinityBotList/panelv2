@@ -185,6 +185,15 @@
                                 <input
                                     type="search"
                                     bind:value={query}
+                                    on:keydown={(e) => {
+                                        if (e.key == 'Enter') {
+                                            try {
+                                                searchEntity();
+                                            } catch (err) {
+                                                error(err?.toString() || `Unknown error: ${e}`);
+                                            }
+                                        }
+                                    }}
                                     id="searchBar"
                                     name="searchBar"
                                     class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slbg focus:border-slbg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slbg dark:focus:border-slbg"
