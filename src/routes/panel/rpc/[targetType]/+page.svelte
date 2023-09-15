@@ -143,6 +143,8 @@
 
     afterNavigate(() => {
         query = ""
+        results = []
+        botData = null
     })
 </script>
 
