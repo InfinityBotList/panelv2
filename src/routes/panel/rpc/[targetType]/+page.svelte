@@ -26,7 +26,6 @@
 
 	let Steps = [
 		{
-			ID: 0,
 			Name: 'Find',
 			Current: true,
 			Completed: false,
@@ -37,7 +36,6 @@
 			}
 		},
 		{
-			ID: 1,
 			Name: 'Confirm',
 			Current: false,
 			Completed: false,
@@ -47,7 +45,6 @@
 			}
 		},
 		{
-			ID: 2,
 			Name: 'Action',
 			Current: false,
 			Completed: true,
