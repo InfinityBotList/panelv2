@@ -19,7 +19,7 @@
 	import RPC from '../../../../components/rpc/RPC.svelte';
 	import { page } from '$app/stores';
 	import type { TargetType } from '../../../../utils/generated/arcadia/TargetType';
-    import { beforeUpdate } from 'svelte'
+	import { afterNavigate } from '$app/navigation';
 
 	let query: string;
 	let botData: QueueBot | null = null;
@@ -141,7 +141,7 @@
 		}
 	};
 
-    beforeUpdate(() => {
+    afterNavigate(() => {
         query = ""
     })
 </script>
