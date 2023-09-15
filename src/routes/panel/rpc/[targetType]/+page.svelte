@@ -19,8 +19,9 @@
 	import RPC from '../../../../components/rpc/RPC.svelte';
 	import { page } from '$app/stores';
 	import type { TargetType } from '../../../../utils/generated/arcadia/TargetType';
+    import { beforeUpdate } from 'svelte'
 
-	let query: string | null = null;
+	let query: string;
 	let botData: QueueBot | null = null;
 	let results: SearchBot[] = [];
 
@@ -139,6 +140,10 @@
 				return title(bot?.type);
 		}
 	};
+
+    beforeUpdate(() => {
+        query = ""
+    })
 </script>
 
 {#key $page?.params}
