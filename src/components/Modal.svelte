@@ -1,6 +1,6 @@
 <!--From https://svelte.dev/examples/modal -->
 <script lang="ts">
-	export let showModal: boolean; // boolean
+	export let showModal: boolean; // boolean, whether or not the modal is shown or not
 
 	let dialog: HTMLDialogElement; // HTMLDialogElement
 
