@@ -10,7 +10,7 @@
 	import ButtonReact from '../button/ButtonReact.svelte';
 	import InputText from '../inputs/InputText.svelte';
 	import InputTextArea from '../inputs/InputTextArea.svelte';
-	import BoolInput from '../BoolInput.svelte';
+	import BoolInput from '../inputs/BoolInput.svelte';
 	import { Color } from '../button/colors';
 	import InputNumber from '../inputs/InputNumber.svelte';
 	import logger from '$lib/logger';

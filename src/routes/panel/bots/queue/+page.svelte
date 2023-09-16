@@ -75,17 +75,19 @@
 					<svelte:fragment slot="type">
 						{bot?.claimed_by ? `Claimed by ${bot?.claimed_by}` : 'Pending Review'}
 					</svelte:fragment>
-					<svelte:fragment slot="actions">
+					<svelte:fragment slot="actionA">
 						<CardLinkButton
 							target="_blank"
 							link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
 							showArrow={false}>View</CardLinkButton
 						>
+					</svelte:fragment>
+					<svelte:fragment slot="actionB">
 						<CardLinkButton
 							target="_blank"
 							link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
 							showArrow={false}
-							seperate={true}>Invite</CardLinkButton
+							>Invite</CardLinkButton
 						>
 					</svelte:fragment>
 					<svelte:fragment slot="extra">

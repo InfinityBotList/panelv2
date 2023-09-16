@@ -46,17 +46,17 @@
 		<Column>
 			{#each partners.partners.partners as partner, i}
 				<Card>
-					<img slot="image" src={partner?.image} alt="" />
+					<img slot="image" src={`${$panelState?.coreConstants?.cdn_url}/partners/${partner?.id}.${partner?.image_type}`} alt="" />
 					<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
 					<svelte:fragment slot="short">{partner?.short}</svelte:fragment>
 					<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
 					<svelte:fragment slot="type">{partner?.type}</svelte:fragment>
-					<svelte:fragment slot="actions">
+					<svelte:fragment slot="actionA">
 						<CardLinkButton
 							target="_blank"
 							link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
 							showArrow={false}
-							seperate={true}
+							double={false}
 						>
 							View
 						</CardLinkButton>

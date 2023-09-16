@@ -49,7 +49,7 @@
 	};
 </script>
 
-<h1 class="text-2xl font-semibold">Reset MFA</h1>
+<h1 class="mt-3 text-xl font-semibold">Reset MFA</h1>
 
 <GreyText
 	>Reset Panel 2FA here. Note that you will need access to your current OTP in order to continue.</GreyText

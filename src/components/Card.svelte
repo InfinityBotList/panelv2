@@ -31,7 +31,7 @@
 		</p>
 	</div>
 
-	<div class="block tracking-tight my-2 mt-5">
+	<div class="block mt-5 text-md tracking-tight my-2">
 		{#if $$slots.index || $$slots.type}
 			<div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
 				{#if $$slots.index}
@@ -45,10 +45,18 @@
 			</div>
 		{/if}
 	
-		{#if $$slots.actions}
-			<div class="flex justify-evenly items-center">
-				<slot name="actions" />
-			</div>	
+		{#if $$slots.actionA}
+			{#if $$slots.actionB}
+				<div class="flex">
+					<slot name="actionA" />
+					<div class="ml-3"></div>
+					<slot name="actionB" />
+				</div>
+			{:else}
+				<div class="flex justify-evenly items-center">
+					<slot name="actionA" />
+				</div>	
+			{/if}
 		{/if}
 	</div>
 

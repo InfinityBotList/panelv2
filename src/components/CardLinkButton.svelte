@@ -4,14 +4,14 @@
 	export let target: string = '_self';
 
 	export let showArrow: boolean = true;
-	export let seperate: boolean = false;
+	export let double: boolean = true;
 </script>
 
 {#if disabled}
 	<button
 		disabled={true}
 		aria-disabled={true}
-		class="{seperate
+		class="{!double
 			? 'ml-3'
 			: ''} hover:opacity-75 focus:outline-none mt-3 w-1/2 rounded-lg bg-black/90 p-3 text-center text-white"
 	>
@@ -36,9 +36,9 @@
 	<a
 		{target}
 		href={link}
-		class="{seperate
-			? 'hover:opacity-75 focus:outline-none mt-3 w-full rounded-lg bg-black/90 p-3 text-center text-white'
-			: ''} hover:opacity-75 focus:outline-none mt-3 w-1/2 rounded-lg bg-black/90 p-3 text-center text-white"
+		class="{!double
+			? 'hover:opacity-75 focus:outline-none mt-3 w-full rounded-lg bg-black/90 p-4 text-center text-white'
+			: ''} hover:opacity-75 focus:outline-none mt-3 w-1/2 rounded-lg bg-black/90 p-4 text-center text-white"
 	>
 		<slot />
 
