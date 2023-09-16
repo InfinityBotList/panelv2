@@ -68,36 +68,29 @@
 		<Column>
 			{#each bots.bots as bot, i}
 				<Card>
-					<span slot="avatar">
-						<img class="rounded-full w-10 h-10" src={bot?.user?.avatar} alt="Bot Avatar" />
-					</span>
-
-					<span slot="display-name">{bot?.user?.username}</span>
-
-					<span slot="short">{bot?.short}</span>
-					<span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
-						<div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
-							<span class="font-extrabold">#{i + 1}</span>
-							{bot?.claimed_by ? `Claimed by ${bot?.claimed_by}` : 'Pending Review'}
-						</div>
-
-						<div class="flex justify-evenly items-center">
-							<CardLinkButton
-								target="_blank"
-								link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
-								showArrow={false}>View</CardLinkButton
-							>
-
-							<CardLinkButton
-								target="_blank"
-								link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-								showArrow={false}
-								seperate={true}>Invite</CardLinkButton
-							>
-						</div>
-
+					<img slot="image" src={bot?.user?.avatar} alt="" />
+					<svelte:fragment slot="display-name">{bot?.user?.username}</svelte:fragment>
+					<svelte:fragment slot="short">{bot?.short}</svelte:fragment>
+					<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
+					<svelte:fragment slot="type">
+						{bot?.claimed_by ? `Claimed by ${bot?.claimed_by}` : 'Pending Review'}
+					</svelte:fragment>
+					<svelte:fragment slot="actions">
+						<CardLinkButton
+							target="_blank"
+							link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
+							showArrow={false}>View</CardLinkButton
+						>
+						<CardLinkButton
+							target="_blank"
+							link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+							showArrow={false}
+							seperate={true}>Invite</CardLinkButton
+						>
+					</svelte:fragment>
+					<svelte:fragment slot="extra">
 						<QueueAction {bot} actions={bots.actions} />
-					</span>
+					</svelte:fragment>
 				</Card>
 			{/each}
 		</Column>

@@ -22,7 +22,7 @@
 	import { afterNavigate } from '$app/navigation';
 
 	let query: string;
-	let botData: QueueBot | null = null;
+	let botData: SearchBot | null = null;
 	let results: SearchBot[] = [];
 
 	let Steps = [
@@ -155,7 +155,7 @@
         <div class="mt-10">
             {#key currentStep}
                 <StepProgress bind:steps={Steps} bind:currentStep>
-                    {#if currentStep == 0}
+                    {#if currentStep == 0 || !botData}
                         <h2 class="text-white dark:text-gray-400 font-black text-xl">Let's get started!</h2>
                         <p class="text-base text-white dark:text-gray-400 font-bold">
                             Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
@@ -220,46 +220,38 @@
                                 <Column>
                                     {#each results as bot, i}
                                         <Card>
-                                            <span slot="avatar">
-                                                <img class="rounded-full w-10 h-10" src={bot?.user?.avatar} alt="Bot Avatar" />
-                                            </span>
+                                            <img slot="image" src={bot?.user?.avatar} alt="" />
+                                            <svelte:fragment slot="display-name">{bot?.user?.username}</svelte:fragment>
+                                            <svelte:fragment slot="short">{bot?.short}</svelte:fragment>
+                                            <svelte:fragment slot="index">#{i + 1}</svelte:fragment>
+                                            <svelte:fragment slot="type">{getType(bot)}</svelte:fragment>
+                                            <svelte:fragment slot="actions">
+                                                <CardLinkButton
+                                                    target="_blank"
+                                                    link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
+                                                    showArrow={false}>View</CardLinkButton
+                                                >
 
-                                            <span slot="display-name">{bot?.user?.username}</span>
-
-                                            <span slot="short">{bot?.short}</span>
-                                            <span slot="post-slot" class="block mt-5 text-md tracking-tight my-2">
-                                                <div class="mt-3 rounded-lg bg-black/80 p-3 text-white">
-                                                    <span class="font-extrabold">#{i + 1}</span>
-                                                    {getType(bot)}
-                                                </div>
-
-                                                <div class="flex justify-evenly items-center">
+                                                {#if $page?.params?.targetType == "Bot"}
                                                     <CardLinkButton
                                                         target="_blank"
-                                                        link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
-                                                        showArrow={false}>View</CardLinkButton
+                                                        link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+                                                        showArrow={false}
+                                                        seperate={true}>Invite</CardLinkButton
                                                     >
-
-                                                    {#if $page?.params?.targetType == "Bot"}
-                                                        <CardLinkButton
-                                                            target="_blank"
-                                                            link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-                                                            showArrow={false}
-                                                            seperate={true}>Invite</CardLinkButton
-                                                        >
-                                                    {:else}
-                                                        <CardLinkButton
-                                                            disabled={true}
-                                                            target="_blank"
-                                                            link={``}
-                                                            showArrow={false}
-                                                            seperate={true}>-</CardLinkButton
-                                                        >
-                                                    {/if}
-                                                </div>
-
+                                                {:else}
+                                                    <CardLinkButton
+                                                        disabled={true}
+                                                        target="_blank"
+                                                        link={``}
+                                                        showArrow={false}
+                                                        seperate={true}>-</CardLinkButton
+                                                    >
+                                                {/if}
+                                            </svelte:fragment>
+                                            <svelte:fragment slot="extra">
                                                 <Select {bot} bind:selected={botData} />
-                                            </span>
+                                            </svelte:fragment>
                                         </Card>
                                     {/each}
                                 </Column>
@@ -269,7 +261,7 @@
                                 </p>
                             {/if}
                         </div>
-                    {:else if currentStep == 1}
+                    {:else if currentStep == 1 && botData}
                         <h2 class="text-white font-black text-xl">
                             Alright! Let's make sure we have the right bot in mind!
                         </h2>
@@ -277,29 +269,34 @@
                         <div class="p-3" />
 
                         <Card>
-                            <span slot="avatar">
-                                <img class="rounded-full w-10 h-10" src={botData?.user?.avatar} alt="Bot Avatar" />
-                            </span>
+                            <img slot="image" src={botData?.user?.avatar} alt="" />
+                            <svelte:fragment slot="display-name">{botData?.user?.username}</svelte:fragment>
+                            <svelte:fragment slot="short">{botData?.short}</svelte:fragment>
+                            <svelte:fragment slot="type">#{getType(botData)}</svelte:fragment>
+                            <svelte:fragment slot="actions">
+                                <CardLinkButton
+                                    target="_blank"
+                                    link={`${$panelState?.coreConstants?.frontend_url}/bots/${botData?.bot_id}`}
+                                    showArrow={false}>View</CardLinkButton
+                                >
 
-                            <span slot="display-name">{botData?.user?.username}</span>
-
-                            <span slot="short">{botData?.short}</span>
-                            <span slot="post-slot" class="block mt-3 text-md tracking-tight my-2">
-                                <div class="flex justify-evenly items-center">
-                                    <CardLinkButton
-                                        target="_blank"
-                                        link={`${$panelState?.coreConstants?.frontend_url}/bots/${botData?.bot_id}`}
-                                        showArrow={false}>View</CardLinkButton
-                                    >
-
+                                {#if $page?.params?.targetType == "Bot"}
                                     <CardLinkButton
                                         target="_blank"
                                         link={`https://discord.com/api/v10/oauth2/authorize?client_id=${botData?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
                                         showArrow={false}
                                         seperate={true}>Invite</CardLinkButton
                                     >
-                                </div>
-                            </span>
+                                {:else}
+                                    <CardLinkButton
+                                        disabled={true}
+                                        target="_blank"
+                                        link={``}
+                                        showArrow={false}
+                                        seperate={true}>-</CardLinkButton
+                                    >
+                                {/if}    
+                            </svelte:fragment>
                         </Card>    
                     {:else if currentStep == 2}
                         <h2 class="text-white font-black text-xl">

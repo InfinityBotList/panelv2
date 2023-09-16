@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Modal from '../../../../components/Modal.svelte';
-	import RPC from '../../../../components/rpc/RPC.svelte';
-	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
-	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
+	import Modal from '../../../components/Modal.svelte';
+	import RPC from '../../../components/rpc/RPC.svelte';
+	import type { Partner } from '../../../utils/generated/arcadia/Partner';
+	import type { RPCWebAction } from '../../../utils/generated/arcadia/RPCWebAction';
 
 	let showActionsModal: boolean = false;
-	export let bot: QueueBot;
+	export let partner: Partner;
 	export let actions: RPCWebAction[];
 </script>
 
@@ -40,7 +40,7 @@
 			{actions}
 			targetType={'Bot'}
 			initialData={{
-				target_id: bot?.bot_id
+				target_id: partner?.id
 			}}
 		/>
 	</Modal>

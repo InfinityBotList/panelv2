@@ -37,7 +37,7 @@
 		{target}
 		href={link}
 		class="{seperate
-			? 'ml-3'
+			? 'hover:opacity-75 focus:outline-none mt-3 w-full rounded-lg bg-black/90 p-3 text-center text-white'
 			: ''} hover:opacity-75 focus:outline-none mt-3 w-1/2 rounded-lg bg-black/90 p-3 text-center text-white"
 	>
 		<slot />

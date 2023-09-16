@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { fetchClient } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
+	import { panelState } from '$lib/panelData';
+	import Card from '../../../components/Card.svelte';
+	import CardLinkButton from '../../../components/CardLinkButton.svelte';
 	import Column from '../../../components/Column.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
@@ -41,6 +44,25 @@
 		</h1>
 
 		<Column>
+			{#each partners.partners.partners as partner, i}
+				<Card>
+					<img slot="image" src={partner?.image} alt="" />
+					<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
+					<svelte:fragment slot="short">{partner?.short}</svelte:fragment>
+					<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
+					<svelte:fragment slot="type">{partner?.type}</svelte:fragment>
+					<svelte:fragment slot="actions">
+						<CardLinkButton
+							target="_blank"
+							link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
+							showArrow={false}
+							seperate={true}
+						>
+							View
+						</CardLinkButton>
+					</svelte:fragment>
+				</Card>
+			{/each}
 		</Column>
 	</div>
 {:catch err}
