@@ -1,28 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { panelState } from '$lib/panelData';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
-	import QuickActionsSubMenu from '../../components/QuickActionsSubMenu.svelte';
 	import UnorderedList from '../../components/UnorderedList.svelte';
 	import InfoPane from '../../components/pane/InfoPane.svelte';
 	import PaneContent from '../../components/pane/PaneContent.svelte';
 	import PaneWrapper from '../../components/pane/PaneWrapper.svelte';
-
-	let subMenuOpened: boolean = false;
-
-	interface QuickOptions {
-		name: string;
-		description: string;
-		link: string;
-	}
-
-	interface QuickAction {
-		name: string;
-		description: string;
-		link: string;
-		options: QuickOptions[] | null;
-	}
+	import type { QuickAction } from './_core/QuickAction';
+	import QuickMenuOption from './_core/QuickMenuOption.svelte';
 
 	let quickActions: QuickAction[] = [];
 
@@ -36,7 +21,6 @@
 			name: 'Index',
 			description: 'Index Page',
 			link: '/panel',
-			options: null
 		});
 
 		for (let cap of $panelState?.capabilities || []) {
@@ -46,7 +30,6 @@
 						name: 'Bot Queue',
 						description: 'View the bot queue',
 						link: '/panel/bots/queue',
-						options: null
 					});
 					break;
 				case 'BotManagement':
@@ -54,15 +37,13 @@
 						name: 'Bot Management',
 						description: 'Manage the bots on the list',
 						link: '/panel/bots/manage',
-						options: null
 					});
 					break;
 				case 'ManagePartners':
 					quickActions.push({
 						name: 'Manage Partners',
 						description: 'Manage the partners on the list',
-						link: '/panel/partners/manage',
-						options: null
+						link: '/panel/partners',
 					});
 					break;
 				case 'Rpc':
@@ -86,7 +67,6 @@
 			name: 'Settings',
 			description: 'Customize your experience!',
 			link: '/panel/settings',
-			options: null
 		});
 
 		if ($panelState?.userPerms?.owner) perms.push('Owner');
@@ -103,23 +83,7 @@
 		<InfoPane title="Navigation" description="Welcome to the panel">
 			<div>
 				{#each quickActions as action, index}
-					<button
-						class="w-full border border-themable-700/50 p-3 text-xl bg-black hover:bg-slate-800 {index ===
-						0
-							? 'rounded-t-md'
-							: ''} {index === quickActions.length - 1 ? 'rounded-b-md' : ''}"
-						on:click={() => {
-							if (action.options != null) {
-								if (subMenuOpened) subMenuOpened = false;
-								else subMenuOpened = true;
-							} else goto(action.link);
-						}}
-					>
-						{action.name}
-						<small class="text-sm text-gray-400 block">{action.description}</small>
-					</button>
-
-					<QuickActionsSubMenu Options={action.options} bind:Open={subMenuOpened} />
+					<QuickMenuOption {index} {action} actionsLength={quickActions.length}/>
 				{/each}
 			</div>
 

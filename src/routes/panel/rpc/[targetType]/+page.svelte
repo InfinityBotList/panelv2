@@ -13,7 +13,7 @@
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import { panelState } from '$lib/panelData';
 	import { title } from '$lib/strings';
-	import Select from '../Select.svelte';
+	import Select from './Select.svelte';
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
