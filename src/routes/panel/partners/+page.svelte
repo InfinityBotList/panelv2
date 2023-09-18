@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelData';
 	import Card from '../../../components/Card.svelte';
@@ -7,8 +7,8 @@
 	import Column from '../../../components/Column.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 	import type { Partners } from '../../../utils/generated/arcadia/Partners';
+	import AddPartner from './AddPartner.svelte';
 	import ManagePartner from './ManagePartner.svelte';
 
 	const fetchPartnerList = async () => {
@@ -35,6 +35,8 @@
 		<h1 class="text-3xl font-semibold">
 			Partner Management
 		</h1>
+
+		<AddPartner />
 
 		<Column>
 			{#each partners.partners.partners as partner, i}

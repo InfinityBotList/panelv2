@@ -32,7 +32,7 @@
 						link: '/panel/bots/queue',
 					});
 					break;
-				case 'ManagePartners':
+				case 'PartnerManagement':
 					quickActions.push({
 						name: 'Manage Partners',
 						description: 'Manage the partners on the list',

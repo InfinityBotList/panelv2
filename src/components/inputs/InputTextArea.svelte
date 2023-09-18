@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Label from "./Label.svelte";
+
 	export let id: string;
 	export let label: string;
 	export let placeholder: string;
@@ -31,7 +33,7 @@
 </script>
 
 <div class={inpClass}>
-	<label for={id} class="text-white text-xl text-left">{label}</label>
+	<Label id={id} label={label} />
 	{#if description}
 		<span class="text-md text-gray-500 dark:text-gray-400 mb-2">{{ description }}</span>
 	{/if}
