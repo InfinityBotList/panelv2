@@ -9,6 +9,7 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
+	import { error } from '$lib/toast';
 	import ButtonInner from './ButtonInner.svelte';
 	import type { Color } from './colors';
 
@@ -110,7 +111,8 @@ Converted to SvelteKit from NextJS for panel use
 		state = ReactState.Loading;
 
 		setTimeout(() => {
-			let resp = onClick().catch(() => {
+			let resp = onClick().catch((e) => {
+				error(`${e}`)
 				state = ReactState.Error;
 
 				// Wait 2 seconds

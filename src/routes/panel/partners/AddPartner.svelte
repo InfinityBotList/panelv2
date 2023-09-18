@@ -3,7 +3,9 @@
 	import logger from "$lib/logger";
 	import { panelAuthState } from "$lib/panelAuthState";
 	import { error } from "$lib/toast";
+	import ListItem from "../../../components/ListItem.svelte";
 	import Modal from "../../../components/Modal.svelte";
+	import OrderedList from "../../../components/OrderedList.svelte";
 	import ButtonReact from "../../../components/button/ButtonReact.svelte";
 	import { Color } from "../../../components/button/colors";
 	import InputText from "../../../components/inputs/InputText.svelte";
@@ -14,7 +16,7 @@
 	import type { PartnerType } from "../../../utils/generated/arcadia/PartnerType";
     import { Buffer } from "buffer/";
 
-    let status: string;
+    let status: string[] = [];
 
     export let partnerTypes: PartnerType[];
 
@@ -71,6 +73,11 @@
         }
     }
 
+    const addStatus = (s: string) => {
+        status.push(s)
+        status = status
+    }
+
     const addPartner = async () => {
         if(!partner.id || !partner.name || !partner.type || !partner.short || partner.links.length < 1 || !partner.user_id) {
             error("Please fill out all fields")
@@ -82,7 +89,8 @@
             return false;
         }
 
-        status = "Uploading image to CDN..."
+        addStatus("Uploading image to CDN...")
+        addStatus("=> Checking existing partner image list...")
 
         let files = await panelQuery({
             UpdateCdnAsset: {
@@ -104,6 +112,74 @@
         logger.info("AddPartner", "Got CDN files", filesJson)
 
         let paths = filesJson.map(f => f.name)
+
+        addStatus(`=> Found partners: ${paths}`)
+
+        for(let path of paths) {
+            if(path.startsWith(`${partner.id}.`)) {
+                addStatus(`=> Deleting existing partner image: ${path}`)
+
+                let del = await panelQuery({
+                    UpdateCdnAsset: {
+                        login_token: $panelAuthState?.loginToken || '',
+                        path: "partners",
+                        name: path,
+                        action: "Delete"
+                    }
+                })
+                
+                if(!del.ok) {
+                    let err = await del.text()
+                    error(`Failed to delete existing partner image: ${err}`)
+                    return false;
+                }
+
+                addStatus(`=> Deleted existing partner image: ${path}`)
+            } else if(path?.split(".")?.length != 2) {
+                addStatus(`=> Deleting unknown file: ${path}`)
+
+                let del = await panelQuery({
+                    UpdateCdnAsset: {
+                        login_token: $panelAuthState?.loginToken || '',
+                        path: "partners",
+                        name: path,
+                        action: "Delete"
+                    }
+                })
+                
+                if(!del.ok) {
+                    let err = await del.text()
+                    error(`Failed to delete unknown file: ${err}`)
+                    return false;
+                }
+
+                addStatus(`=> Deleted unknown file: ${path}`)
+            }
+        }
+
+        addStatus("=> Uploading image to CDN...")
+
+        let upload = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || '',
+                path: "partners",
+                name: `${partner.id}.${partner.image_type}`,
+                action: {
+                    "AddFile": {
+                        overwrite: false,
+                        contents: imageBase64
+                    }
+                }
+            }
+        })
+
+        if(!upload.ok) {
+            let err = await upload.text()
+            error(`Failed to upload image to CDN: ${err}`)
+            return false;
+        }
+
+        addStatus("=> Uploaded image to CDN")
 
         return true
     }
@@ -198,8 +274,12 @@
             }}
         />
 
-        {#if status}
-            <p class="text-blue-500 font-semibold">{status}</p>
+        {#if status?.length > 0}
+            <OrderedList>
+                {#each status as s}
+                    <ListItem>{s}</ListItem>
+                {/each}
+            </OrderedList>
         {/if}
     </Modal>
 {/if}
