@@ -114,7 +114,7 @@
 
 {#if showWarningModal && warningBox && warningBox.nonce}
 	<Modal bind:showModal={showWarningModal}>
-		<h1 slot="header" class="font-semibold text-2xl">{warningBox.text}</h1>
+		<h1 slot="header" class="font-semibold text-2xl">{warningBox.header}</h1>
 
 		<p class="font-semibold">{warningBox.text}</p>
 
