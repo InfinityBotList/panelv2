@@ -7,7 +7,7 @@
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
 	import Loading from './Loading.svelte';
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte'
 
 	let loadingMsg = 'Waiting for monkeys?';
@@ -111,13 +111,7 @@
 			logger.info('Panel', `CoreQuery: fetch ${key}`);
 			let query = coreQueries[key as keyof PanelState](data);
 
-			let resp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(query)
-			});
+			let resp = await panelQuery(query)
 
 			if (!resp.ok) {
 				loadingMsg = await resp.text();
@@ -138,20 +132,12 @@
 	const checkAuth = async () => {
 		logger.info('Panel.CheckAuth', 'Checking auth...');
 
-		let lp: PanelQuery = {
-			GetIdentity: {
-				login_token: $panelAuthState?.loginToken || ''
-			}
-		};
-
 		try {
-			let resp = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
-			});
+			let resp = await panelQuery({
+				GetIdentity: {
+					login_token: $panelAuthState?.loginToken || ''
+				}
+			})
 
 			if (!resp.ok) {
 				let err = await resp.text();

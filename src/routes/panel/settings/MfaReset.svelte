@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import { logoutUser } from '$lib/logout';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
@@ -17,35 +17,26 @@
 			return false;
 		}
 
-		let lp: PanelQuery = {
-			LoginResetMfa: {
-				login_token: $panelAuthState?.loginToken || '',
-				otp: mfaOtp
-			}
-		};
-
-		let res: Response;
 		try {
-			res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
+			let res = await panelQuery( {
+				LoginResetMfa: {
+					login_token: $panelAuthState?.loginToken || '',
+					otp: mfaOtp
+				}
 			});
+
+			if (!res.ok) {
+				error((await res.text()) || 'Failed to reset MFA');
+				return false;
+			}
+
+			success('MFA reset successfully');
+			logoutUser(false);
+			return true;
 		} catch (e) {
 			error('Failed to reset MFA');
 			return false;
 		}
-
-		if (!res.ok) {
-			error((await res.text()) || 'Failed to reset MFA');
-			return false;
-		}
-
-		success('MFA reset successfully');
-		logoutUser(false);
-		return true;
 	};
 </script>
 

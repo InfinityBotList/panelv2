@@ -1,5 +1,5 @@
 import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
-import { fetchClient } from './fetch';
+import { fetchClient, panelQuery } from './fetch';
 import logger from './logger';
 import type { PanelAuthState } from './panelAuthState';
 import { sleep } from './time';
@@ -11,18 +11,10 @@ export const logoutUser = async (sendLogout: boolean) => {
 			let panelStateData = localStorage.getItem('panelStateData');
 			let json: PanelAuthState = JSON.parse(panelStateData || 'null');
 
-			let lp: PanelQuery = {
+			let resp = await panelQuery({
 				Logout: {
 					login_token: json?.loginToken
 				}
-			};
-
-			let resp = await fetchClient(`${json?.url}${json?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
 			});
 
 			if (!resp.ok) {

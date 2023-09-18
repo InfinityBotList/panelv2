@@ -436,7 +436,8 @@ export interface IndexBotPack {
 export interface Partner {
   id: string;
   name: string;
-  image: string;
+  image_type: string;
+  image: string; // Must be parsed internally
   short: string;
   links: Link[];
   type: string;
@@ -540,6 +541,28 @@ export interface SearchResponse {
 //////////
 // source: server.go
 
+/**
+ * @ci table=servers, unfilled=1
+ * Represents a 'index server' (a small subset of the server object for use in cards etc.)
+ */
+export interface IndexServer {
+  server_id: string;
+  name: string;
+  avatar: string;
+  total_members: number /* int */;
+  online_members: number /* int */;
+  short: string;
+  type: string;
+  vanity_ref: string /* uuid */;
+  vanity: string; // Must be parsed internally
+  votes: number /* int */;
+  invite_clicks: number /* int */;
+  clicks: number /* int */;
+  nsfw: boolean;
+  tags: string[];
+  premium: boolean;
+  banner: string | null /* nullable */;
+}
 /**
  * @ci table=servers
  * Server represents a server.
@@ -673,7 +696,8 @@ export interface TeamBulkFetch {
 export interface TeamEntities {
   targets?: string[];
   members?: TeamMember[];
-  bots?: IndexBot[]; // Must be handled internally
+  bots?: IndexBot[];
+  servers?: IndexServer[];
 }
 export interface TeamMember {
   itag: string /* uuid */;
@@ -849,6 +873,18 @@ export interface HCaptchaInfo {
 //////////
 // source: webhook.go
 
+/**
+ * @ci table=webhooks, unfilled=1
+ * Webhook (omits secret)
+ */
+export interface Webhook {
+  id: string /* uuid */;
+  url: string;
+  target_id: string;
+  target_type: string;
+  broken: boolean;
+  created_at: string /* RFC3339 */;
+}
 export type WebhookType = string;
 export const WebhookTypeText: WebhookType = "text";
 export const WebhookTypeNumber: WebhookType = "number";

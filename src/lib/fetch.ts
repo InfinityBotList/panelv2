@@ -1,5 +1,20 @@
+import { get } from 'svelte/store';
+import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 import logger from './logger';
 import { logoutUser } from './logout';
+import { panelAuthState } from './panelAuthState';
+
+export const panelQuery = async (query: PanelQuery) => {
+	let data = get(panelAuthState);
+
+	return await fetchClient(`${data?.url}${data?.queryPath}`, {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		method: 'POST',
+		body: JSON.stringify(query),
+	})
+}
 
 export const fetchClient = async (url: string, init?: RequestInit) => {
 	logger.info('FetchClient', init?.method || 'GET', url);

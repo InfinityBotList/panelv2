@@ -8,7 +8,7 @@
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import { Color } from '../../../components/button/colors';
 
 	let msg: string = 'Loading MFA...';
@@ -45,18 +45,10 @@
 			return;
 		}
 
-		let lp: PanelQuery = {
+		let res = await panelQuery({
 			LoginMfaCheckStatus: {
 				login_token: $panelAuthState?.loginToken || ''
 			}
-		};
-
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) {
@@ -73,43 +65,34 @@
 			return false;
 		}
 
-		let lp: PanelQuery = {
-			LoginActivateSession: {
-				login_token: $panelAuthState?.loginToken || '',
-				otp: inputtedCode
-			}
-		};
-
-		let res: Response;
 		try {
-			res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
+			let res = await panelQuery({
+				LoginActivateSession: {
+					login_token: $panelAuthState?.loginToken || '',
+					otp: inputtedCode
+				}
 			});
+
+			if (!res.ok) {
+				let err = await res.text();
+				errorToast(err);
+				return false;
+			}
+
+			localStorage.setItem(
+				'panelStateData',
+				JSON.stringify({
+					...$panelAuthState,
+					sessionState: 'active'
+				})
+			);
+
+			goto(redirect());
+			return true;
 		} catch (e) {
 			errorToast(e?.toString() || 'Unknown error');
 			return false;
 		}
-
-		if (!res.ok) {
-			let err = await res.text();
-			errorToast(err);
-			return false;
-		}
-
-		localStorage.setItem(
-			'panelStateData',
-			JSON.stringify({
-				...$panelAuthState,
-				sessionState: 'active'
-			})
-		);
-
-		goto(redirect());
-		return true;
 	};
 </script>
 

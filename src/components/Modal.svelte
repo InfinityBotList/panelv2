@@ -20,6 +20,7 @@
 		<button class="close-btn font-semibold" autofocus on:click={() => dialog.close()}>Close</button>
 		<slot name="header" />
 		<hr />
+		<div class="mb-4" />
 		<slot />
 		<div class="mb-4" />
 	</div>

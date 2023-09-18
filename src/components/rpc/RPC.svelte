@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { fetchClient } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
 	import { onMount } from 'svelte';
-	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { RPCMethod } from '../../utils/generated/arcadia/RPCMethod';
 	import type { RPCWebAction } from '../../utils/generated/arcadia/RPCWebAction';
 	import type { TargetType } from '../../utils/generated/arcadia/TargetType';
@@ -99,55 +98,46 @@
 			}
 		}
 
-		let lp: PanelQuery = {
-			ExecuteRpc: {
-				login_token: $panelAuthState?.loginToken || '',
-				target_type: targetType,
-				method: {
-					[selected]: parsedData
-				} as RPCMethod
-			}
-		};
-
-		let res: Response;
-
 		try {
-			res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(lp)
+			let res = await panelQuery({
+				ExecuteRpc: {
+					login_token: $panelAuthState?.loginToken || '',
+					target_type: targetType,
+					method: {
+						[selected]: parsedData
+					} as RPCMethod
+				}
 			});
-		} catch (e) {
-			error('Failed to execute action');
+
+			if (!res.ok) {
+				let err = await res.text();
+				error(err);
+				return false;
+			}
+
+			if (res.status == 204) {
+				success('Successfully executed action [204]');
+				return true;
+			}
+
+			let data = await res.text();
+
+			if (data) {
+				success(`${data} [200]`);
+				return true;
+			}
+
+			if (selected == 'Approve') {
+				// Open in new tab
+				window.open(data, '_blank');
+			}
+
+			success('Successfully executed action [200]');
+		} catch (e: any) {
+			error(`Failed to execute action: ${e}`);
 			return false;
 		}
 
-		if (!res.ok) {
-			let err = await res.text();
-			error(err);
-			return false;
-		}
-
-		if (res.status == 204) {
-			success('Successfully executed action [204]');
-			return true;
-		}
-
-		let data = await res.text();
-
-		if (data) {
-			success(`${data} [200]`);
-			return true;
-		}
-
-		if (selected == 'Approve') {
-			// Open in new tab
-			window.open(data, '_blank');
-		}
-
-		success('Successfully executed action [200]');
 		return true;
 	};
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient } from "$lib/fetch";
+	import { fetchClient, panelQuery } from "$lib/fetch";
 	import logger from "$lib/logger";
 	import { panelAuthState } from "$lib/panelAuthState";
 	import { panelState } from "$lib/panelData";
@@ -14,18 +14,10 @@
     let allCaps: Capability[];
 
     const fetchCaps = async () => {
-        let lp: PanelQuery = {
+        let res = await panelQuery({
             GetCapabilities: {
                 login_token: $panelAuthState?.loginToken || ''
             }
-        };
-
-        let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(lp)
         });
 
         if (!res.ok) throw new Error('Failed to fetch capabilities');

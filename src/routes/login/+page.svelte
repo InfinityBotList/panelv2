@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
 	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
@@ -57,19 +57,18 @@
 			url = `https://${url}`;
 		}
 
-		let lp: PanelQuery = {
+		$panelAuthState = {
+			url,
+			queryPath,
+			loginToken: "",
+			sessionState: 'noSession'
+		}
+
+		res = await panelQuery({
 			GetLoginUrl: {
 				version: 1,
 				redirect_url: `${window.location.origin}/login/authorize`
 			}
-		};
-
-		res = await fetchClient(`${url}${queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) {

@@ -8,42 +8,26 @@
 	import { panelState } from '$lib/panelData';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
 	import QueueAction from './QueueAction.svelte';
 
 	const fetchQueueBots = async () => {
-		let lp: PanelQuery = {
+		let res = await panelQuery({
 			BotQueue: {
 				login_token: $panelAuthState?.loginToken || ''
 			}
-		};
-
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) throw new Error('Failed to fetch bots in queue');
 
 		let bots: QueueBot[] = await res.json();
 
-		lp = {
+		let actionsRes = await panelQuery({
 			GetRpcMethods: {
 				login_token: $panelAuthState?.loginToken || '',
 				filtered: true
 			}
-		};
-
-		let actionsRes = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!actionsRes.ok) throw new Error('Failed to fetch actions');

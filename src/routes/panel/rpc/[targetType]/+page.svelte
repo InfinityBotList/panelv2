@@ -6,7 +6,7 @@
 	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
 	import type { SearchBot } from '../../../../utils/generated/arcadia/SearchBot';
 	import { error } from '$lib/toast';
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
 	import Column from '../../../../components/Column.svelte';
 	import Card from '../../../../components/Card.svelte';
@@ -60,19 +60,11 @@
     let modalVisible: boolean = true;
 
 	const fetchRpcMethods = async () => {
-		let lp = {
+		let actionsRes = await panelQuery({
 			GetRpcMethods: {
 				login_token: $panelAuthState?.loginToken || '',
 				filtered: true
 			}
-		};
-
-		let actionsRes = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!actionsRes.ok) throw new Error('Failed to fetch actions');
@@ -97,20 +89,12 @@
 			return false;
 		}
 
-		let lp: PanelQuery = {
+		let res = await panelQuery({
 			SearchEntitys: {
 				login_token: $panelAuthState?.loginToken || '',
 				query: query,
                 target_type: targetType as TargetType
 			}
-		};
-
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) {

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
-	import { fetchClient } from '$lib/fetch';
-	import type { PanelAuthState } from '$lib/panelAuthState';
+	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
 	import { goto } from '$app/navigation';
 	import { hexToUtf8 } from '$lib/strings';
 
@@ -31,19 +30,18 @@
 			throw new Error('Failed to parse login state');
 		}
 
-		let lp: PanelQuery = {
+		$panelAuthState = {
+			url: loginState?.instanceUrl,
+			queryPath: loginState?.queryPath,
+			loginToken: "",
+			sessionState: 'noSession'
+		}
+
+		let res = await panelQuery({
 			Login: {
 				code: code,
 				redirect_url: `${window.location.origin}/login/authorize`
 			}
-		};
-
-		let res = await fetchClient(`${loginState?.instanceUrl}${loginState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) {

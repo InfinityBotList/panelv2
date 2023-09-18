@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelData';
 	import Card from '../../../components/Card.svelte';
@@ -9,20 +9,13 @@
 	import Loading from '../../../components/Loading.svelte';
 	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 	import type { Partners } from '../../../utils/generated/arcadia/Partners';
+	import ManagePartner from './ManagePartner.svelte';
 
 	const fetchPartnerList = async () => {
-		let lp: PanelQuery = {
+		let res = await panelQuery({
 			GetPartnerList: {
 				login_token: $panelAuthState?.loginToken || ''
 			}
-		}
-
-		let res = await fetchClient(`${$panelAuthState?.url}${$panelAuthState?.queryPath}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(lp)
 		});
 
 		if (!res.ok) throw new Error('Failed to fetch partner list');
@@ -61,6 +54,9 @@
 							View
 						</CardLinkButton>
 					</svelte:fragment>
+					<div slot="extra">
+						<ManagePartner partner={partner} />
+					</div>
 				</Card>
 			{/each}
 		</Column>
