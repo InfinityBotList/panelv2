@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { error } from "$lib/toast";
 	import Modal from "../../../components/Modal.svelte";
+	import ButtonReact from "../../../components/button/ButtonReact.svelte";
+	import { Color } from "../../../components/button/colors";
 	import InputText from "../../../components/inputs/InputText.svelte";
 	import Label from "../../../components/inputs/Label.svelte";
 	import ExtraLinks from "../../../components/inputs/multi/extralinks/ExtraLinks.svelte";
@@ -28,6 +30,8 @@
     let imageUploaded: boolean = false;
 
     const readFile = () => {
+        imageUploaded = false;
+
         if(imageFileList.length > 1) {
             error("Please only upload one image")
         }
@@ -59,6 +63,20 @@
 
             reader.readAsArrayBuffer(file);
         }
+    }
+
+    const addPartner = async () => {
+        if(!partner.id || !partner.name || !partner.type || !partner.short || partner.links.length < 1 || !partner.user_id) {
+            error("Please fill out all fields")
+            return false;
+        }
+
+        if(!imageUploaded) {
+            error("Please upload an image")
+            return false;
+        }
+
+        return true
     }
 
     $: if (imageFileList) {
@@ -138,5 +156,17 @@
             <p class="font-semibold">Image to upload to CDN ({partner.image_type})</p>
             <img src={`data:image/${partner.image_type};base64,${imageBase64}`} alt="" />
         {/if}
+
+        <ButtonReact 
+            color={Color.Themable}
+            onClick={addPartner}
+            icon="mdi:plus"
+            text="Add Partner"
+            states={{
+                loading: "Adding Partner...",
+                success: "Partner Added!",
+                error: "Failed to add Partner"
+            }}
+        />
     </Modal>
 {/if}
