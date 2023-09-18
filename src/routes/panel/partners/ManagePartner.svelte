@@ -116,7 +116,7 @@
 	<Modal bind:showModal={showWarningModal}>
 		<h1 slot="header" class="font-semibold text-2xl">{warningBox.header}</h1>
 
-		<p class="font-semibold">{warningBox.text}</p>
+		<p class="font-semibold text-xl">{warningBox.text}</p>
 
 		<p>To confirm, please type the following: <code class="select-none cursor-pointer">{warningBox.nonce}</code></p>
 
