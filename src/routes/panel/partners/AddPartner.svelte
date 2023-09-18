@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { panelQuery } from "$lib/fetch";
+	import logger from "$lib/logger";
+	import { panelAuthState } from "$lib/panelAuthState";
 	import { error } from "$lib/toast";
 	import Modal from "../../../components/Modal.svelte";
 	import ButtonReact from "../../../components/button/ButtonReact.svelte";
@@ -6,11 +9,14 @@
 	import InputText from "../../../components/inputs/InputText.svelte";
 	import Label from "../../../components/inputs/Label.svelte";
 	import ExtraLinks from "../../../components/inputs/multi/extralinks/ExtraLinks.svelte";
+	import type { CdnAssetItem } from "../../../utils/generated/arcadia/CdnAssetItem";
 	import type { Partner } from "../../../utils/generated/arcadia/Partner";
 	import type { PartnerType } from "../../../utils/generated/arcadia/PartnerType";
     import { Buffer } from "buffer/";
 
-    export let partnerTypes: PartnerType[] = [];
+    let status: string;
+
+    export let partnerTypes: PartnerType[];
 
     export let addPartnerModalOpen: boolean = false;
 
@@ -75,6 +81,29 @@
             error("Please upload an image")
             return false;
         }
+
+        status = "Uploading image to CDN..."
+
+        let files = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || '',
+                path: "partners",
+                name: "",
+                action: "ListPath"
+            }
+        })
+
+        if(!files.ok) {
+            let err = await files.text()
+            error(`Failed to list CDN path: ${err}`)
+            return false;
+        }
+
+        let filesJson: CdnAssetItem[] = await files.json()
+
+        logger.info("AddPartner", "Got CDN files", filesJson)
+
+        let paths = filesJson.map(f => f.name)
 
         return true
     }
@@ -168,5 +197,9 @@
                 error: "Failed to add Partner"
             }}
         />
+
+        {#if status}
+            <p class="text-blue-500 font-semibold">{status}</p>
+        {/if}
     </Modal>
 {/if}

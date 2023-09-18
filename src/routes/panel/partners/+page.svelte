@@ -36,7 +36,7 @@
 			Partner Management
 		</h1>
 
-		<AddPartner />
+		<AddPartner partnerTypes={partners?.partners?.partner_types}/>
 
 		<Column>
 			{#each partners.partners.partners as partner, i}
