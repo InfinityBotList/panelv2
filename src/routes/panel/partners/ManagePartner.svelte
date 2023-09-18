@@ -38,7 +38,7 @@
 	const deletePartner = async () => {
 		createWarning({
 			header: 'Confirm Deletion',
-			text: 'Are you sure you want to delete this partner? This is an irreversible action.',
+			text: `Are you sure you want to delete partner ${partner.name} with id ${partner.id}? This is an irreversible action.`,
 			buttonText: {
 				normal: 'Delete Partner',
 				loading: 'Deleting partner...',
@@ -132,7 +132,7 @@
 		/>
 
 		<div class="mb-5" /> 
-		
+
 		<ButtonReact
 			color={Color.Red}
 			states={{
