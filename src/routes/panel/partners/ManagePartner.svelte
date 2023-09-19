@@ -22,19 +22,20 @@
 			loading: string;
 			success: string;
 			error: string;
-		},
+		};
 		inputtedText?: string;
 		onConfirm: () => Promise<boolean>;
 	}
 
 	const createWarning = (wb: WarningBox) => {
-		wb.nonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		wb.nonce =
+			Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 		warningBox = wb;
 		showActionsModal = false;
 		showWarningModal = true;
-	}
+	};
 
-	export let warningBox: WarningBox | null = null
+	export let warningBox: WarningBox | null = null;
 	const deletePartner = async () => {
 		createWarning({
 			header: 'Confirm Deletion',
@@ -51,21 +52,21 @@
 						login_token: $panelAuthState?.loginToken || '',
 						partner_id: partner?.id || ''
 					}
-				})
+				});
 
 				if (!res.ok) {
-					let err = await res.text()
-					error(`Could not delete partner: ${err}`)
+					let err = await res.text();
+					error(`Could not delete partner: ${err}`);
 					return false;
 				}
 
-				success('Successfully deleted partner')
-				return true;	
+				success('Successfully deleted partner');
+				return true;
 			}
-		})
+		});
 
 		return true;
-	}
+	};
 </script>
 
 <button
@@ -118,11 +119,15 @@
 
 		<p class="font-semibold text-xl">{warningBox.text}</p>
 
-		<p>To confirm, please type the following: <code class="select-none cursor-pointer">{warningBox.nonce}</code></p>
+		<p>
+			To confirm, please type the following: <code class="select-none cursor-pointer"
+				>{warningBox.nonce}</code
+			>
+		</p>
 
-		<div class="mb-5" /> 
+		<div class="mb-5" />
 
-		<InputText 
+		<InputText
 			id="wb-input"
 			label="Are you sure? This is dangerous"
 			placeholder="Dangerous nilly!"
@@ -131,7 +136,7 @@
 			showErrors={false}
 		/>
 
-		<div class="mb-5" /> 
+		<div class="mb-5" />
 
 		<ButtonReact
 			color={Color.Red}
@@ -141,7 +146,7 @@
 				error: warningBox.buttonText?.error
 			}}
 			onClick={async () => {
-				if(!warningBox) {
+				if (!warningBox) {
 					error('Internal error: no warningBox found');
 					return false;
 				}

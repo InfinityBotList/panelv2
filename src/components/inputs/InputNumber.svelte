@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Label from "./Label.svelte";
+	import Label from './Label.svelte';
 
 	export let id: string;
 	export let label: string;
@@ -33,7 +33,7 @@
 </script>
 
 <div class={inpClass}>
-	<Label id={id} label={label} />
+	<Label {id} {label} />
 	{#if description}
 		<p class="text-md mb-2 opacity-80">{@html description}</p>
 	{/if}

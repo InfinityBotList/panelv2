@@ -25,44 +25,44 @@
 		return {
 			partners
 		};
-	}
+	};
 </script>
 
 {#await fetchPartnerList()}
 	<Loading msg="Fetching partner list..." />
 {:then partners}
-	<div class="mt-14">
-		<h1 class="text-3xl font-semibold">
-			Partner Management
-		</h1>
+	<h1 class="text-3xl font-semibold">Partner Management</h1>
 
-		<AddPartner partnerTypes={partners?.partners?.partner_types}/>
+	<AddPartner partnerTypes={partners?.partners?.partner_types} />
 
-		<Column>
-			{#each partners.partners.partners as partner, i}
-				<Card>
-					<img slot="image" src={`${$panelState?.coreConstants?.cdn_url}/partners/${partner?.id}.${partner?.image_type}`} alt="" />
-					<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
-					<svelte:fragment slot="short">{partner?.short}</svelte:fragment>
-					<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
-					<svelte:fragment slot="type">{partner?.type}</svelte:fragment>
-					<svelte:fragment slot="actionA">
-						<CardLinkButton
-							target="_blank"
-							link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
-							showArrow={false}
-							double={false}
-						>
-							View
-						</CardLinkButton>
-					</svelte:fragment>
-					<div slot="extra">
-						<ManagePartner partner={partner} />
-					</div>
-				</Card>
-			{/each}
-		</Column>
-	</div>
+	<Column>
+		{#each partners.partners.partners as partner, i}
+			<Card>
+				<img
+					slot="image"
+					src={`${$panelState?.coreConstants?.cdn_url}/partners/${partner?.id}.${partner?.image_type}`}
+					alt=""
+				/>
+				<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
+				<svelte:fragment slot="short">{partner?.short}</svelte:fragment>
+				<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
+				<svelte:fragment slot="type">{partner?.type}</svelte:fragment>
+				<svelte:fragment slot="actionA">
+					<CardLinkButton
+						target="_blank"
+						link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
+						showArrow={false}
+						double={false}
+					>
+						View
+					</CardLinkButton>
+				</svelte:fragment>
+				<div slot="extra">
+					<ManagePartner {partner} />
+				</div>
+			</Card>
+		{/each}
+	</Column>
 {:catch err}
 	<ErrorComponent msg={`Failed to fetch partner list: ${err}`} />
 {/await}

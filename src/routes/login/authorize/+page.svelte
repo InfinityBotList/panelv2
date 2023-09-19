@@ -33,9 +33,9 @@
 		$panelAuthState = {
 			url: loginState?.instanceUrl,
 			queryPath: loginState?.queryPath,
-			loginToken: "",
+			loginToken: '',
 			sessionState: 'noSession'
-		}
+		};
 
 		let res = await panelQuery({
 			Login: {

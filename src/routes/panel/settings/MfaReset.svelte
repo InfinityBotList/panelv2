@@ -18,7 +18,7 @@
 		}
 
 		try {
-			let res = await panelQuery( {
+			let res = await panelQuery({
 				LoginResetMfa: {
 					login_token: $panelAuthState?.loginToken || '',
 					otp: mfaOtp

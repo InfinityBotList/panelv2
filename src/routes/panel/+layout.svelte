@@ -20,7 +20,7 @@
 		quickActions.push({
 			name: 'Index',
 			description: 'Index Page',
-			link: '/panel',
+			link: '/panel'
 		});
 
 		for (let cap of $panelState?.capabilities || []) {
@@ -29,14 +29,21 @@
 					quickActions.push({
 						name: 'Bot Queue',
 						description: 'View the bot queue',
-						link: '/panel/bots/queue',
+						link: '/panel/bots/queue'
+					});
+					break;
+				case 'CdnManagement':
+					quickActions.push({
+						name: 'Manage CDN',
+						description: 'Manage the CDN(s) modifiable by this Arcadia instance',
+						link: '/panel/cdn'
 					});
 					break;
 				case 'PartnerManagement':
 					quickActions.push({
 						name: 'Manage Partners',
 						description: 'Manage the partners on the list',
-						link: '/panel/partners',
+						link: '/panel/partners'
 					});
 					break;
 				case 'Rpc':
@@ -59,7 +66,7 @@
 		quickActions.push({
 			name: 'Settings',
 			description: 'Customize your experience!',
-			link: '/panel/settings',
+			link: '/panel/settings'
 		});
 
 		if ($panelState?.userPerms?.owner) perms.push('Owner');
@@ -76,7 +83,7 @@
 		<InfoPane title="Navigation" description="Welcome to the panel">
 			<div>
 				{#each quickActions as action, index}
-					<QuickMenuOption {index} {action} actionsLength={quickActions.length}/>
+					<QuickMenuOption {index} {action} actionsLength={quickActions.length} />
 				{/each}
 			</div>
 
@@ -91,7 +98,7 @@
 		</InfoPane>
 
 		<PaneContent>
-			<div class="block">
+			<div class="block mt-14">
 				<slot />
 			</div>
 		</PaneContent>

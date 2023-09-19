@@ -19,7 +19,7 @@
 		const validate = steps[currentStep].Validate();
 
 		if (validate === true) {
-			currentStep = currentStep + 1 // Must be a = here and not ++
+			currentStep = currentStep + 1; // Must be a = here and not ++
 			return true;
 		} else {
 			error('You have not finished this step. Ensure all fields are filled.');
@@ -29,7 +29,7 @@
 
 	const prevStep = async () => {
 		currentStep--;
-		return true
+		return true;
 	};
 </script>
 
@@ -116,9 +116,7 @@
 
 <div class="p-2" />
 
-<div
-	class="flex items-center justify-evenly gap-4 mt-4"
->
+<div class="flex items-center justify-evenly gap-4 mt-4">
 	{#if steps[currentStep].AllowBack && currentStep !== 0}
 		<ButtonReact
 			color={Color.Themable}

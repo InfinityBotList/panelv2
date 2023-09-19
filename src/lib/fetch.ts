@@ -9,12 +9,12 @@ export const panelQuery = async (query: PanelQuery) => {
 
 	return await fetchClient(`${data?.url}${data?.queryPath}`, {
 		headers: {
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json'
 		},
 		method: 'POST',
-		body: JSON.stringify(query),
-	})
-}
+		body: JSON.stringify(query)
+	});
+};
 
 export const fetchClient = async (url: string, init?: RequestInit) => {
 	logger.info('FetchClient', init?.method || 'GET', url);

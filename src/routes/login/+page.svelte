@@ -60,9 +60,9 @@
 		$panelAuthState = {
 			url,
 			queryPath,
-			loginToken: "",
+			loginToken: '',
 			sessionState: 'noSession'
-		}
+		};
 
 		res = await panelQuery({
 			GetLoginUrl: {

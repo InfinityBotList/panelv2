@@ -44,18 +44,18 @@
 				{/if}
 			</div>
 		{/if}
-	
+
 		{#if $$slots.actionA}
 			{#if $$slots.actionB}
 				<div class="flex">
 					<slot name="actionA" />
-					<div class="ml-3"></div>
+					<div class="ml-3" />
 					<slot name="actionB" />
 				</div>
 			{:else}
 				<div class="flex justify-evenly items-center">
 					<slot name="actionA" />
-				</div>	
+				</div>
 			{/if}
 		{/if}
 	</div>

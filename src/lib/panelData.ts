@@ -7,12 +7,12 @@ import type { TargetType } from '../utils/generated/arcadia/TargetType';
 import type { AuthData } from '../utils/generated/arcadia/AuthData';
 
 export interface PanelState {
-	auth: AuthData,
+	auth: AuthData;
 	userDetails: PartialUser;
 	userPerms: PanelPerms;
 	capabilities: Capability[];
 	coreConstants: CoreConstants;
-	rpcSupportedTargetTypes: TargetType[]
+	rpcSupportedTargetTypes: TargetType[];
 }
 
 export const panelState: Writable<PanelState | null> = writable(null);

@@ -8,11 +8,11 @@
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
 	import Loading from './Loading.svelte';
 	import { fetchClient, panelQuery } from '$lib/fetch';
-	import ErrorComponent from './Error.svelte'
+	import ErrorComponent from './Error.svelte';
 
 	let loadingMsg = 'Waiting for monkeys?';
-	
-	type CoreQuery = Record<keyof PanelState, (data: Record<string, any>) => PanelQuery>
+
+	type CoreQuery = Record<keyof PanelState, (data: Record<string, any>) => PanelQuery>;
 
 	let coreQueries: CoreQuery = {
 		auth: () => {
@@ -20,7 +20,7 @@
 				GetIdentity: {
 					login_token: $panelAuthState?.loginToken || ''
 				}
-			}
+			};
 		},
 		userDetails: (data: Record<string, any>) => {
 			let authData: AuthData = data?.auth;
@@ -28,7 +28,7 @@
 				GetUserDetails: {
 					user_id: authData?.user_id || ''
 				}
-			}
+			};
 		},
 		userPerms: (data: Record<string, any>) => {
 			let authData: AuthData = data?.auth;
@@ -36,28 +36,28 @@
 				GetUserPerms: {
 					user_id: authData?.user_id || ''
 				}
-			}
+			};
 		},
 		capabilities: () => {
 			return {
 				GetCapabilities: {
 					login_token: $panelAuthState?.loginToken || ''
 				}
-			}
+			};
 		},
 		coreConstants: () => {
 			return {
 				GetCoreConstants: {
 					login_token: $panelAuthState?.loginToken || ''
 				}
-			}
+			};
 		},
 		rpcSupportedTargetTypes: () => {
 			return {
 				GetRpcTargetTypes: {
 					login_token: $panelAuthState?.loginToken || ''
 				}
-			}
+			};
 		}
 	};
 
@@ -82,15 +82,15 @@
 				switch ($panelAuthState?.sessionState) {
 					case 'pending':
 						goto(`/login/mfa?redirect=${window.location.pathname}`);
-						return;
+						return false;
 				}
 
 				authorized = true;
 			} catch (e) {
 				logger.error('Panel', 'Failed to load panel state data from localStorage');
 
-				if ($page.url.pathname != '/login') {
-					await goto(`/login?redirect=${window.location.pathname}`);
+				if ($page?.url?.pathname != '/login') {
+					await goto(`/login?redirect=${window?.location?.pathname}`);
 				}
 				return false;
 			}
@@ -105,28 +105,28 @@
 
 		loadingMsg = 'Validating your existence...';
 
-		let data: Record<string, any> = {}
+		let data: Record<string, any> = {};
 
-		for(const key in coreQueries) {
+		for (const key in coreQueries) {
 			logger.info('Panel', `CoreQuery: fetch ${key}`);
 			let query = coreQueries[key as keyof PanelState](data);
 
-			let resp = await panelQuery(query)
+			let resp = await panelQuery(query);
 
 			if (!resp.ok) {
 				loadingMsg = await resp.text();
-				throw new Error(loadingMsg)
+				throw new Error(loadingMsg);
 			}
 
 			let json = await resp.json();
 			data[key] = json;
 		}
 
-		$panelState = data as PanelState
+		$panelState = data as PanelState;
 
 		setInterval(checkAuth, 1000 * 60 * 1);
 
-		return true
+		return true;
 	};
 
 	const checkAuth = async () => {
@@ -137,7 +137,7 @@
 				GetIdentity: {
 					login_token: $panelAuthState?.loginToken || ''
 				}
-			})
+			});
 
 			if (!resp.ok) {
 				let err = await resp.text();
@@ -155,7 +155,7 @@
 	{#if res}
 		<slot />
 	{:else}
-		<Loading msg={"Just a moment..."} />
+		<Loading msg={'Just a moment...'} />
 	{/if}
 {:catch err}
 	<ErrorComponent msg={loadingMsg} />

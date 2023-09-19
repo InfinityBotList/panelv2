@@ -112,7 +112,7 @@ Converted to SvelteKit from NextJS for panel use
 
 		setTimeout(() => {
 			let resp = onClick().catch((e) => {
-				error(`${e}`)
+				error(`${e}`);
 				state = ReactState.Error;
 
 				// Wait 2 seconds
