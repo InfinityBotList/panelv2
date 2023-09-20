@@ -11,7 +11,7 @@
 	import Column from '../../../../components/Column.svelte';
 	import Card from '../../../../components/Card.svelte';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 	import { title } from '$lib/strings';
 	import Select from './Select.svelte';
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';

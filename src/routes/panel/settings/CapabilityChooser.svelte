@@ -2,7 +2,7 @@
 	import { fetchClient, panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { panelAuthState } from '$lib/panelAuthState';
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import GreyText from '../../../components/GreyText.svelte';
 	import Loading from '../../../components/Loading.svelte';

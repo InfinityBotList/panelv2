@@ -1,7 +1,7 @@
 <script lang="ts">
 	import logger from '$lib/logger';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
-	import { panelState, type PanelState } from '$lib/panelData';
+	import { panelState, type PanelState } from '$lib/panelState';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';

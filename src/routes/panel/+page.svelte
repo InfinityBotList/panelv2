@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 </script>
 
 <div class="mt-14">

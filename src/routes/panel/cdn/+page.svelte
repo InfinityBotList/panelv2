@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
-	import { error } from '$lib/toast';
 	import Loading from '../../../components/Loading.svelte';
 	import type { Link } from '../../../utils/generated/arcadia/Link';
 	import ErrorComponent from '../../../components/Error.svelte';

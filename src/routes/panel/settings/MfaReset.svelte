@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { logoutUser } from '$lib/logout';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
@@ -7,7 +7,6 @@
 	import GreyText from '../../../components/GreyText.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { Color } from '../../../components/button/colors';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 
 	let mfaOtp: string = '';
 

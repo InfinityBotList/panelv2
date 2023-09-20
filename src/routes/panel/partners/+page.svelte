@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 	import Card from '../../../components/Card.svelte';
 	import CardLinkButton from '../../../components/CardLinkButton.svelte';
 	import Column from '../../../components/Column.svelte';

@@ -5,7 +5,7 @@
 	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
 	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
 	import Card from '../../../../components/Card.svelte';
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { fetchClient, panelQuery } from '$lib/fetch';

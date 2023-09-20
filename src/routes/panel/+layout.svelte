@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { panelState } from '$lib/panelData';
+	import { panelState } from '$lib/panelState';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
 	import UnorderedList from '../../components/UnorderedList.svelte';
