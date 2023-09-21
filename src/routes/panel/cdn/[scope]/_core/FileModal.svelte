@@ -58,19 +58,31 @@
             throw new Error("No preview available for this file (no extension)")
         }
 
+        let data: Blob;
+
         switch (ext) {
             case "png":
             case "jpg":
             case "jpeg":
             case "gif":
             case "webp":
-                let data = await loadData()
+                data = await loadData()
 
                 let img = document.createElement("img")
                 img.src = URL.createObjectURL(data)
                 img.classList.add("max-w-full", "max-h-full")
                 if(previewBox) {
                     previewBox.appendChild(img)
+                }
+                break;
+            case "svg":
+                data = await loadData()
+                let text = await data.text()
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(text, "image/svg+xml");
+                doc.documentElement.classList.add("max-w-full", "max-h-full")
+                if(previewBox) {
+                    previewBox.appendChild(doc.documentElement)
                 }
                 break;
             default:
