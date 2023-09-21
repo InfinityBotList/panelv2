@@ -2,8 +2,10 @@
 	import Icon from "@iconify/svelte";
 	import type { CdnAssetItem } from "../../../../../utils/generated/arcadia/CdnAssetItem";
 	import { cdnStateStore } from "./cdnStateStore";
+	import FileModal from "./FileModal.svelte";
 
     export let files: CdnAssetItem[];
+    export let scope: string;
     export let index: number
 
     let file: CdnAssetItem;
@@ -22,12 +24,14 @@
         return "bx:file"
     }
 
+    let showFileModal: boolean = false
+
     $: file = files[index]
 </script>
 
 {#key file}
     <button 
-        class={`w-full text-left rounded-md block text-white hover:bg-slate-800 p-4 ${(index < files.length - 1) ? "border-b" : ""}`}
+        class={`rounded-t-md w-full text-left block text-white hover:bg-slate-800 p-4 ${(index < files.length - 1) ? "border-b" : "rounded-md"}`}
         on:click={() => {
             if(file.is_dir) {
                 if($cdnStateStore.path) {
@@ -35,6 +39,8 @@
                 } else {
                     $cdnStateStore.path = file.name
                 }
+            } else {
+                showFileModal = true
             }
         }}
     >
@@ -43,3 +49,7 @@
         <div class="mt-2 text-gray-400"><span class="font-semibold">Location: </span>{file.path}</div>
     </button>
 {/key}
+
+{#if showFileModal}
+    <FileModal bind:showModal={showFileModal} {file} {scope} />
+{/if}

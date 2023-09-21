@@ -2,15 +2,23 @@
 	import logger from '$lib/logger';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
 	import { panelState, type PanelState } from '$lib/panelState';
-	import { goto } from '$app/navigation';
+	import { goto as gotoOnce } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
 	import type { AuthData } from '../utils/generated/arcadia/AuthData';
 	import Loading from './Loading.svelte';
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte';
 
 	let loadingMsg = 'Waiting for monkeys?';
+	let navigating: boolean = false;
+
+	// Safari needs this patch here
+	const goto = async (url: string) => {
+		if(navigating) return new Promise(() => {});
+		navigating = true;
+		return await gotoOnce(url);
+	}
 
 	type CoreQuery = Record<keyof PanelState, (data: Record<string, any>) => PanelQuery>;
 
@@ -66,6 +74,8 @@
 			return true;
 		}
 
+		logger.info('Panel', 'Page:', { $page });
+
 		let authorized = false;
 
 		logger.info('Panel', 'Loading panel...');
@@ -81,7 +91,7 @@
 
 				switch ($panelAuthState?.sessionState) {
 					case 'pending':
-						goto(`/login/mfa?redirect=${window.location.pathname}`);
+						await goto(`/login/mfa?redirect=${window.location.pathname}`);
 						return false;
 				}
 
@@ -158,5 +168,5 @@
 		<Loading msg={'Just a moment...'} />
 	{/if}
 {:catch err}
-	<ErrorComponent msg={loadingMsg} />
+	<ErrorComponent msg={err?.toString()} />
 {/await}

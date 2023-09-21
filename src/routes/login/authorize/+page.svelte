@@ -1,11 +1,19 @@
 <script lang="ts">
 	import Loading from '../../../components/Loading.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
-	import { goto } from '$app/navigation';
+	import { goto as gotoOnce } from '$app/navigation';
 	import { hexToUtf8 } from '$lib/strings';
+	import logger from '$lib/logger';
+
+	// Safari needs this patch here
+	let navigating: boolean = false;
+	const goto = async (url: string) => {
+		if(navigating) return new Promise(() => {});
+		navigating = true;
+		return await gotoOnce(url);
+	}
 
 	let msg: string = 'Logging you in now...';
 
@@ -53,16 +61,22 @@
 		let ps: PanelAuthState = {
 			url: loginState?.instanceUrl,
 			queryPath: loginState?.queryPath,
-			loginToken,
+			loginToken: loginToken,
 			sessionState: 'pending'
 		};
 
 		localStorage.setItem('panelStateData', JSON.stringify(ps));
 
+		if(!localStorage.getItem('panelStateData')) {
+			throw new Error('Failed to save panel state data to localStorage');
+		}
+
+		logger.info("Panel", "Login", localStorage.getItem('panelStateData'));
+
 		if (window.opener) {
 			window?.opener?.postMessage('login', location.origin);
 		} else {
-			goto(`/login/mfa?redirect=${loginState?.redirectUrl}`);
+			return await goto(`/login/mfa?redirect=${loginState?.redirectUrl}`);
 		}
 	};
 </script>

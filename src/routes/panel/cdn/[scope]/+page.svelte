@@ -46,7 +46,7 @@
         <p><span class="font-semibold">Status: </span>{status}</p>
         <p><span class="font-semibold">Current Path: </span>/{$cdnStateStore.path}</p>
         <div class="mb-4"></div>
-        <FileView files={files} />
+        <FileView {files} scope={$page.params.scope} />
     {:catch err}
         <ErrorComponent msg={`Failed to load CDN path entries: ${err?.toString()}`} />
     {/await}

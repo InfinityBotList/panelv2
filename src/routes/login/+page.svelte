@@ -6,17 +6,24 @@
 	import { error } from '$lib/toast';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import type { PanelQuery } from '../../utils/generated/arcadia/PanelQuery';
+	import { goto as gotoOnce } from '$app/navigation';
 	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
 	import { fetchClient, panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
 
-	onMount(() => {
+	// Safari needs this patch here
+	let navigating: boolean = false;
+	const goto = async (url: string) => {
+		if(navigating) return new Promise(() => {});
+		navigating = true;
+		return await gotoOnce(url);
+	}
+
+	onMount(async () => {
 		if ($panelAuthState) {
-			goto('/');
+			await goto('/');
 		}
 	});
 
@@ -101,7 +108,7 @@
 				// Check if the message is from the login tab
 				if (e.source === loginTab) {
 					loginTab?.close();
-					goto(`/login/mfa?redirect=${redirect}`);
+					await goto(`/login/mfa?redirect=${redirect}`);
 				}
 			});
 		} catch (err) {

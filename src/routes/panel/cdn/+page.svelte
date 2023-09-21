@@ -33,7 +33,7 @@
 	>
     <div id="link-box" class="border rounded-md">
         {#each cdnScopes as cdnScope, i}
-		    <a href={`/panel/cdn/${cdnScope.name}`} class={`rounded-md block text-white hover:bg-slate-800 p-4 ${(i < cdnScopes.length - 1) ? "border-b" : ""}`}>
+		    <a href={`/panel/cdn/${cdnScope.name}`} class={`block rounded-t-md text-white hover:bg-slate-800 p-4 ${(i < cdnScopes.length - 1) ? "border-b" : "rounded-md"}`}>
 			    {cdnScope.name}
                 <div class="mt-2 text-gray-400"><span class="font-semibold">Location: </span>{cdnScope.value}</div>
             </a>

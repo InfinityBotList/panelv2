@@ -8,7 +8,7 @@
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { Color } from '../../../components/button/colors';
 
 	let msg: string = 'Loading MFA...';
@@ -25,10 +25,11 @@
 
 	const loadMfa = async () => {
 		let panelStateData = localStorage.getItem('panelStateData');
+		
+		logger.info("MFA", panelStateData)
 
 		if (!panelStateData) {
-			await goto(`/login?redirect=${redirect()}`);
-			return;
+			throw new Error("Couldn't find panel state data in localStorage")
 		}
 
 		try {
