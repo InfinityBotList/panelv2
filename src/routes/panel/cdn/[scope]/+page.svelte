@@ -6,8 +6,7 @@
     import { page } from "$app/stores";
 	import FileView from "./_core/FileView.svelte";
 	import type { CdnAssetItem } from "../../../../utils/generated/arcadia/CdnAssetItem";
-	import { cdnStateStore } from "./_core/cdnStateStore";
-	import { afterNavigate } from "$app/navigation";
+	import { cdnStateStore, cdnDataStore } from "./_core/cdnStateStore";
 	import InputText from "../../../../components/inputs/InputText.svelte";
 
     export let status: string = "loading";
@@ -31,25 +30,21 @@
 
         let items: CdnAssetItem[] = await res.json()
 
+        $cdnDataStore.files = items
+
         status = "ready"
         return items
     }
-
-	afterNavigate(() => {
-		$cdnStateStore = {
-            path: ""
-        }
-	});
 </script>
 
-{#key $cdnStateStore?.path}
+{#key $cdnStateStore}
     <p><span class="font-semibold">Status: </span>{status}</p>
     <p><span class="font-semibold">Current Path: </span>/{$cdnStateStore.path}</p>
     {#await loadCdnPath()}
         <Loading msg="Loading CDN path entries" />
-    {:then files}
+    {:then}
         <div class="mb-4"></div>
-        <FileView {files} scope={$page.params.scope} />
+        <FileView scope={$page.params.scope} />
     {:catch err}
         <ErrorComponent msg={`Failed to load CDN path entries: ${err?.toString()}`} />
     {/await}

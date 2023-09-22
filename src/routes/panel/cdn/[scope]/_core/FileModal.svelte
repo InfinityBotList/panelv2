@@ -6,6 +6,12 @@
 	import type { CdnAssetItem } from "../../../../../utils/generated/arcadia/CdnAssetItem";
 	import ErrorComponent from "../../../../../components/Error.svelte";
 	import type { CdnScopeData } from "../../../../../utils/generated/arcadia/CdnScopeData";
+	import { error, success } from "$lib/toast";
+	import InputText from "../../../../../components/inputs/InputText.svelte";
+	import ButtonReact from "../../../../../components/button/ButtonReact.svelte";
+	import { Color } from "../../../../../components/button/colors";
+	import BoolInput from "../../../../../components/inputs/BoolInput.svelte";
+	import { cdnDataStore, cdnStateStore } from "./cdnStateStore";
 
 	export let showModal: boolean; // boolean, whether or not the modal is shown or not
     export let file: CdnAssetItem;
@@ -143,6 +149,61 @@
         }
     }
 
+    let copyFilePath: string
+    let copyFilePaneOpen: boolean = false;
+    let copyFileSettingOverwrite: boolean = false;
+    let copyFileSettingDeleteOriginal: boolean = true;
+    const copyFile = async () => {
+        if(!copyFilePath) {
+            error("Please enter a new file path")
+            return false
+        }
+
+        if(copyFilePath?.startsWith("/")) {
+            copyFilePath = copyFilePath.slice(1)
+        }
+
+        let path = file.path
+
+        if(path.startsWith("/")) {
+            path = path.slice(1)
+        }
+
+        // Remove filename from path
+        let pathSplit = path.split("/")
+        pathSplit.pop()
+
+        // Join path back together
+        path = pathSplit.join("/")
+
+        let res = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || "",
+                cdn_scope: scope || "",
+                path,
+                name: file.name,
+                action: {
+                    CopyFile: {
+                        overwrite: copyFileSettingOverwrite,
+                        delete_original: copyFileSettingDeleteOriginal,
+                        copy_to: copyFilePath
+                    }
+                }
+            }
+        })
+
+        if(!res.ok) {
+            let err = await res.text()
+            error(`Failed to rename file: ${err}`)
+            return false
+        }
+
+        $cdnStateStore.retrigger = true
+
+        success("Successfully renamed file")
+
+        return true
+    }
     
     enum ButtonState {
         Idle,
@@ -188,6 +249,8 @@
             return "text-xl inline-block"
         }
     }
+
+    $: if(copyFilePath === undefined) copyFilePath = file.path
 </script>
 
 {#if showModal}
@@ -229,10 +292,10 @@
                 {/if}
             </button> 
             {#await getScope()}
-                <span class="opacity-70">Loading...</span>
+                <span class="opacity-70">Checking CDN</span>
             {:then scopes}
                 <a
-                    href={`${scopes?.scopeData?.exposed_url}${file.path}`}
+                    href={`${scopes?.scopeData?.exposed_url}/${file.path}`}
                     target="_blank"
                     class="text-white hover:text-gray-300 focus:outline-none mr-2"
                 >
@@ -242,7 +305,54 @@
             {:catch err}
                 <ErrorComponent msg={err?.toString() || "Failed to get CDN scopes"} />
             {/await}
+            <button
+                on:click={() => {
+                    copyFilePaneOpen = !copyFilePaneOpen
+                }}
+                class="text-white hover:text-gray-300 focus:outline-none mr-2"
+            >
+                <Icon icon="mdi:rename" class="text-xl inline-block" />
+                Copy/Move/Rename
+            </button>
         </div>
+
+        {#if copyFilePaneOpen}
+            <div id="copy-file">
+                <InputText
+                    id="copy-file-name"
+                    label="New file name"
+                    placeholder="New file name"
+                    bind:value={copyFilePath}
+                    minlength={1}
+                    showErrors={false}
+                />
+                <BoolInput
+                    id="copy-file-overwrite"
+                    label="Overwrite existing file"
+                    description="Overwrite any existing file with the same name"
+                    disabled={false}
+                    bind:value={copyFileSettingOverwrite}
+                />
+                <BoolInput
+                    id="copy-file-delete-original"
+                    label="Delete original file"
+                    description="This is equivalent to a move operation, if enabled the original file will be deleted"
+                    disabled={false}
+                    bind:value={copyFileSettingDeleteOriginal}
+                />
+                <ButtonReact 
+                    color={Color.Themable}
+                    icon="mdi:rename-box"
+                    text="Copy/Move/Rename"
+                    onClick={copyFile}
+                    states={{
+                        loading: "Modifying file...",
+                        success: "Successfully modified file",
+                        error: "Failed to modify file"
+                    }}
+                />
+            </div>
+        {/if}
 
         <h2 class="text-xl font-semibold">Preview</h2>
         {#await renderPreview()}
