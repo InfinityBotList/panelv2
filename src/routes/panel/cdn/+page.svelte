@@ -5,6 +5,7 @@
 	import type { Link } from '../../../utils/generated/arcadia/Link';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import GreyText from '../../../components/GreyText.svelte';
+	import type { CdnScopeData } from '../../../utils/generated/arcadia/CdnScopeData';
 
 	const fetchCdnScopes = async () => {
 		let res = await panelQuery({
@@ -18,7 +19,7 @@
 			throw new Error(`Failed to fetch CDN scopes: ${err}`);
 		}
 
-		let cdnScopes: Link[] = await res.json();
+		let cdnScopes: { [key: string]: CdnScopeData } = await res.json();
 
 		return cdnScopes;
 	};
@@ -32,10 +33,13 @@
 		>A scope is essentially a network share of a CDN on the server that is exposed to the panel!</GreyText
 	>
     <div id="link-box" class="border rounded-md">
-        {#each cdnScopes as cdnScope, i}
-		    <a href={`/panel/cdn/${cdnScope.name}`} class={`block rounded-t-md text-white hover:bg-slate-800 p-4 ${(i < cdnScopes.length - 1) ? "border-b" : "rounded-md"}`}>
-			    {cdnScope.name}
-                <div class="mt-2 text-gray-400"><span class="font-semibold">Location: </span>{cdnScope.value}</div>
+        {#each Object.entries(cdnScopes) as cdnScope, i}
+		    <a href={`/panel/cdn/${cdnScope[0]}`} class={`block rounded-t-md text-white hover:bg-slate-800 p-4 ${(i < Object.entries(cdnScopes).length - 1) ? "border-b" : "rounded-md"}`}>
+			    {cdnScope[0]}
+                <div class="mt-2 text-gray-400">
+					<span class="font-semibold">Path: </span>{cdnScope[1].path}<br/>
+					<span class="font-semibold">Exposed URL: </span>{cdnScope[1].exposed_url}
+				</div>
             </a>
 	    {/each}
     </div>
