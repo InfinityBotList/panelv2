@@ -12,6 +12,7 @@
 	import { Color } from "../../../../../components/button/colors";
 	import BoolInput from "../../../../../components/inputs/BoolInput.svelte";
 	import { cdnDataStore, cdnStateStore } from "./cdnStateStore";
+	import { loadData, renderPreview } from "../../../../../lib/fileutils";
 
 	export let showModal: boolean; // boolean, whether or not the modal is shown or not
     export let file: CdnAssetItem;
@@ -42,110 +43,6 @@
         return {
             scopes,
             scopeData
-        }
-    }
-
-    // Reads the file contents from the server
-    const loadData = async () => {
-        // Remove any slash prefix
-        let path = file.path
-        if(path.startsWith("/")) {
-            path = path.slice(1)
-        }
-
-        // Remove filename from path
-        let pathSplit = path.split("/")
-        pathSplit.pop()
-
-        // Join path back together
-        path = pathSplit.join("/")
-
-        let res = await panelQuery({
-            UpdateCdnAsset: {
-                login_token: $panelAuthState?.loginToken || "",
-                cdn_scope: scope || "",
-                path: path,
-                name: file.name,
-                action: "ReadFile"
-            }
-        })     
-        
-        if(!res.ok) {
-            let err = await res.text()
-            throw new Error(`Failed to read file: ${err}`)
-        }
-
-        let data = await res.blob()
-        return data
-    }
-
-    const renderPreview = async () => {
-        if(!file.name.includes(".")) {
-            throw new Error("No preview available for this file (no extension)")
-        }
-
-        let ext = file.name.split(".").pop()
-
-        if(!ext) {
-            throw new Error("No preview available for this file (no extension)")
-        }
-
-        let data: Blob;
-
-        switch (ext) {
-            case "png":
-            case "jpg":
-            case "jpeg":
-            case "gif":
-            case "webp":
-                data = await loadData()
-
-                let img = document.createElement("img")
-                img.src = URL.createObjectURL(data)
-                img.classList.add("max-w-full", "max-h-full", "bg-white")
-                if(previewBox) {
-                    previewBox.appendChild(img)
-                }
-                break;
-            case "svg":
-                data = await loadData()
-                let text = await data.text()
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(text, "image/svg+xml");
-                doc.documentElement.classList.add("max-w-full", "max-h-full", "bg-white")
-                if(previewBox) {
-                    previewBox.appendChild(doc.documentElement)
-                }
-                break;
-            case "pdf":
-                data = await loadData()
-                let pdf = document.createElement("iframe")
-                pdf.src = URL.createObjectURL(data)
-                pdf.classList.add("max-w-full", "max-h-full")
-                if(previewBox) {
-                    previewBox.appendChild(pdf)
-                }
-                break;
-            case "json":
-                data = await loadData()
-
-                let indentedJson: string = await data.text()
-
-                try {
-                    indentedJson = JSON.stringify(JSON.parse(indentedJson), null, 2)
-                } catch (e) {
-                    indentedJson = `Failed to parse JSON: ${e}\n\n${indentedJson}`
-                }
-
-                let json = document.createElement("pre")
-                json.innerText = indentedJson
-                json.classList.add("max-w-full", "h-full")
-                if(previewBox) {
-                    previewBox.appendChild(json)
-                }
-                break;
-            default:
-                throw new Error("No preview available for this file (unsupported file type/extension)")
         }
     }
 
@@ -194,15 +91,47 @@
 
         if(!res.ok) {
             let err = await res.text()
-            error(`Failed to rename file: ${err}`)
+            error(`Failed to modify file: ${err}`)
             return false
         }
 
-        $cdnStateStore.retrigger = true
+        $cdnStateStore.triggerRefresh += 1
 
-        success("Successfully renamed file")
+        success("Successfully modified file")
 
         return true
+    }
+
+    const deleteFile = async () => {
+        let path = file.path
+
+        if(path.startsWith("/")) {
+            path = path.slice(1)
+        }
+
+        // Remove filename from path
+        let pathSplit = path.split("/")
+        pathSplit.pop()
+
+        // Join path back together
+        path = pathSplit.join("/")
+
+        let res = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || "",
+                cdn_scope: scope || "",
+                path,
+                name: file.name,
+                action: "Delete"
+            }
+        })
+
+        if(!res.ok) {
+            let err = await res.text()
+            throw new Error(`Failed to delete file: ${err}`)
+        }
+
+        $cdnStateStore.triggerRefresh += 1
     }
     
     enum ButtonState {
@@ -250,6 +179,37 @@
         }
     }
 
+    let deleteBtnState: ButtonStateData = {
+        state: ButtonState.Idle,
+        error: null,
+        getIcon: () => {
+            if(deleteBtnState?.state == ButtonState.Idle) {
+                return "mdi:trash-can-outline"
+            } else if(deleteBtnState?.state == ButtonState.Loading) {
+                return "mdi:loading"
+            } else if(deleteBtnState?.state == ButtonState.Success) {
+                return "mdi:check"
+            } else if(deleteBtnState?.state == ButtonState.Error) {
+                return "mdi:alert-circle"
+            }
+
+            return "mdi:download"
+        },
+        getIconClass: () => {
+            if(deleteBtnState?.state == ButtonState.Idle) {
+                return "text-xl inline-block"
+            } else if(deleteBtnState?.state == ButtonState.Loading) {
+                return "text-xl inline-block animate-spin"
+            } else if(deleteBtnState?.state == ButtonState.Success) {
+                return "text-xl inline-block"
+            } else if(deleteBtnState?.state == ButtonState.Error) {
+                return "text-xl inline-block"
+            }
+
+            return "text-xl inline-block"
+        }
+    }
+
     $: if(copyFilePath === undefined) copyFilePath = file.path
 </script>
 
@@ -262,7 +222,7 @@
                 on:click={async () => {
                     downloadBtnState.state = ButtonState.Loading
                     try {
-                        let data = await loadData()
+                        let data = await loadData(scope, file)
                         let url = URL.createObjectURL(data)
                         let a = document.createElement("a")
                         a.href = url
@@ -312,8 +272,39 @@
                 class="text-white hover:text-gray-300 focus:outline-none mr-2"
             >
                 <Icon icon="mdi:rename" class="text-xl inline-block" />
-                Copy/Move/Rename
+                {#if copyFilePaneOpen}
+                    Close Copy Pane
+                {:else}
+                    Copy/Move/Rename
+                {/if}
             </button>
+            <button 
+                on:click={async () => {
+                    deleteBtnState.state = ButtonState.Loading
+                    try {
+                        await deleteFile()
+                    } catch (e) {
+                        deleteBtnState.state = ButtonState.Error
+                        deleteBtnState.error = e
+                    }
+
+                    setTimeout(() => {
+                        deleteBtnState.state = ButtonState.Idle
+                    }, 5000)
+                }}
+                class="text-white hover:text-gray-300 focus:outline-none mr-2"
+            >
+                <Icon icon={deleteBtnState?.getIcon()} class={deleteBtnState?.getIconClass()} />
+                {#if deleteBtnState?.state == ButtonState.Idle}
+                    Delete File
+                {:else if deleteBtnState?.state == ButtonState.Loading}
+                    Deleting...
+                {:else if deleteBtnState?.state == ButtonState.Success}
+                    Deleted!
+                {:else if deleteBtnState?.state == ButtonState.Error}
+                    Failed to delete: {deleteBtnState?.error?.toString() || "Unknown error"}
+                {/if}
+            </button> 
         </div>
 
         {#if copyFilePaneOpen}
@@ -355,7 +346,7 @@
         {/if}
 
         <h2 class="text-xl font-semibold">Preview</h2>
-        {#await renderPreview()}
+        {#await renderPreview(loadData, scope, file, previewBox)}
             <Icon icon="mdi:loading" class="inline animate-spin text-2xl" />
             <span class="text-xl">Loading Preview</span>
         {:catch err}

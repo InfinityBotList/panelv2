@@ -3,7 +3,7 @@ import type { CdnAssetItem } from '../../../../../utils/generated/arcadia/CdnAss
 
 export interface CdnStateStore {
 	path: string,
-    retrigger: boolean
+    triggerRefresh: number
 }
 
 export interface CdnDataStore {
@@ -12,7 +12,7 @@ export interface CdnDataStore {
 
 export const cdnStateStore: Writable<CdnStateStore> = writable({
     path: "",
-    retrigger: false
+    triggerRefresh: 0
 });
 
 export const cdnDataStore: Writable<CdnDataStore> = writable({

@@ -1,20 +1,23 @@
 <script lang="ts">
 	import { panelQuery } from '$lib/fetch';
+	import { renderPreview, uploadFileChunks } from '$lib/fileutils';
 	import logger from '$lib/logger';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error } from '$lib/toast';
+	import Icon from '@iconify/svelte';
 	import ListItem from '../../../components/ListItem.svelte';
 	import Modal from '../../../components/Modal.svelte';
 	import OrderedList from '../../../components/OrderedList.svelte';
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { Color } from '../../../components/button/colors';
+	import FileUpload from '../../../components/inputs/FileUpload.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
-	import Label from '../../../components/inputs/Label.svelte';
 	import ExtraLinks from '../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
 	import type { CdnAssetItem } from '../../../utils/generated/arcadia/CdnAssetItem';
 	import type { Partner } from '../../../utils/generated/arcadia/Partner';
 	import type { PartnerType } from '../../../utils/generated/arcadia/PartnerType';
-	import { Buffer } from 'buffer/';
+
+	const cdnScope = 'ibl@main'
 
 	let status: string[] = [];
 
@@ -33,45 +36,10 @@
 		created_at: ''
 	};
 
-	let imageFileList: FileList;
-	let imageBase64: string;
+	let imageFile: File;
 	let imageUploaded: boolean = false;
-
-	const readFile = () => {
-		imageUploaded = false;
-
-		if (imageFileList.length > 1) {
-			error('Please only upload one image');
-		}
-
-		if (imageFileList.length == 1) {
-			let file = imageFileList[0];
-
-			if (file.type != 'image/png' && file.type != 'image/jpeg' && file.type != 'image/gif') {
-				error('Please upload a PNG/JPEG/GIF image');
-				return;
-			}
-
-			partner.image_type = file.type.split('/')[1];
-
-			let reader = new FileReader();
-
-			reader.onload = (e) => {
-				let result = e?.target?.result as ArrayBuffer;
-
-				if (!result) {
-					error('Failed to read image');
-					return;
-				}
-
-				imageBase64 = Buffer.from(result).toString('base64');
-
-				imageUploaded = true;
-			};
-
-			reader.readAsArrayBuffer(file);
-		}
-	};
+	let imageMimeType: string;
+	let imageFilePreviewBox: HTMLDivElement;
 
 	const addStatus = (s: string) => {
 		status.push(s);
@@ -96,8 +64,14 @@
 			return false;
 		}
 
-		addStatus('Uploading image to CDN...');
-		addStatus('=> Checking existing partner image list...');
+		if(!imageMimeType?.includes("/")) {
+			error("Invalid image mime type");
+			return false;
+		}
+
+		partner.image_type = imageMimeType.split('/')[1];
+
+		addStatus("=> Checking existing partner image list...");
 
 		let files = await panelQuery({
 			UpdateCdnAsset: {
@@ -105,7 +79,7 @@
 				path: 'partners',
 				name: '',
 				action: 'ListPath',
-				cdn_scope: 'ibl@main'
+				cdn_scope: cdnScope
 			}
 		});
 
@@ -167,7 +141,28 @@
 			}
 		}
 
-		addStatus('=> Uploading image to CDN...');
+		// Calculate sha512 hash of the image
+		addStatus('=> Calculating image hash...');
+		let hash = await crypto.subtle.digest(
+			'sha-512',
+			await imageFile.arrayBuffer()
+		);
+
+		// Convert hash to hex
+		let hashArray = Array.from(new Uint8Array(hash));
+		let hashHex = hashArray
+			.map((b) => b.toString(16).padStart(2, '0'))
+			.join('');
+
+		addStatus(`=> Calculated image hash: ${hashHex}`);
+
+		addStatus('=> Uploading image chunks to CDN...');
+
+		let chunkIds = await uploadFileChunks(imageFile, {
+			onChunkUploaded: (chunkId, size) => {
+				addStatus(`=> Uploaded chunk ${chunkId} (${size} bytes)`);
+			},
+		})
 
 		let upload = await panelQuery({
 			UpdateCdnAsset: {
@@ -177,7 +172,8 @@
 				action: {
 					AddFile: {
 						overwrite: false,
-						contents: imageBase64
+						chunks: chunkIds,
+						sha512: hashHex
 					}
 				},
 				cdn_scope: 'ibl@main'
@@ -194,10 +190,6 @@
 
 		return true;
 	};
-
-	$: if (imageFileList) {
-		readFile();
-	}
 </script>
 
 <button
@@ -265,19 +257,39 @@
 			minlength={5}
 		/>
 
-		<Label id="avatar" label="Image/Avatar of partner" />
-		<input
-			accept="image/png, image/jpeg, image/gif"
-			bind:files={imageFileList}
+		<FileUpload 
 			id="avatar"
-			name="avatar"
-			type="file"
-			multiple={false}
-		/>
+			label="Partner Avatar"
+			bind:file={imageFile}
+			bind:fileMimeType={imageMimeType}
+			bind:fileUploaded={imageUploaded}
+			acceptableTypes={[
+				"image/png",
+				"image/jpeg",
+				"image/gif",
+				"image/webp"
+			]}
+		/> 
 
 		{#if imageUploaded}
-			<p class="font-semibold">Image to upload to CDN ({partner.image_type})</p>
-			<img src={`data:image/${partner.image_type};base64,${imageBase64}`} alt="" />
+			<p class="font-semibold">Image to upload to CDN ({imageMimeType.split('/')[1]})</p>
+			
+			{#await renderPreview(async (_, __) => {
+				return imageFile
+			}, cdnScope, {
+				name: `${partner.id}.${imageMimeType.split('/')[1]}`,
+				path: "partners",
+				size: BigInt(0),
+				last_modified: BigInt(0),
+				permissions: 0o644,
+				is_dir: false
+			}, imageFilePreviewBox)}
+				<Icon icon="mdi:loading" class="inline animate-spin text-2xl" />
+				<span class="text-xl">Loading Preview</span>
+			{:catch err}
+				<p  class="text-red-500">{err?.toString()}</p>
+			{/await}
+			<div bind:this={imageFilePreviewBox} />    
 		{/if}
 
 		<ButtonReact

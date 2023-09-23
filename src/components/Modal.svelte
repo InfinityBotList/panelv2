@@ -28,7 +28,7 @@
 
 <style>
 	dialog {
-		width: 35em;
+		width: 38em;
 		border-radius: 0.2em;
 		border: none;
 		color: white;

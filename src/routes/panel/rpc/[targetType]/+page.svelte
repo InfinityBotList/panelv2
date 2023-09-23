@@ -248,7 +248,7 @@
 					<img slot="image" src={botData?.user?.avatar} alt="" />
 					<svelte:fragment slot="display-name">{botData?.user?.username}</svelte:fragment>
 					<svelte:fragment slot="short">{botData?.short}</svelte:fragment>
-					<svelte:fragment slot="type">#{getType(botData)}</svelte:fragment>
+					<svelte:fragment slot="type"><span class="font-semibold">{getType(botData)}</span></svelte:fragment>
 					<svelte:fragment slot="actionA">
 						<CardLinkButton
 							target="_blank"
