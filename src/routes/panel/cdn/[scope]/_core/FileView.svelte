@@ -106,9 +106,12 @@
 
         if(!uploadFileChunkIds[hashHex]?.length) {
             uploadFileChunkIds[hashHex] = await uploadFileChunks(uploadFile, {
-			    onChunkUploaded: (chunkId, size, totalSize) => {
-				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(size/totalSize) * 100}%]`);
+			    onChunkUploaded: (chunkId, size, done, totalSize) => {
+				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(done[0]/totalSize) * 100}%]`);
 			    },
+                onChunkPreUpload: (range, size, totalSize) => {
+                    addUploadFileStatus(`=> Uploading offset ${range[0]}-${range[1]} (${size} bytes)`);
+                }
 		    })
         } else {
             addUploadFileStatus("=> Using cached chunk IDs")

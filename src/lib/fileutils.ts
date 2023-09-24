@@ -2,10 +2,9 @@ import { panelQuery } from "$lib/fetch";
 import { get } from "svelte/store";
 import type { CdnAssetItem } from "../utils/generated/arcadia/CdnAssetItem";
 import { panelAuthState } from "$lib/panelAuthState";
-import { Buffer } from 'buffer/';
 
 // The maximum size of a chunk of data to send to the server when adding new files
-const maxChunkSize = 1024 * 1024 * 3 // 3MB, for now
+export const maxChunkSize = 1024 * 1024 * 3 // 3MB, for now
 
 // Reads the file contents from the server
 export const loadData = async (scope: string, file: CdnAssetItem) => {
@@ -107,7 +106,8 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
 
 // Options for buffered chunk upload
 export interface UploadChunkOptions {
-    onChunkUploaded?: (chunkId: string, size: number, totalSize: number) => void
+    onChunkPreUpload?: (range: [number, number], size: number, totalSize: number) => void
+    onChunkUploaded?: (chunkId: string, size: number, range: [number, number], totalSize: number) => void
 }
 
 // Uploads a blob to the server returning the list of chunk IDs
@@ -119,15 +119,22 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
 
     while(offset < data.size) {
         let chunk: Blob
+        let range: [number, number]
         if(offset + maxChunkSize <= data.size) {
+            range = [offset, offset + maxChunkSize]
             chunk = data.slice(offset, offset + maxChunkSize)
         } else {
+            range = [offset, data.size]
             chunk = data.slice(offset)
         }
 
-        // Convert chunk to base64 using a Buffer
-        let chunkData = Buffer.from(await chunk.arrayBuffer()).toString("base64")
+        // Convert chunk to a byte array without using Buffer
+        let chunkData = Array.from(new Uint8Array(await chunk.arrayBuffer()))
 
+        if(options?.onChunkPreUpload) {
+            options.onChunkPreUpload(range, chunk.size, data.size)
+        }
+        
         let chunkIdRes = await panelQuery({
             UploadCdnFileChunk: {
                 login_token: get(panelAuthState)?.loginToken || "",
@@ -145,7 +152,7 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
         offset += maxChunkSize
 
         if(options?.onChunkUploaded) {
-            options.onChunkUploaded(chunkId, chunk.size, data.size)
+            options.onChunkUploaded(chunkId, chunk.size, range, data.size)
         }
     }
 

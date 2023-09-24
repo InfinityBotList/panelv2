@@ -38,7 +38,6 @@
 		"@sentry/browser": "^7.64.0",
 		"@sentry/types": "^7.64.0",
 		"@sentry/vite-plugin": "^2.7.1",
-		"@zerodevx/svelte-toast": "^0.9.5",
-		"buffer": "^6.0.3"
+		"@zerodevx/svelte-toast": "^0.9.5"
 	}
 }
