@@ -70,7 +70,7 @@
     let uploadFileUploaded: boolean = false;
     let uploadFilePreviewBox: HTMLDivElement;
     let uploadFileStatus: string[] = [];
-    let uploadFileChunkIds: string[];
+    let uploadFileChunkIds: { [key: string ]: string[] };
     const addUploadFileStatus = (s: string) => {
 		uploadFileStatus.push(s);
 		uploadFileStatus = uploadFileStatus;
@@ -100,8 +100,8 @@
 
 		addUploadFileStatus('=> Uploading file chunks to CDN...');
 
-        if(!uploadFileChunkIds?.length) {
-            uploadFileChunkIds = await uploadFileChunks(uploadFile, {
+        if(!uploadFileChunkIds[hashHex]?.length) {
+            uploadFileChunkIds[hashHex] = await uploadFileChunks(uploadFile, {
 			    onChunkUploaded: (chunkId, size, totalSize) => {
 				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(size/totalSize) * 100}%]`);
 			    },
@@ -120,7 +120,7 @@
 				action: {
 					AddFile: {
 						overwrite: false,
-						chunks: uploadFileChunkIds,
+						chunks: uploadFileChunkIds[hashHex],
 						sha512: hashHex
 					}
 				},
