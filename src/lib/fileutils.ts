@@ -4,7 +4,7 @@ import type { CdnAssetItem } from "../utils/generated/arcadia/CdnAssetItem";
 import { panelAuthState } from "$lib/panelAuthState";
 
 // The maximum size of a chunk of data to send to the server when adding new files
-export const maxChunkSize = 4 * 1024 // 1KB, for now
+export const maxChunkSize = 100 * 1024 // 100KB, for now
 
 // Reads the file contents from the server
 export const loadData = async (scope: string, file: CdnAssetItem) => {
