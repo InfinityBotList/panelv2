@@ -1,10 +1,10 @@
-import { fetchClient, panelQuery } from "$lib/fetch";
+import { panelQuery } from "$lib/fetch";
 import { get } from "svelte/store";
 import type { CdnAssetItem } from "../utils/generated/arcadia/CdnAssetItem";
 import { panelAuthState } from "$lib/panelAuthState";
 
 // The maximum size of a chunk of data to send to the server when adding new files
-export const maxChunkSize = 100 * 1024 // 100KB, for now
+export const maxChunkSize = 1024 * 1024 * 4 // 4MB, for now
 
 // Reads the file contents from the server
 export const loadData = async (scope: string, file: CdnAssetItem) => {
@@ -106,7 +106,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
 
 // Options for buffered chunk upload
 export interface UploadChunkOptions {
-    onChunkPreUpload?: (chunkId: string, range: [number, number], size: number, totalSize: number) => void
+    onChunkPreUpload?: (range: [number, number], size: number, totalSize: number) => void
     onChunkUploaded?: (chunkId: string, size: number, range: [number, number], totalSize: number) => void
 }
 
@@ -130,35 +130,23 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
 
         // Convert chunk to a byte array without using Buffer
         let chunkData = Array.from(new Uint8Array(await chunk.arrayBuffer()))
+
+        if(options?.onChunkPreUpload) {
+            options.onChunkPreUpload(range, chunk.size, data.size)
+        }
         
         let chunkIdRes = await panelQuery({
-            CreateFileChunk: {
+            UploadCdnFileChunk: {
                 login_token: get(panelAuthState)?.loginToken || "",
+                chunk: chunkData,
             }
         })
 
         if(!chunkIdRes.ok) {
-            throw new Error(`Failed to create chunk: ${await chunkIdRes.text()}`)
+            throw new Error(`Failed to upload chunk: ${await chunkIdRes.text()}`)
         }
 
         let chunkId = await chunkIdRes.text()
-
-        if(options?.onChunkPreUpload) {
-            options.onChunkPreUpload(chunkId, range, chunk.size, data.size)
-        }
-
-        // Upload chunk
-        let res = await fetchClient(`${get(panelAuthState)?.url}${get(panelAuthState)?.queryPath}/cdnUploadChunk/${chunkId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(chunkData)
-        })
-
-        if(!res.ok) {
-            throw new Error(`Failed to upload chunk: ${await res.text()}`)
-        }
 
         chunkIds.push(chunkId)
         offset += maxChunkSize

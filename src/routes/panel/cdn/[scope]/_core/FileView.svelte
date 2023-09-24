@@ -109,8 +109,8 @@
 			    onChunkUploaded: (chunkId, size, done, totalSize) => {
 				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(done[0]/totalSize) * 100}%]`);
 			    },
-                onChunkPreUpload: (chunkId, range, size, totalSize) => {
-                    addUploadFileStatus(`=> Uploading chunk ${chunkId} with offset ${range[0]}-${range[1]} (${size} bytes / ${totalSize} bytes)`);
+                onChunkPreUpload: (range, size, totalSize) => {
+                    addUploadFileStatus(`=> Uploading with offset ${range[0]}-${range[1]} (${size} bytes / ${totalSize} bytes)`);
                 }
 		    })
         } else {
@@ -247,6 +247,8 @@
     {#if openAction == Action.UploadFile && showModal}
         <Modal bind:showModal>
             <h1 slot="header" class="font-semibold text-2xl">Upload File</h1>
+
+            <p class="text-red-500 font-semibold">Known to be slow on Safari (macOS). Use Google Chrome if it's too slow</p>
 
             <FileUpload 
                 id="upload-file"
