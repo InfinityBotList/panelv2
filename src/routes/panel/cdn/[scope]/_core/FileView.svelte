@@ -102,8 +102,8 @@
 
         if(uploadFileChunkIds?.length == 0) {
             uploadFileChunkIds = await uploadFileChunks(uploadFile, {
-			    onChunkUploaded: (chunkId, size) => {
-				    addUploadFileStatus(`=> Uploaded chunk ${chunkId} (${size} bytes)`);
+			    onChunkUploaded: (chunkId, size, totalSize) => {
+				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(size/totalSize) * 100}%]`);
 			    },
 		    })
         } else {

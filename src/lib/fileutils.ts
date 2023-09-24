@@ -107,7 +107,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
 
 // Options for buffered chunk upload
 export interface UploadChunkOptions {
-    onChunkUploaded?: (chunkId: string, size: number) => void
+    onChunkUploaded?: (chunkId: string, size: number, totalSize: number) => void
 }
 
 // Uploads a blob to the server returning the list of chunk IDs
@@ -145,7 +145,7 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
         offset += maxChunkSize
 
         if(options?.onChunkUploaded) {
-            options.onChunkUploaded(chunkId, chunk.size)
+            options.onChunkUploaded(chunkId, chunk.size, data.size)
         }
     }
 
