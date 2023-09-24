@@ -109,8 +109,8 @@
 			    onChunkUploaded: (chunkId, size, done, totalSize) => {
 				    addUploadFileStatus(`=> Chunk ${chunkId} (${size} bytes) [${(done[0]/totalSize) * 100}%]`);
 			    },
-                onChunkPreUpload: (range, size, totalSize) => {
-                    addUploadFileStatus(`=> Uploading offset ${range[0]}-${range[1]} (${size} bytes)`);
+                onChunkPreUpload: (chunkId, range, size, totalSize) => {
+                    addUploadFileStatus(`=> Uploading chunk ${chunkId} with offset ${range[0]}-${range[1]} (${size} bytes / ${totalSize} bytes)`);
                 }
 		    })
         } else {
