@@ -158,3 +158,132 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
 
     return chunkIds
 }
+
+export const sanitizeName = (name: string) => {
+    // Replace the common unicode space with a normal space
+    const UNICODE_REPLACEMENTS: [string | RegExp, string][] = [
+        // Spaces
+        [/\u00A0/g, " "],
+        [/\u2007/g, " "],
+        [/\u202F/g, " "],
+        [/\uFEFF/g, " "],
+        [/\u3000/g, " "],
+
+        // Zero-width space
+        [/\u200B/g, ""],
+
+        // Hyphens
+        [/\u2010/g, "-"],
+        [/\u2011/g, "-"],
+        [/\u2012/g, "-"],
+        [/\u2013/g, "-"],
+        [/\u2014/g, "-"],
+        [/\u2015/g, "-"],
+        [/\u2212/g, "-"],
+        [/\uFE58/g, "-"],
+        [/\uFE63/g, "-"],
+        [/\uFF0D/g, "-"],   
+
+        // Quotes
+        [/\u2018/g, "'"],
+        [/\u2019/g, "'"],
+        [/\u201A/g, "'"],
+        [/\u201B/g, "'"],
+        [/\u201C/g, '"'],
+        [/\u201D/g, '"'],
+        [/\u201E/g, '"'],
+        [/\u201F/g, '"'],
+        [/\u2032/g, "'"],
+        [/\u2033/g, '"'],
+        [/\u2034/g, "''"],
+        [/\u2035/g, "'"],
+        [/\u2036/g, '"'],
+        [/\u2037/g, "''"],
+        [/\u2039/g, "'"],
+        [/\u203A/g, "'"],
+        [/\u275B/g, '"'],
+        [/\u275C/g, '"'],
+        [/\u275D/g, '"'],
+        [/\u275E/g, '"'],
+        [/\uFF02/g, '"'],
+        [/\uFF07/g, "'"],
+        [/\uFF62/g, '"'],
+        [/\uFF63/g, '"'],
+        
+        // Brackets
+        [/\u3008/g, "<"],
+        [/\u3009/g, ">"],
+        [/\uFE64/g, "<"],
+        [/\uFE65/g, ">"],
+        [/\uFF1C/g, "<"],
+        [/\uFF1E/g, ">"],
+        [/\uFF08/g, "("],
+        [/\uFF09/g, ")"],
+        [/\u3010/g, "["],
+        [/\u3011/g, "]"],
+        [/\uFF3B/g, "["],
+        [/\uFF3D/g, "]"],
+        [/\uFF5B/g, "{"],
+        [/\uFF5D/g, "}"],
+        [/\uFE59/g, "{"],
+        [/\uFE5A/g, "}"],
+        [/\uFE5B/g, "("],
+        [/\uFE5C/g, ")"],
+        [/\uFE5D/g, "("],
+        [/\uFE5E/g, ")"],
+        [/\u3014/g, "["],
+        [/\u3015/g, "]"],
+        [/\u3016/g, "["],
+        [/\u3017/g, "]"],
+        [/\u3018/g, "["],
+        [/\u3019/g, "]"],
+        [/\u301A/g, "["],
+        [/\u301B/g, "]"],
+        [/\u301C/g, "~"],
+        [/\uFF5E/g, "~"],
+        [/\u2026/g, "..."],
+        [/\uFE19/g, "#"],
+        [/\uFF03/g, "#"],
+        [/\uFE30/g, "#"],
+        [/\uFE6B/g, "#"],
+        [/\uFF04/g, "$"],
+        [/\uFE31/g, "$"],
+        [/\uFE69/g, "$"],
+        [/\uFF05/g, "%"],
+        [/\uFE32/g, "%"],
+        [/\uFE6A/g, "%"],
+        [/\uFF06/g, "&"],
+        [/\uFE33/g, "&"],
+        [/\uFF07/g, "'"],
+        [/\uFE34/g, "'"],
+        [/\uFE4D/g, "'"],
+        [/\uFF08/g, "("],
+        [/\uFE35/g, "("],
+        [/\uFF09/g, ")"],
+        [/\uFE36/g, ")"],
+        [/\uFE37/g, "*"],
+        [/\uFF0A/g, "*"],
+        [/\uFE38/g, "+"],
+        [/\uFF0B/g, "+"],
+        [/\uFE39/g, ","],
+        [/\uFF0C/g, ","],
+        [/\uFE3A/g, ";"],
+        [/\uFF1B/g, ";"],
+        [/\uFE3B/g, "<"],
+        [/\uFF1C/g, "<"],
+        [/\uFE3C/g, "="],
+        [/\uFF1D/g, "="],
+        [/\uFE3D/g, ">"],
+        [/\uFF1E/g, ">"],
+        [/\uFE3E/g, "?"],        
+    ]
+
+    for(let [regex, replacement] of UNICODE_REPLACEMENTS) {
+        name = name.replace(regex, replacement)
+    }
+
+    // Remove all non-ascii characters
+    name = name.replace(/[^\x00-\x7F]/g, "")
+
+    return name
+}

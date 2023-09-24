@@ -10,7 +10,7 @@
 	import { panelQuery } from "$lib/fetch";
 	import { panelAuthState } from "$lib/panelAuthState";
 	import FileUpload from "../../../../../components/inputs/FileUpload.svelte";
-	import { renderPreview, uploadFileChunks } from "$lib/fileutils";
+	import { renderPreview, sanitizeName, uploadFileChunks } from "$lib/fileutils";
 	import OrderedList from "../../../../../components/OrderedList.svelte";
 	import ListItem from "../../../../../components/ListItem.svelte";
 
@@ -123,7 +123,7 @@
 			UpdateCdnAsset: {
 				login_token: $panelAuthState?.loginToken || '',
 				path: $cdnStateStore.path,
-				name: uploadFileName,
+				name: sanitizeName(uploadFileName),
 				action: {
 					AddFile: {
 						overwrite: false,
