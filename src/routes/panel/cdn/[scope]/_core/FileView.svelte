@@ -85,6 +85,28 @@
 
 		// Calculate sha512 hash of the image
 		addUploadFileStatus('=> Calculating file hash...');
+
+        // Use a stream to calculate the hash since files can be large
+        /*function byteArrayToWordArray(ba) {
+            let wa = [], i;
+            for (i = 0; i < ba.length; i++) wa[(i / 4) | 0] |= ba[i] << (24 - 8 * i);
+            return CryptoJS.lib.WordArray.create(wa, ba.length);
+        }
+
+        const cryptoJsWritableStream = (hash) => {
+            return new WritableStream({
+                write(chunk) {
+                    hash.update(byteArrayToWordArray(chunk));
+                },
+                close() {},
+                abort() {},
+            });
+        };
+
+        let stream = uploadFile.stream();
+        const hash = CryptoJS.algo.SHA512.create();
+        await stream.pipeTo(cryptoJsWritableStream(hash));*/
+
 		let hash = await crypto.subtle.digest(
 			'sha-512',
 			await uploadFile.arrayBuffer()
@@ -96,7 +118,7 @@
 			.map((b) => b.toString(16).padStart(2, '0'))
 			.join('');
 
-        addUploadFileStatus(`=> Calculated image hash: ${hashHex}`);
+        addUploadFileStatus(`=> Calculated filee hash: ${hashHex}`);
 
 		addUploadFileStatus('=> Uploading file chunks to CDN...');
 

@@ -4,7 +4,8 @@ import type { CdnAssetItem } from "../utils/generated/arcadia/CdnAssetItem";
 import { panelAuthState } from "$lib/panelAuthState";
 
 // The maximum size of a chunk of data to send to the server when adding new files
-export const maxChunkSize = 1024 * 1024 * 4 // 4MB, for now
+export const maxChunkSizeSmall = 1024 * 1024 * 4 // 4MB, for now
+export const maxChunkSizeLarge = 1024 * 1024 * 20 // 20MB, for now
 
 // Reads the file contents from the server
 export const loadData = async (scope: string, file: CdnAssetItem) => {
@@ -112,17 +113,24 @@ export interface UploadChunkOptions {
 
 // Uploads a blob to the server returning the list of chunk IDs
 export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions) => {
+    let chunkSize = maxChunkSizeSmall
+
+    // If the file is larger than 500MB, use a larger chunk size
+    if(data.size > 500 * 1024 * 1024) {
+        chunkSize = maxChunkSizeLarge
+    }
+    
     let chunkIds: string[] = []
 
-    // Keep reading chunks of maxChunkSize until we reach the end of the file
+    // Keep reading chunks of chunkSize until we reach the end of the file
     let offset = 0
 
     while(offset < data.size) {
         let chunk: Blob
         let range: [number, number]
-        if(offset + maxChunkSize <= data.size) {
-            range = [offset, offset + maxChunkSize]
-            chunk = data.slice(offset, offset + maxChunkSize)
+        if(offset + chunkSize <= data.size) {
+            range = [offset, offset + chunkSize]
+            chunk = data.slice(offset, offset + chunkSize)
         } else {
             range = [offset, data.size]
             chunk = data.slice(offset)
@@ -149,7 +157,7 @@ export const uploadFileChunks = async (data: Blob, options?: UploadChunkOptions)
         let chunkId = await chunkIdRes.text()
 
         chunkIds.push(chunkId)
-        offset += maxChunkSize
+        offset += chunkSize
 
         if(options?.onChunkUploaded) {
             options.onChunkUploaded(chunkId, chunk.size, range, data.size)
