@@ -100,7 +100,7 @@
 
 		addUploadFileStatus('=> Uploading file chunks to CDN...');
 
-        if(uploadFileChunkIds?.length < 0) {
+        if(uploadFileChunkIds?.length == 0) {
             uploadFileChunkIds = await uploadFileChunks(uploadFile, {
 			    onChunkUploaded: (chunkId, size) => {
 				    addUploadFileStatus(`=> Uploaded chunk ${chunkId} (${size} bytes)`);
