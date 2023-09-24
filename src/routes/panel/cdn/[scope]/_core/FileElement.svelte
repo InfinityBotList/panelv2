@@ -3,6 +3,7 @@
 	import type { CdnAssetItem } from "../../../../../utils/generated/arcadia/CdnAssetItem";
 	import { cdnStateStore, cdnDataStore } from "./cdnStateStore";
 	import FileModal from "./FileModal.svelte";
+	import { prettifyBytes } from "$lib/fileutils";
 
     export let scope: string;
     export let index: number
@@ -46,6 +47,7 @@
         <Icon icon={fileIcon()} class="text-2xl inline-block align-bottom" />
         {file.name}
         <div class="mt-2 text-gray-400"><span class="font-semibold">Location: </span>{file.path}</div>
+        <div class="mt-2 text-gray-400"><span class="font-semibold">Size: </span>{prettifyBytes(file.size)}</div>
     </button>
 {/key}
 
