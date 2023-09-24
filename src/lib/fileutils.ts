@@ -5,7 +5,7 @@ import { panelAuthState } from "$lib/panelAuthState";
 import { Buffer } from 'buffer/';
 
 // The maximum size of a chunk of data to send to the server when adding new files
-const maxChunkSize = 1024 * 1024 // 1MB, for now
+const maxChunkSize = 1024 * 1024 * 3 // 3MB, for now
 
 // Reads the file contents from the server
 export const loadData = async (scope: string, file: CdnAssetItem) => {

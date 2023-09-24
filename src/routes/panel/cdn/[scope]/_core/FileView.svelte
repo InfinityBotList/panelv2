@@ -10,7 +10,9 @@
 	import { panelQuery } from "$lib/fetch";
 	import { panelAuthState } from "$lib/panelAuthState";
 	import FileUpload from "../../../../../components/inputs/FileUpload.svelte";
-	import { renderPreview } from "$lib/fileutils";
+	import { renderPreview, uploadFileChunks } from "$lib/fileutils";
+	import OrderedList from "../../../../../components/OrderedList.svelte";
+	import ListItem from "../../../../../components/ListItem.svelte";
 
     export let scope: string;
 
@@ -67,6 +69,75 @@
     let uploadFile: File;
     let uploadFileUploaded: boolean = false;
     let uploadFilePreviewBox: HTMLDivElement;
+    let uploadFileStatus: string[] = [];
+    let uploadFileChunkIds: string[];
+    const addUploadFileStatus = (s: string) => {
+		uploadFileStatus.push(s);
+		uploadFileStatus = uploadFileStatus;
+	};
+    const uploadFileFunc = async () => {
+        if(!uploadFile || !uploadFileUploaded) {
+            error("Please upload a file")
+            return false
+        }
+
+        addUploadFileStatus("Uploading file to CDN")
+
+		// Calculate sha512 hash of the image
+		addUploadFileStatus('=> Calculating file hash...');
+		let hash = await crypto.subtle.digest(
+			'sha-512',
+			await uploadFile.arrayBuffer()
+		);
+
+		// Convert hash to hex
+		let hashArray = Array.from(new Uint8Array(hash));
+		let hashHex = hashArray
+			.map((b) => b.toString(16).padStart(2, '0'))
+			.join('');
+
+        addUploadFileStatus(`=> Calculated image hash: ${hashHex}`);
+
+		addUploadFileStatus('=> Uploading file chunks to CDN...');
+
+        if(uploadFileChunkIds?.length < 0) {
+            uploadFileChunkIds = await uploadFileChunks(uploadFile, {
+			    onChunkUploaded: (chunkId, size) => {
+				    addUploadFileStatus(`=> Uploaded chunk ${chunkId} (${size} bytes)`);
+			    },
+		    })
+        } else {
+            addUploadFileStatus("=> Using cached chunk IDs")
+        }
+
+        addUploadFileStatus('=> Creating file with chunk IDs on CDN...');
+
+		let upload = await panelQuery({
+			UpdateCdnAsset: {
+				login_token: $panelAuthState?.loginToken || '',
+				path: $cdnStateStore.path,
+				name: uploadFileName,
+				action: {
+					AddFile: {
+						overwrite: false,
+						chunks: uploadFileChunkIds,
+						sha512: hashHex
+					}
+				},
+				cdn_scope: scope
+			}
+		});
+
+		if (!upload.ok) {
+			let err = await upload.text();
+			error(`Failed to upload image to CDN: ${err}`);
+			return false;
+		}
+
+        addUploadFileStatus('=> Uploaded file to CDN');
+
+        return true
+    }
 
     let deleteFolderNonce: string;
     let deleteFolderInputtedNonce: string;
@@ -141,26 +212,28 @@
         <Modal bind:showModal>
             <h1 slot="header" class="font-semibold text-2xl">New Folder</h1>
 
-            <InputText
-                id="new-folder-name"
-                label="Folder Name"
-                placeholder="Name of new folder"
-                minlength={1}
-                showErrors={false}
-                bind:value={newFolderName}   
-            />
+            <form action="javascript:void(0">
+                <InputText
+                    id="new-folder-name"
+                    label="Folder Name"
+                    placeholder="Name of new folder"
+                    minlength={1}
+                    showErrors={false}
+                    bind:value={newFolderName}   
+                />
 
-            <ButtonReact 
-                color={Color.Themable}
-                onClick={newFolder}
-                icon="mdi:plus"
-                text="Create Folder"
-                states={{
-                    loading: "Creating folder...",
-                    success: "Folder created!",
-                    error: "Failed to create folder"
-                }}
-            />
+                <ButtonReact 
+                    color={Color.Themable}
+                    onClick={newFolder}
+                    icon="mdi:plus"
+                    text="Create Folder"
+                    states={{
+                        loading: "Creating folder...",
+                        success: "Folder created!",
+                        error: "Failed to create folder"
+                    }}
+                />
+            </form>
         </Modal>
     {/if}
 
@@ -199,7 +272,7 @@
 
             <ButtonReact 
                 color={Color.Themable}
-                onClick={newFolder}
+                onClick={uploadFileFunc}
                 icon="mdi:file-upload"
                 text="Upload File"
                 states={{
@@ -208,6 +281,14 @@
                     error: "Failed to upload file!"
                 }}
             />
+
+            {#if uploadFileStatus?.length > 0}
+                <OrderedList>
+                    {#each uploadFileStatus as s}
+                        <ListItem>{s}</ListItem>
+                    {/each}
+                </OrderedList>
+		    {/if}
         </Modal>
     {/if}
 

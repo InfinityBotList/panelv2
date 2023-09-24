@@ -164,6 +164,8 @@
 			},
 		})
 
+		addStatus('=> Creating file with chunk IDs on CDN...');
+
 		let upload = await panelQuery({
 			UpdateCdnAsset: {
 				login_token: $panelAuthState?.loginToken || '',

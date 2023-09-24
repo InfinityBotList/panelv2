@@ -24,7 +24,7 @@ Converted to SvelteKit from NextJS for panel use
 	export let color: Color;
 	export let icon: string;
 	export let text: string;
-	export let type: 'button' | 'submit' = 'button';
+	export let type: 'button' | 'submit' = 'submit';
 	export let states: States;
 	export let noRevertState: boolean = false;
 	export let disableBtnAfter: string = '';
