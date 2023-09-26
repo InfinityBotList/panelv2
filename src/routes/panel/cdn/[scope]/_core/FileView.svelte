@@ -13,6 +13,7 @@
 	import { renderPreview, sanitizeName, uploadFileChunks } from "$lib/fileutils";
 	import OrderedList from "../../../../../components/OrderedList.svelte";
 	import ListItem from "../../../../../components/ListItem.svelte";
+	import BoolInput from "../../../../../components/inputs/BoolInput.svelte";
 
     export let scope: string;
 
@@ -20,6 +21,7 @@
         None,
         NewFolder,
         UploadFile,
+        RenameFolder,
         DeleteFolder
     }
 
@@ -168,6 +170,49 @@
         return true
     }
 
+    let renameFolderPath: string;
+    let renameFolderOverwrite: boolean = false;
+    let renameFolderDeleteOriginal: boolean = false;
+    const renameFolder = async () => {
+        if(!renameFolderPath) {
+            error("Please enter a new folder path")
+            return false
+        }
+
+        if(!$cdnStateStore.path) {
+            error("You cannot rename the root folder")
+            return false
+        }
+
+        let res = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || "",
+                cdn_scope: scope,
+                path: $cdnStateStore.path,
+                name: "",
+                action: {
+                    CopyFile: {
+                        overwrite: renameFolderOverwrite,
+                        delete_original: renameFolderDeleteOriginal,
+                        copy_to: renameFolderPath
+                    }
+                }
+            }
+        })
+
+        if(!res.ok) {
+            let err = await res.text()
+            error(`Failed to copy/move/rename folder: ${err}`)
+            return false
+        }
+
+        setTimeout(() => {
+            $cdnStateStore.path = renameFolderPath
+        }, 1000)
+
+        return true
+    }
+
     let deleteFolderNonce: string;
     let deleteFolderInputtedNonce: string;
     const deleteFolder = async () => {
@@ -200,6 +245,8 @@
         }, 1000)
         return true
     }
+
+    $: if(renameFolderPath === undefined) renameFolderPath = $cdnStateStore.path
 </script>
 
 <div id="action-box" class="mb-3 border rounded-md">
@@ -223,6 +270,17 @@
     >
         <Icon icon={"mdi:file-upload"} class={"text-2xl inline-block align-bottom"} />
         Upload File
+    </button> 
+
+    <button 
+        on:click={() => {
+            openAction = Action.RenameFolder
+            showModal = true
+        }}
+        class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+    >
+        <Icon icon={"mdi:rename"} class={"text-2xl inline-block align-bottom"} />
+        Rename Folder
     </button> 
 
     <button 
@@ -320,6 +378,46 @@
                     {/each}
                 </OrderedList>
 		    {/if}
+        </Modal>
+    {/if}
+
+    {#if openAction == Action.RenameFolder && showModal}
+        <Modal bind:showModal>
+            <h1 slot="header" class="font-semibold text-2xl">Rename Folder</h1>
+
+            <InputText
+                id="copy-file-name"
+                label="New file name"
+                placeholder="New folder path"
+                bind:value={renameFolderPath}
+                minlength={1}
+                showErrors={false}
+            />
+            <BoolInput
+                id="copy-file-overwrite"
+                label="Overwrite existing file"
+                description="Overwrite any existing folder with the same name"
+                disabled={false}
+                bind:value={renameFolderOverwrite}
+            />
+            <BoolInput
+                id="copy-file-delete-original"
+                label="Delete original file"
+                description="This is equivalent to a move operation, if enabled the original folder will be deleted"
+                disabled={false}
+                bind:value={renameFolderDeleteOriginal}
+            />
+            <ButtonReact 
+                color={Color.Themable}
+                icon="mdi:rename-box"
+                text="Copy/Move/Rename"
+                onClick={renameFolder}
+                states={{
+                    loading: "Modifying file...",
+                    success: "Successfully modified file",
+                    error: "Failed to modify file"
+                }}
+            />
         </Modal>
     {/if}
 
