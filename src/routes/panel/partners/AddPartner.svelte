@@ -61,6 +61,34 @@
 			return false;
 		}
 
+		for (let link of partner.links) {
+			if (!link.name || !link.value) {
+				error(`Link name or value is empty: ${link.name} ${link.value}`);
+				return false;
+			}
+
+			if (!link.value.startsWith("https://")) {
+				error(`Link value must start with https://: ${link.name} ${link.value}`);
+				return false;
+			}
+		}
+
+		addStatus("Checking user ID...");
+
+		let userRes = await panelQuery({
+			GetUserPerms: {
+				user_id: partner.user_id
+			}
+		});
+
+		if(!userRes.ok) {
+			let err = await userRes.text();
+			error(`Failed to check user ID: ${err}`);
+			return false;
+		}
+
+		addStatus("Checking image...");
+
 		if (!imageUploaded) {
 			error('Please upload an image');
 			return false;
