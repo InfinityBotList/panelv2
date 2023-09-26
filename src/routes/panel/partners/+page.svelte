@@ -22,8 +22,22 @@
 
 		let partners: Partners = await res.json();
 
+		let scopeRes = await panelQuery({
+			GetMainCdnScope: {
+				login_token: $panelAuthState?.loginToken || ''
+			}
+		})
+
+		if(!scopeRes.ok) {
+			let err = await scopeRes.text();
+			throw new Error(`Failed to fetch main CDN scope: ${err}`);
+		}
+
+		let scope: string = await scopeRes.text();
+
 		return {
-			partners
+			partners,
+			scope
 		};
 	};
 </script>
@@ -34,7 +48,7 @@
 	<h1 class="text-3xl font-semibold">Partner Management</h1>
 
 	{#if $panelState?.capabilities?.includes("CdnManagement")}
-		<AddPartner partnerTypes={partners?.partners?.partner_types} />
+		<AddPartner partnerTypes={partners?.partners?.partner_types} mainScope={partners.scope} partnerIds={partners?.partners?.partners?.map(p => p.id)}/>
 	{:else}
 		<div class="mb-3"></div>
 	{/if}

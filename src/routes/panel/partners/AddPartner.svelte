@@ -14,18 +14,16 @@
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import ExtraLinks from '../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
 	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
-	import type { Partner } from '$lib/generated/arcadia/Partner';
 	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
-
-	const cdnScope = 'ibl@main'
+	import type { CreatePartner } from '$lib/generated/arcadia/CreatePartner';
 
 	let status: string[] = [];
-
 	export let partnerTypes: PartnerType[];
-
+	export let partnerIds: string[];
 	export let addPartnerModalOpen: boolean = false;
+	export let mainScope: string;
 
-	let partner: Partner = {
+	let partner: CreatePartner = {
 		id: '',
 		name: '',
 		type: '',
@@ -33,7 +31,6 @@
 		links: [],
 		user_id: '',
 		image_type: '', // internally filled out from the FileInput
-		created_at: ''
 	};
 
 	let imageFile: File;
@@ -59,6 +56,11 @@
 			return false;
 		}
 
+		if(partnerIds.includes(partner.id)) {
+			error('Partner ID already exists');
+			return false;
+		}
+
 		if (!imageUploaded) {
 			error('Please upload an image');
 			return false;
@@ -71,7 +73,7 @@
 
 		partner.image_type = imageMimeType.split('/')[1];
 
-		addStatus("=> Checking existing partner image list...");
+		addStatus("Checking existing partner image list...");
 
 		let files = await panelQuery({
 			UpdateCdnAsset: {
@@ -79,7 +81,7 @@
 				path: 'partners',
 				name: '',
 				action: 'ListPath',
-				cdn_scope: cdnScope
+				cdn_scope: mainScope
 			}
 		});
 
@@ -107,7 +109,7 @@
 						path: 'partners',
 						name: path,
 						action: 'Delete',
-						cdn_scope: 'ibl@main'
+						cdn_scope: mainScope
 					}
 				});
 
@@ -127,7 +129,7 @@
 						path: 'partners',
 						name: path,
 						action: 'Delete',
-						cdn_scope: 'ibl@main'
+						cdn_scope: mainScope
 					}
 				});
 
@@ -178,7 +180,7 @@
 						sha512: hashHex
 					}
 				},
-				cdn_scope: 'ibl@main'
+				cdn_scope: mainScope
 			}
 		});
 
@@ -190,6 +192,22 @@
 
 		addStatus('=> Uploaded image to CDN');
 
+		addStatus('Adding partner to database...');
+
+		let res = await panelQuery({
+			AddPartner: {
+				login_token: $panelAuthState?.loginToken || '',
+				partner: partner
+			}
+		});
+
+		if (!res.ok) {
+			let err = await res.text();
+			error(`Failed to add partner: ${err}`);
+			return false;
+		}
+
+		addStatus('=> Added partner to database');
 		return true;
 	};
 </script>
@@ -278,7 +296,7 @@
 			
 			{#await renderPreview(async (_, __) => {
 				return imageFile
-			}, cdnScope, {
+			}, mainScope, {
 				name: `${partner.id}.${imageMimeType.split('/')[1]}`,
 				path: "partners",
 				size: BigInt(0),
