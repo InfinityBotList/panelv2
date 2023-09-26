@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from "@iconify/svelte";
-	import type { CdnAssetItem } from "../../../../../utils/generated/arcadia/CdnAssetItem";
+	import type { CdnAssetItem } from "$lib/generated/arcadia/CdnAssetItem";
 	import { cdnStateStore, cdnDataStore } from "./cdnStateStore";
 	import FileModal from "./FileModal.svelte";
 	import { prettifyBytes } from "$lib/fileutils";

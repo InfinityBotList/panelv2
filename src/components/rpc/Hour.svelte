@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { RPCField } from '../../utils/generated/arcadia/RPCField';
+	import type { RPCField } from '$lib/generated/arcadia/RPCField';
 	import InputNumber from '../inputs/InputNumber.svelte';
 
 	export let value: [number, string] = [0, 'hour'];

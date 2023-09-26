@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
+	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
 
 	export let bot: QueueBot;
 	export let selected: QueueBot | null;

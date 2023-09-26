@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
+import type { PanelQuery } from '$lib/generated/arcadia/PanelQuery';
 import logger from './logger';
 import { logoutUser } from './logout';
 import { panelAuthState } from './panelAuthState';

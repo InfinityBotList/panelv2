@@ -13,9 +13,9 @@
 	import FileUpload from '../../../components/inputs/FileUpload.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import ExtraLinks from '../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
-	import type { CdnAssetItem } from '../../../utils/generated/arcadia/CdnAssetItem';
-	import type { Partner } from '../../../utils/generated/arcadia/Partner';
-	import type { PartnerType } from '../../../utils/generated/arcadia/PartnerType';
+	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
+	import type { Partner } from '$lib/generated/arcadia/Partner';
+	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
 
 	const cdnScope = 'ibl@main'
 

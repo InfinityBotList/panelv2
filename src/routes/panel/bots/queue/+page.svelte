@@ -2,13 +2,13 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
 	import ErrorComponent from '../../../../components/Error.svelte';
-	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
+	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
 	import Card from '../../../../components/Card.svelte';
 	import { panelState } from '$lib/panelState';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import Column from '../../../../components/Column.svelte';
 	import { panelQuery } from '$lib/fetch';
-	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
+	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
 	import QueueAction from './QueueAction.svelte';
 
 	const fetchQueueBots = async () => {

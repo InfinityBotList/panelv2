@@ -1,6 +1,6 @@
 <!--Wrapper around kv multi-input to provide a Link[]-->
 <script lang="ts">
-	import type { Link } from '../../../../utils/generated/arcadia/Link';
+	import type { Link } from '$lib/generated/arcadia/Link';
 	import KvMultiInput from '../kv/KVMultiInput.svelte';
 
 	export let values: Link[] = [];

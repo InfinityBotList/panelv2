@@ -1,10 +1,10 @@
 import { writable, type Writable } from 'svelte/store';
-import type { PartialUser } from '../utils/generated/arcadia/PartialUser';
-import type { PanelPerms } from '../utils/generated/arcadia/PanelPerms';
-import type { Capability } from '../utils/generated/arcadia/Capability';
-import type { CoreConstants } from '../utils/generated/arcadia/CoreConstants';
-import type { TargetType } from '../utils/generated/arcadia/TargetType';
-import type { AuthData } from '../utils/generated/arcadia/AuthData';
+import type { PartialUser } from '$lib/generated/arcadia/PartialUser';
+import type { PanelPerms } from '$lib/generated/arcadia/PanelPerms';
+import type { Capability } from '$lib/generated/arcadia/Capability';
+import type { CoreConstants } from '$lib/generated/arcadia/CoreConstants';
+import type { TargetType } from '$lib/generated/arcadia/TargetType';
+import type { AuthData } from '$lib/generated/arcadia/AuthData';
 
 export interface PanelState {
 	auth: AuthData;

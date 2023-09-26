@@ -7,7 +7,7 @@
 	import GreyText from '../../../components/GreyText.svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
-	import type { Capability } from '../../../utils/generated/arcadia/Capability';
+	import type { Capability } from '$lib/generated/arcadia/Capability';
 
 	let selectedCaps: boolean[];
 	let allCaps: Capability[];

@@ -4,7 +4,7 @@
 	import Loading from '../../../components/Loading.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import GreyText from '../../../components/GreyText.svelte';
-	import type { CdnScopeData } from '../../../utils/generated/arcadia/CdnScopeData';
+	import type { CdnScopeData } from '$lib/generated/arcadia/CdnScopeData';
 
 	const fetchCdnScopes = async () => {
 		let res = await panelQuery({

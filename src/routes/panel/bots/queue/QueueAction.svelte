@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
-	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
-	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
+	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
+	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
 
 	let showActionsModal: boolean = false;
 	export let bot: QueueBot;

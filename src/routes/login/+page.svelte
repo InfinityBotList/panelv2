@@ -7,7 +7,7 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { onMount } from 'svelte';
 	import { goto as gotoOnce } from '$app/navigation';
-	import type { InstanceConfig } from '../../utils/generated/arcadia/InstanceConfig';
+	import type { InstanceConfig } from '$lib/generated/arcadia/InstanceConfig';
 	import { panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';

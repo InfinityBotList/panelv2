@@ -3,9 +3,9 @@
 	import { panelAuthState } from "$lib/panelAuthState";
 	import Icon from "@iconify/svelte";
 	import Modal from "../../../../../components/Modal.svelte";
-	import type { CdnAssetItem } from "../../../../../utils/generated/arcadia/CdnAssetItem";
+	import type { CdnAssetItem } from "$lib/generated/arcadia/CdnAssetItem";
 	import ErrorComponent from "../../../../../components/Error.svelte";
-	import type { CdnScopeData } from "../../../../../utils/generated/arcadia/CdnScopeData";
+	import type { CdnScopeData } from "$lib/generated/arcadia/CdnScopeData";
 	import { error, success } from "$lib/toast";
 	import InputText from "../../../../../components/inputs/InputText.svelte";
 	import ButtonReact from "../../../../../components/button/ButtonReact.svelte";

@@ -1,6 +1,6 @@
 import { panelQuery } from "$lib/fetch";
 import { get } from "svelte/store";
-import type { CdnAssetItem } from "../utils/generated/arcadia/CdnAssetItem";
+import type { CdnAssetItem } from "$lib/generated/arcadia/CdnAssetItem";
 import { panelAuthState } from "$lib/panelAuthState";
 
 // The maximum size of a chunk of data to send to the server when adding new files

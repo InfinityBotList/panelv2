@@ -3,9 +3,9 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
 	import { onMount } from 'svelte';
-	import type { RPCMethod } from '../../utils/generated/arcadia/RPCMethod';
-	import type { RPCWebAction } from '../../utils/generated/arcadia/RPCWebAction';
-	import type { TargetType } from '../../utils/generated/arcadia/TargetType';
+	import type { RPCMethod } from '$lib/generated/arcadia/RPCMethod';
+	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
+	import type { TargetType } from '$lib/generated/arcadia/TargetType';
 	import ButtonReact from '../button/ButtonReact.svelte';
 	import InputText from '../inputs/InputText.svelte';
 	import InputTextArea from '../inputs/InputTextArea.svelte';

@@ -4,8 +4,8 @@
 	import { panelState, type PanelState } from '$lib/panelState';
 	import { goto as gotoOnce } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
-	import type { AuthData } from '../utils/generated/arcadia/AuthData';
+	import type { PanelQuery } from '$lib/generated/arcadia/PanelQuery';
+	import type { AuthData } from '$lib/generated/arcadia/AuthData';
 	import Loading from './Loading.svelte';
 	import { panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte';

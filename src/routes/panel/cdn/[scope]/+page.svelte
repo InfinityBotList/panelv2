@@ -5,7 +5,7 @@
     import ErrorComponent from "../../../../components/Error.svelte";
     import { page } from "$app/stores";
 	import FileView from "./_core/FileView.svelte";
-	import type { CdnAssetItem } from "../../../../utils/generated/arcadia/CdnAssetItem";
+	import type { CdnAssetItem } from "$lib/generated/arcadia/CdnAssetItem";
 	import { cdnStateStore, cdnDataStore } from "./_core/cdnStateStore";
 	import InputText from "../../../../components/inputs/InputText.svelte";
 

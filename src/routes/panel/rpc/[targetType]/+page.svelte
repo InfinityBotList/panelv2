@@ -3,21 +3,21 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
 	import ErrorComponent from '../../../../components/Error.svelte';
-	import type { SearchBot } from '../../../../utils/generated/arcadia/SearchBot';
+	import type { SearchBot } from '$lib/generated/arcadia/SearchBot';
 	import { error } from '$lib/toast';
 	import { panelQuery } from '$lib/fetch';
-	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
+	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
 	import Column from '../../../../components/Column.svelte';
 	import Card from '../../../../components/Card.svelte';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import { panelState } from '$lib/panelState';
 	import { title } from '$lib/strings';
 	import Select from './Select.svelte';
-	import type { QueueBot } from '../../../../utils/generated/arcadia/QueueBot';
+	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
 	import { page } from '$app/stores';
-	import type { TargetType } from '../../../../utils/generated/arcadia/TargetType';
+	import type { TargetType } from '$lib/generated/arcadia/TargetType';
 	import { afterNavigate } from '$app/navigation';
 
 	let query: string;

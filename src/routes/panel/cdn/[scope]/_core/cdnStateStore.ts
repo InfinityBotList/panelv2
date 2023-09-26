@@ -1,5 +1,5 @@
 import { writable, type Writable } from 'svelte/store';
-import type { CdnAssetItem } from '../../../../../utils/generated/arcadia/CdnAssetItem';
+import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
 
 export interface CdnStateStore {
 	path: string,

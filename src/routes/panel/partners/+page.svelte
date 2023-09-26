@@ -7,7 +7,7 @@
 	import Column from '../../../components/Column.svelte';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
-	import type { Partners } from '../../../utils/generated/arcadia/Partners';
+	import type { Partners } from '$lib/generated/arcadia/Partners';
 	import AddPartner from './AddPartner.svelte';
 	import ManagePartner from './ManagePartner.svelte';
 

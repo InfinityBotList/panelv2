@@ -7,7 +7,7 @@
 	import ButtonReact from '../../../components/button/ButtonReact.svelte';
 	import { Color } from '../../../components/button/colors';
 	import InputText from '../../../components/inputs/InputText.svelte';
-	import type { Partner } from '../../../utils/generated/arcadia/Partner';
+	import type { Partner } from '$lib/generated/arcadia/Partner';
 
 	let showActionsModal: boolean = false;
 	let showWarningModal: boolean = false;
