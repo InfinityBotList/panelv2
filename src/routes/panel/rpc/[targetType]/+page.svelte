@@ -3,10 +3,9 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
 	import ErrorComponent from '../../../../components/Error.svelte';
-	import type { PanelQuery } from '../../../../utils/generated/arcadia/PanelQuery';
 	import type { SearchBot } from '../../../../utils/generated/arcadia/SearchBot';
 	import { error } from '$lib/toast';
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import type { RPCWebAction } from '../../../../utils/generated/arcadia/RPCWebAction';
 	import Column from '../../../../components/Column.svelte';
 	import Card from '../../../../components/Card.svelte';

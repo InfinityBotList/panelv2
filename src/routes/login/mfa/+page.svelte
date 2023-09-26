@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import logger from '$lib/logger';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';

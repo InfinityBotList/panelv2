@@ -1,5 +1,4 @@
-import type { PanelQuery } from '../utils/generated/arcadia/PanelQuery';
-import { fetchClient, panelQuery } from './fetch';
+import { panelQuery } from './fetch';
 import logger from './logger';
 import type { PanelAuthState } from './panelAuthState';
 import { sleep } from './time';

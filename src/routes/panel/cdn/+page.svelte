@@ -2,7 +2,6 @@
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../components/Loading.svelte';
-	import type { Link } from '../../../utils/generated/arcadia/Link';
 	import ErrorComponent from '../../../components/Error.svelte';
 	import GreyText from '../../../components/GreyText.svelte';
 	import type { CdnScopeData } from '../../../utils/generated/arcadia/CdnScopeData';

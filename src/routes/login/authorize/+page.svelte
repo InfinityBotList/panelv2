@@ -40,7 +40,6 @@
 
 		$panelAuthState = {
 			url: loginState?.instanceUrl,
-			queryPath: loginState?.queryPath,
 			loginToken: '',
 			sessionState: 'noSession'
 		};
@@ -60,7 +59,6 @@
 
 		let ps: PanelAuthState = {
 			url: loginState?.instanceUrl,
-			queryPath: loginState?.queryPath,
 			loginToken: loginToken,
 			sessionState: 'pending'
 		};

@@ -33,7 +33,11 @@
 {:then partners}
 	<h1 class="text-3xl font-semibold">Partner Management</h1>
 
-	<AddPartner partnerTypes={partners?.partners?.partner_types} />
+	{#if $panelState?.capabilities?.includes("CdnManagement")}
+		<AddPartner partnerTypes={partners?.partners?.partner_types} />
+	{:else}
+		<div class="mb-3"></div>
+	{/if}
 
 	<Column>
 		{#each partners.partners.partners as partner, i}

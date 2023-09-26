@@ -7,7 +7,7 @@ import { panelAuthState } from './panelAuthState';
 export const panelQuery = async (query: PanelQuery) => {
 	let data = get(panelAuthState);
 
-	return await fetchClient(`${data?.url}${data?.queryPath}`, {
+	return await fetchClient(`${data?.url}`, {
 		headers: {
 			'Content-Type': 'application/json'
 		},

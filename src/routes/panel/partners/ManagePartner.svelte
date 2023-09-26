@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
 	import GreyText from '../../../components/GreyText.svelte';

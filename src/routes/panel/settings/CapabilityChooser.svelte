@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchClient, panelQuery } from '$lib/fetch';
+	import { panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
@@ -8,7 +8,6 @@
 	import Loading from '../../../components/Loading.svelte';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import type { Capability } from '../../../utils/generated/arcadia/Capability';
-	import type { PanelQuery } from '../../../utils/generated/arcadia/PanelQuery';
 
 	let selectedCaps: boolean[];
 	let allCaps: Capability[];
