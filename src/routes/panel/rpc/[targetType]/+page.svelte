@@ -122,12 +122,10 @@
 	const getRpcData = () => {
 		let initialData: { [key: string]: any } = {};
 
-		if (selectedEntity) {
-			if ('Bot' in selectedEntity) {
-				initialData = {
-					bot_id: selectedEntity?.Bot?.bot_id
-				};
-			}
+		if ('Bot' in selectedEntity) {
+			initialData = {
+				bot_id: selectedEntity?.Bot?.bot_id
+			};
 		}
 
 		return {
