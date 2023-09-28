@@ -124,7 +124,7 @@
 
 		if ('Bot' in selectedEntity) {
 			initialData = {
-				bot_id: selectedEntity?.Bot?.bot_id
+				target_id: selectedEntity?.Bot?.bot_id
 			};
 		}
 
