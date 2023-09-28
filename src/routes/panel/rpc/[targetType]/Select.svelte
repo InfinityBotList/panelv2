@@ -6,7 +6,9 @@
 
 	export let selected: number | null;
 
-	let checked: boolean = false;
+	let checked: boolean;
+
+	$: checked = (selected === index)
 </script>
 
 <button
@@ -15,11 +17,9 @@
 		if (checked === false) {
 			logger.info("Select", "Selected bot", index)
 			selected = index;
-			checked = true;
 		} else {
 			logger.info("Select", "Deselected bot", index)
 			selected = null;
-			checked = false;
 		}
 	}}
 >
