@@ -29,7 +29,7 @@
 			name: 'Find',
 			current: true,
 			onClick: () => {
-				if(!selectedId) {
+				if(!selectedId && selectedId !== 0) {
 					throw new Error('No entity selected');
 				}
 				
