@@ -148,7 +148,7 @@
 {:then meta}
 	{#key currentStep}
 		<StepProgress {steps} bind:currentStep>
-			{#if currentStep == 0 || !selectedId || !selectedEntity}
+			{#if currentStep == 0 || (!selectedId && selectedId != 0) || !selectedEntity}
 				<h2 class="text-white dark:text-gray-400 font-black text-xl">Let's get started!</h2>
 				<p class="text-base text-white dark:text-gray-400 font-bold">
 					Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
