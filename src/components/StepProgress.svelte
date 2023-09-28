@@ -4,25 +4,27 @@
 	import { Color } from './button/colors';
 
 	interface Step {
-		Name: string;
-		Current: boolean;
-		Completed: boolean;
-		AllowBack: boolean;
-		Validate: () => boolean;
+		name: string;
+		current?: boolean;
+		completed?: boolean;
+		disableBack?: boolean;
+		onClick?: () => void;
 	}
 
 	export let steps: Step[] = [];
 
-	export let currentStep: number = steps.findIndex((step) => step.Current === true) || 0;
+	export let currentStep: number;
 
 	const nextStep = async () => {
-		const validate = steps[currentStep].Validate();
-
-		if (validate === true) {
-			currentStep = currentStep + 1; // Must be a = here and not ++
+		try {
+			let currentStepData = steps[currentStep];
+			if(currentStepData.onClick) {
+				currentStepData.onClick();
+			}
+			currentStep = currentStep + 1;
 			return true;
-		} else {
-			error('You have not finished this step. Ensure all fields are filled.');
+		} catch (err) {
+			error(`${err?.toString() || 'Could not go to the next step! Ensure you have filled out all fields!'}`);
 			return false;
 		}
 	};
@@ -31,12 +33,14 @@
 		currentStep--;
 		return true;
 	};
+
+	$: if(currentStep === undefined) currentStep = steps.findIndex((step) => step.current === true) || 0
 </script>
 
 <ol
 	class="flex items-center justify-center w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base"
 >
-	{#each steps as Step, i}
+	{#each steps as step, i}
 		{#if i < currentStep}
 			<li
 				class="flex md:w-full items-center text-indigo-600 dark:text-indigo-500 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700"
@@ -57,7 +61,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
 		{:else if i === currentStep}
@@ -80,7 +84,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
 		{:else}
@@ -103,7 +107,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
 		{/if}
@@ -117,7 +121,7 @@
 <div class="p-2" />
 
 <div class="flex items-center justify-evenly gap-4 mt-4">
-	{#if steps[currentStep].AllowBack && currentStep !== 0}
+	{#if !steps[currentStep].disableBack && currentStep !== 0}
 		<ButtonReact
 			color={Color.Themable}
 			states={{
@@ -131,7 +135,7 @@
 		/>
 	{/if}
 
-	{#if steps.length > currentStep + 1 && !steps[currentStep].Completed}
+	{#if steps.length > currentStep + 1 && !steps[currentStep].completed}
 		<ButtonReact
 			color={Color.Themable}
 			states={{

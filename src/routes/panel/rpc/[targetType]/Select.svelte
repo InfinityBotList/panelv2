@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
+	// The index that selected should be set to when a bot is selected
+	export let index: number;
 
-	export let bot: QueueBot;
-	export let selected: QueueBot | null;
+	export let selected: number | null;
 
-	let checked: Boolean = false;
+	let checked: boolean = false;
 </script>
 
 <button
 	class="flex justify-center hover:opacity-75 focus:outline-none mt-3 w-full rounded-lg bg-black/90 p-3 text-center text-white"
 	on:click={() => {
 		if (checked === false) {
-			selected = bot;
+			selected = index;
 			checked = true;
 		} else {
 			selected = null;

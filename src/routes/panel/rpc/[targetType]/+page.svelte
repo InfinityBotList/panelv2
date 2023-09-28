@@ -3,7 +3,6 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
 	import ErrorComponent from '../../../../components/Error.svelte';
-	import type { SearchBot } from '$lib/generated/arcadia/SearchBot';
 	import { error } from '$lib/toast';
 	import { panelQuery } from '$lib/fetch';
 	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
@@ -13,45 +12,35 @@
 	import { panelState } from '$lib/panelState';
 	import { title } from '$lib/strings';
 	import Select from './Select.svelte';
-	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
 	import { page } from '$app/stores';
 	import type { TargetType } from '$lib/generated/arcadia/TargetType';
 	import { afterNavigate } from '$app/navigation';
+	import type { PartialEntity } from '$lib/generated/arcadia/PartialEntity';
 
 	let query: string;
-	let botData: SearchBot | null = null;
-	let results: SearchBot[] = [];
+	let selectedEntity: PartialEntity;
+	let selectedId: number | null = null;
+	let results: PartialEntity[] = [];
 
-	let Steps = [
+	let steps = [
 		{
-			Name: 'Find',
-			Current: true,
-			Completed: false,
-			AllowBack: true,
-			Validate: () => {
-				if (botData) return true;
-				else return false;
+			name: 'Find',
+			current: true,
+			onClick: () => {
+				if(!selectedId) {
+					throw new Error('No entity selected');
+				}
+				
+				selectedEntity = results[selectedId]
 			}
 		},
 		{
-			Name: 'Confirm',
-			Current: false,
-			Completed: false,
-			AllowBack: true,
-			Validate: () => {
-				return true;
-			}
+			name: 'Confirm',
 		},
 		{
-			Name: 'Action',
-			Current: false,
-			Completed: true,
-			AllowBack: false,
-			Validate: () => {
-				return true;
-			}
+			name: 'Action',
 		}
 	];
 
@@ -102,32 +91,55 @@
 			error(err || 'Unknown error while fetching');
 		}
 
-		let bots: SearchBot[] = await res.json();
+		let resultsJson: PartialEntity[] = await res.json();
 
-		if (bots?.length == 0) {
+		if (resultsJson?.length == 0) {
 			error('Could not find bots matching this query');
 			results = [];
 			return false;
 		}
 
-		results = bots;
+		results = resultsJson;
 
 		return true;
 	};
 
-	const getType = (bot: SearchBot) => {
-		switch (bot?.type) {
+	const getType = (e: PartialEntity) => {
+		if('Bot' in e) {
+			let bot = e.Bot
+
+			switch (bot?.type) {
 			case 'claimed':
 				return `Claimed by ${bot?.claimed_by}`;
 			default:
 				return title(bot?.type);
+			}
+		} else {
+			return 'Unknown';
 		}
 	};
+
+	const getRpcData = () => {
+		let initialData: { [key: string]: any } = {};
+
+		if (selectedEntity) {
+			if ('Bot' in selectedEntity) {
+				initialData = {
+					bot_id: selectedEntity?.Bot?.bot_id
+				};
+			}
+		}
+
+		return {
+			targetType: $page.params.targetType as TargetType,
+			initialData,
+		}
+	}
 
 	afterNavigate(() => {
 		query = '';
 		results = [];
-		botData = null;
+		selectedId = null;
 	});
 </script>
 
@@ -135,8 +147,8 @@
 	<Loading msg={'Fetching available actions...'} />
 {:then meta}
 	{#key currentStep}
-		<StepProgress bind:steps={Steps} bind:currentStep>
-			{#if currentStep == 0 || !botData}
+		<StepProgress {steps} bind:currentStep>
+			{#if currentStep == 0 || !selectedId || !selectedEntity}
 				<h2 class="text-white dark:text-gray-400 font-black text-xl">Let's get started!</h2>
 				<p class="text-base text-white dark:text-gray-400 font-bold">
 					Let's find what {$page?.params?.targetType?.toLowerCase()} you are taking action on!
@@ -197,78 +209,86 @@
 						<div class="p-3" />
 
 						<Column>
-							{#each results as bot, i}
-								<Card>
-									<img slot="image" src={bot?.user?.avatar} alt="" />
-									<svelte:fragment slot="display-name">{bot?.user?.username}</svelte:fragment>
-									<svelte:fragment slot="short">{bot?.short}</svelte:fragment>
-									<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
-									<svelte:fragment slot="type">{getType(bot)}</svelte:fragment>
-									<svelte:fragment slot="actionA">
-										<CardLinkButton
-											target="_blank"
-											link={`${$panelState?.coreConstants?.frontend_url}/bots/${bot?.bot_id}`}
-											showArrow={false}>View</CardLinkButton
-										>
-									</svelte:fragment>
-									<svelte:fragment slot="actionB">
-										{#if $page?.params?.targetType == 'Bot'}
+							{#each results as result, i}
+								{#if 'Bot' in result}
+									<Card>
+										<img slot="image" src={result?.Bot?.user?.avatar} alt="" />
+										<svelte:fragment slot="display-name">{result?.Bot?.user?.username}</svelte:fragment>
+										<svelte:fragment slot="short">{result?.Bot?.short}</svelte:fragment>
+										<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
+										<svelte:fragment slot="type">{getType(result)}</svelte:fragment>
+										<svelte:fragment slot="actionA">
 											<CardLinkButton
 												target="_blank"
-												link={`https://discord.com/api/v10/oauth2/authorize?client_id=${bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-												showArrow={false}>Invite</CardLinkButton
+												link={`${$panelState?.coreConstants?.frontend_url}/bots/${result?.Bot?.bot_id}`}
+												showArrow={false}>View</CardLinkButton
 											>
-										{:else}
-											<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
-												>-</CardLinkButton
-											>
-										{/if}
-									</svelte:fragment>
-									<svelte:fragment slot="extra">
-										<Select {bot} bind:selected={botData} />
-									</svelte:fragment>
-								</Card>
+										</svelte:fragment>
+										<svelte:fragment slot="actionB">
+											{#if $page?.params?.targetType == 'Bot'}
+												<CardLinkButton
+													target="_blank"
+													link={`https://discord.com/api/v10/oauth2/authorize?client_id=${result?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+													showArrow={false}>Invite</CardLinkButton
+												>
+											{:else}
+												<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
+													>-</CardLinkButton
+												>
+											{/if}
+										</svelte:fragment>
+										<svelte:fragment slot="extra">
+											<Select index={i} bind:selected={selectedId} />
+										</svelte:fragment>
+									</Card>
+								{/if}
 							{/each}
 						</Column>
 					{:else}
 						<p class="font-semibold text-xl text-red-500">
-							There are no bots matching your query! Try making another search?
+							There are no {$page.params.targetType} matching your query! Try making another search?
 						</p>
 					{/if}
 				</div>
-			{:else if currentStep == 1 && botData}
+			{:else if currentStep == 1 && selectedId && selectedEntity}
 				<h2 class="text-white font-black text-xl">
-					Alright! Let's make sure we have the right bot in mind!
+					Alright! Let's make sure we have the right {$page.params.targetType} in mind!
 				</h2>
 
 				<div class="p-3" />
 
-				<Card>
-					<img slot="image" src={botData?.user?.avatar} alt="" />
-					<svelte:fragment slot="display-name">{botData?.user?.username}</svelte:fragment>
-					<svelte:fragment slot="short">{botData?.short}</svelte:fragment>
-					<svelte:fragment slot="type"><span class="font-semibold">{getType(botData)}</span></svelte:fragment>
-					<svelte:fragment slot="actionA">
-						<CardLinkButton
-							target="_blank"
-							link={`${$panelState?.coreConstants?.frontend_url}/bots/${botData?.bot_id}`}
-							showArrow={false}>View</CardLinkButton
-						>
-					</svelte:fragment>
-					<svelte:fragment slot="actionB">
-						{#if $page?.params?.targetType == 'Bot'}
+				{#if 'Bot' in selectedEntity}
+					<Card>
+						<img slot="image" src={selectedEntity?.Bot?.user?.avatar} alt="" />
+						<svelte:fragment slot="display-name">{selectedEntity?.Bot?.user?.username}</svelte:fragment>
+						<svelte:fragment slot="short">{selectedEntity?.Bot?.short}</svelte:fragment>
+						<svelte:fragment slot="type"><span class="font-semibold">{getType(selectedEntity)}</span></svelte:fragment>
+						<svelte:fragment slot="actionA">
 							<CardLinkButton
 								target="_blank"
-								link={`https://discord.com/api/v10/oauth2/authorize?client_id=${botData?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-								showArrow={false}>Invite</CardLinkButton
+								link={`${$panelState?.coreConstants?.frontend_url}/bots/${selectedEntity?.Bot?.bot_id}`}
+								showArrow={false}>View</CardLinkButton
 							>
-						{:else}
-							<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
-								>-</CardLinkButton
-							>
-						{/if}
-					</svelte:fragment>
-				</Card>
+						</svelte:fragment>
+						<svelte:fragment slot="actionB">
+							{#if $page?.params?.targetType == 'Bot'}
+								<CardLinkButton
+									target="_blank"
+									link={`https://discord.com/api/v10/oauth2/authorize?client_id=${selectedEntity?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+									showArrow={false}>Invite</CardLinkButton
+								>
+							{:else}
+								<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
+									>-</CardLinkButton
+								>
+							{/if}
+						</svelte:fragment>
+					</Card>
+				{:else}
+					<p class="font-semibold text-xl text-red-500">
+						Unsupported entity found for preview in entity type {$page.params.targetType}
+					</p>
+				{/if}
 			{:else if currentStep == 2}
 				<h2 class="text-white font-black text-xl">Ready, set, action!</h2>
 
@@ -278,10 +298,8 @@
 
 						<RPC
 							actions={meta?.actions}
-							targetType={'Bot'}
-							initialData={{
-								target_id: botData?.bot_id
-							}}
+							targetType={getRpcData().targetType}
+							initialData={getRpcData().initialData}
 						/>
 					</Modal>
 				{:else}

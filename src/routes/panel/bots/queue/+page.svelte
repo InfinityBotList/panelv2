@@ -2,7 +2,7 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import Loading from '../../../../components/Loading.svelte';
 	import ErrorComponent from '../../../../components/Error.svelte';
-	import type { QueueBot } from '$lib/generated/arcadia/QueueBot';
+	import type { PartialEntity } from '$lib/generated/arcadia/PartialEntity';
 	import Card from '../../../../components/Card.svelte';
 	import { panelState } from '$lib/panelState';
 	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
@@ -20,7 +20,7 @@
 
 		if (!res.ok) throw new Error('Failed to fetch bots in queue');
 
-		let bots: QueueBot[] = await res.json();
+		let bots: PartialEntity[] = await res.json();
 
 		let actionsRes = await panelQuery({
 			GetRpcMethods: {
@@ -33,8 +33,16 @@
 
 		let actions: RPCWebAction[] = await actionsRes.json();
 
+		let botsObj = [];
+
+		for (let bot of bots) {
+			if('Bot' in bot) {
+				botsObj.push(bot.Bot);
+			}
+		}
+
 		return {
-			bots,
+			bots: botsObj,
 			actions
 		};
 	};
