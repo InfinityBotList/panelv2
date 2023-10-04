@@ -56,7 +56,7 @@
 	<div class="flex flex-wrap justify-between items-center mx-auto">
 		<a href="/" class="flex items-center">
 			<img
-				src="https://cdn.infinitybots.gg/images/png/Infinity.png"
+				src="https://cdn.infinitybots.gg/core/full_logo.webp"
 				class="mr-3 h-6 sm:h-9"
 				alt="IBL Logo"
 			/>
