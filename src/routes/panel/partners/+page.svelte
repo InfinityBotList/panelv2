@@ -58,7 +58,7 @@
 			<Card>
 				<img
 					slot="image"
-					src={`${$panelState?.coreConstants?.cdn_url}/partners/${partner?.id}.${partner?.image_type}`}
+					src={`${$panelState?.coreConstants?.cdn_url}/partners/${partner?.id}.webp`}
 					alt=""
 				/>
 				<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>

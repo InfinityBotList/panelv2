@@ -30,7 +30,6 @@
 		short: '',
 		links: [],
 		user_id: '',
-		image_type: '', // internally filled out from the FileInput
 	};
 
 	let imageFile: File;
@@ -99,8 +98,6 @@
 			return false;
 		}
 
-		partner.image_type = imageMimeType.split('/')[1];
-
 		addStatus("Checking existing partner image list...");
 
 		let files = await panelQuery({
@@ -128,7 +125,7 @@
 		addStatus(`=> Found partners: ${paths}`);
 
 		for (let path of paths) {
-			if (path.startsWith(`${partner.id}.`)) {
+			if (path == `${partner.id}.webp`) {
 				addStatus(`=> Deleting existing partner image: ${path}`);
 
 				let del = await panelQuery({
@@ -200,7 +197,7 @@
 			UpdateCdnAsset: {
 				login_token: $panelAuthState?.loginToken || '',
 				path: 'partners',
-				name: `${partner.id}.${partner.image_type}`,
+				name: `${partner.id}.webp`,
 				action: {
 					AddFile: {
 						overwrite: false,
