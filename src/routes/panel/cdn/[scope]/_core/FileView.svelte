@@ -216,7 +216,7 @@
 
     let persistGitCommitMessage: string;
     let persistGitPushCurrentDirectory: boolean = false;
-    let persistGitOutput: { [key: string]: string };
+    let persistGitOutput: { [key: string]: string } | undefined;
     const persistGit = async () => {
         if(!persistGitCommitMessage) {
             error("Please enter a commit message")
@@ -320,6 +320,7 @@
 
     <button 
         on:click={() => {
+            persistGitOutput = undefined
             openAction = Action.PersistGit
             showModal = true
         }}
