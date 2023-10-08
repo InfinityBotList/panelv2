@@ -22,6 +22,7 @@
         NewFolder,
         UploadFile,
         RenameFolder,
+        PersistGit,
         DeleteFolder
     }
 
@@ -213,6 +214,40 @@
         return true
     }
 
+    let persistGitCommitMessage: string;
+    let persistGitPushCurrentDirectory: boolean = false;
+    let persistGitOutput: { [key: string]: string };
+    const persistGit = async () => {
+        if(!persistGitCommitMessage) {
+            error("Please enter a commit message")
+            return false
+        }
+
+        let res = await panelQuery({
+            UpdateCdnAsset: {
+                login_token: $panelAuthState?.loginToken || "",
+                cdn_scope: scope,
+                path: $cdnStateStore.path,
+                name: "",
+                action: {
+                    PersistGit: {
+                        message: persistGitCommitMessage,
+                        current_dir: persistGitPushCurrentDirectory
+                    }
+                }
+            }
+        })
+
+        if(!res.ok) {
+            let err = await res.text()
+            error(`Failed to persist CDN assets to git: ${err}`)
+            return false
+        }
+
+        persistGitOutput = await res.json()
+        return true
+    }
+
     let deleteFolderNonce: string;
     let deleteFolderInputtedNonce: string;
     const deleteFolder = async () => {
@@ -281,6 +316,17 @@
     >
         <Icon icon={"mdi:rename"} class={"text-2xl inline-block align-bottom"} />
         Rename Folder
+    </button> 
+
+    <button 
+        on:click={() => {
+            openAction = Action.PersistGit
+            showModal = true
+        }}
+        class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+    >
+        <Icon icon={"mdi:git"} class={"text-2xl inline-block align-bottom"} />
+        Git Persist
     </button> 
 
     <button 
@@ -418,6 +464,48 @@
                     error: "Failed to modify file"
                 }}
             />
+        </Modal>
+    {/if}
+
+    {#if openAction == Action.PersistGit && showModal}
+        <Modal bind:showModal>
+            <h1 slot="header" class="font-semibold text-2xl">Persist To Github</h1>
+
+            <InputText
+                id="message"
+                label="Commit message"
+                placeholder="Commit message..."
+                bind:value={persistGitCommitMessage}
+                minlength={1}
+                showErrors={false}
+            />
+            <BoolInput
+                id="current-dir"
+                label="Push only current directory"
+                description="If enabled, only the current directory will be pushed to git. Otherwise, the entire CDN scope will be pushed"
+                disabled={false}
+                bind:value={persistGitPushCurrentDirectory}
+            />
+            <ButtonReact 
+                color={Color.Themable}
+                icon="mdi:rename-box"
+                text="Persist To Git"
+                onClick={persistGit}
+                states={{
+                    loading: "Modifying file...",
+                    success: "Successfully modified file",
+                    error: "Failed to modify file"
+                }}
+            />
+
+            {#if persistGitOutput}
+                <h2 class="text-xl font-semibold">Output</h2>
+
+                {#each Object.entries(persistGitOutput) as [key, value]}
+                    <h3 class="text-lg font-semibold">{key}</h3>
+                    <pre class="text-sm">{value}</pre>
+                {/each}
+            {/if}
         </Modal>
     {/if}
 
