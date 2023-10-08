@@ -240,7 +240,7 @@
 
         if(!res.ok) {
             let err = await res.text()
-            error(`Failed to persist CDN assets to git: ${err}`)
+            error(err)
             return false
         }
 
