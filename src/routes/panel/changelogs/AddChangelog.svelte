@@ -5,6 +5,8 @@
 	import ListItem from '../../../components/ListItem.svelte';
 	import Modal from '../../../components/Modal.svelte';
 	import OrderedList from '../../../components/OrderedList.svelte';
+	import ButtonReact from '../../../components/button/ButtonReact.svelte';
+	import { Color } from '../../../components/button/colors';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
@@ -46,10 +48,11 @@
 			let err = await res.text();
 			error(err)
 			addStatus(`Failed to add changelog entry: ${err || "Unknown error"}`);
-			return;
+			return false;
 		}
 
 		addStatus('Successfully added changelog entry');
+		return true
 	};
 </script>
 
@@ -120,6 +123,18 @@
 			label="Prerelease"
 			description="Whether or not this release is a prerelease."
 			disabled={false}
+		/>
+
+		<ButtonReact
+			color={Color.Themable}
+			onClick={addChangelog}
+			icon="mdi:plus"
+			text="Add Changelog Entry"
+			states={{
+				loading: 'Adding entry...',
+				success: 'Entry added!',
+				error: 'Failed to add entry!'
+			}}
 		/>
 
 		{#if status?.length > 0}
