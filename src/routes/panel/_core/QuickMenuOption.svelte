@@ -7,7 +7,7 @@
 	export let action: QuickAction;
 	export let actionsLength: number;
 
-	let options: Option[] = [];
+	let options: Option[] | null = null;
 
 	$: if (action.options) {
 		options = action.options();
