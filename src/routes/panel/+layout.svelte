@@ -9,65 +9,63 @@
 	import type { QuickAction } from './_core/QuickAction';
 	import QuickMenuOption from './_core/QuickMenuOption.svelte';
 
-	let quickActions: QuickAction[] = [];
+	let quickActions: QuickAction[] = [
+		{
+			name: 'Index',
+			description: 'Index Page',
+			link: '/panel',
+			enabled: () => true
+		},
+		{
+			name: 'Bot Queue',
+			description: 'View the bot queue',
+			link: '/panel/bots/queue',
+			enabled: () => $panelState?.capabilities?.includes('ViewBotQueue') || false
+		},
+		{
+			name: 'Manage CDN',
+			description: 'Manage the CDN(s) modifiable by this Arcadia instance',
+			link: '/panel/cdn',
+			enabled: () => $panelState?.capabilities?.includes('CdnManagement') || false
+		},
+		{
+			name: 'Manage Partners',
+			description: 'Manage the partners on the list',
+			link: '/panel/partners',
+			enabled: () => $panelState?.capabilities?.includes('PartnerManagement') || false
+		},
+		{
+			name: "Manage Changelogs",
+			description: "Manage the changelogs for the list",
+			link: "/panel/changelogs",
+			enabled: () => $panelState?.capabilities?.includes("ChangelogManagement") || false
+		},
+		{
+			name: 'RPC Actions',
+			description: 'Manage entities!',
+			link: '/panel/rpc',
+			enabled: () => $panelState?.capabilities?.includes('Rpc') || false,
+			options: ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
+				return {
+					name: type,
+					description: `Manage ${type}s!`,
+					link: `/panel/rpc/${type}`
+				};
+			})
+		},
+		{
+			name: 'Settings',
+			description: 'Customize your experience!',
+			link: '/panel/settings',
+			enabled: () => true
+		}
+	];
 
 	let perms: String[] = [];
 
 	$: {
 		quickActions = [];
 		perms = [];
-
-		quickActions.push({
-			name: 'Index',
-			description: 'Index Page',
-			link: '/panel'
-		});
-
-		for (let cap of $panelState?.capabilities || []) {
-			switch (cap) {
-				case 'ViewBotQueue':
-					quickActions.push({
-						name: 'Bot Queue',
-						description: 'View the bot queue',
-						link: '/panel/bots/queue'
-					});
-					break;
-				case 'CdnManagement':
-					quickActions.push({
-						name: 'Manage CDN',
-						description: 'Manage the CDN(s) modifiable by this Arcadia instance',
-						link: '/panel/cdn'
-					});
-					break;
-				case 'PartnerManagement':
-					quickActions.push({
-						name: 'Manage Partners',
-						description: 'Manage the partners on the list',
-						link: '/panel/partners'
-					});
-					break;
-				case 'Rpc':
-					quickActions.push({
-						name: 'RPC Actions',
-						description: 'Manage entities!',
-						link: '/panel/rpc',
-						options: ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
-							return {
-								name: type,
-								description: `Manage ${type}s!`,
-								link: `/panel/rpc/${type}`
-							};
-						})
-					});
-					break;
-			}
-		}
-
-		quickActions.push({
-			name: 'Settings',
-			description: 'Customize your experience!',
-			link: '/panel/settings'
-		});
 
 		if ($panelState?.userPerms?.owner) perms.push('Owner');
 		if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
@@ -83,7 +81,9 @@
 		<InfoPane title="Navigation" description="Welcome to the panel">
 			<div>
 				{#each quickActions as action, index}
-					<QuickMenuOption {index} {action} actionsLength={quickActions.length} />
+					{#if action.enabled()}
+						<QuickMenuOption {index} {action} actionsLength={quickActions.length} />
+					{/if}
 				{/each}
 			</div>
 
