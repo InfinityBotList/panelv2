@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { panelQuery } from '$lib/fetch';
-	import { renderPreview, uploadFileChunks } from '$lib/fileutils';
-	import logger from '$lib/logger';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error } from '$lib/toast';
-	import Icon from '@iconify/svelte';
 	import ListItem from '../../../components/ListItem.svelte';
 	import Modal from '../../../components/Modal.svelte';
 	import OrderedList from '../../../components/OrderedList.svelte';
-	import ButtonReact from '../../../components/button/ButtonReact.svelte';
-	import { Color } from '../../../components/button/colors';
-	import FileUpload from '../../../components/inputs/FileUpload.svelte';
+	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
-	import ExtraLinks from '../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
+	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
+
+	let version: string;
+	let extra_description: string;
+	let added: string[] = [];
+	let updated: string[] = [];
+	let removed: string[] = [];
+	let prerelease: boolean = false;
 
 	let status: string[] = [];
     let addChangelogModalOpen: boolean = false;
@@ -20,6 +22,34 @@
 	const addStatus = (s: string) => {
 		status.push(s);
 		status = status;
+	};
+
+	const addChangelog = async () => {
+		addStatus("=> Trying to add changelog entry...")
+		let res = await panelQuery({
+			UpdateChangelog: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: {
+					CreateEntry: {
+						version,
+						extra_description,
+						added,
+						updated,
+						removed,
+						prerelease
+					}
+				},
+			}
+		});
+
+		if (!res.ok) {
+			let err = await res.text();
+			error(err)
+			addStatus(`Failed to add changelog entry: ${err || "Unknown error"}`);
+			return;
+		}
+
+		addStatus('Successfully added changelog entry');
 	};
 </script>
 
@@ -35,6 +65,62 @@
 {#if addChangelogModalOpen}
 	<Modal bind:showModal={addChangelogModalOpen}>
 		<h1 slot="header" class="font-semibold text-2xl">New Changelog Entry</h1>
+
+		<InputText
+			id="version"
+			bind:value={version}
+			label="Version"
+			placeholder="4.x.x"
+			minlength={0}
+			showErrors={false}
+		/>
+
+		<InputText
+			id="extra_description"
+			bind:value={extra_description}
+			label="Version"
+			placeholder="4.x.x"
+			minlength={0}
+			showErrors={false}
+		/>
+
+		<MultiInput
+			id="added"
+			title="Added"
+			label="Added Feature"
+			bind:values={added}
+			placeholder="Added"
+			minlength={0}
+			showErrors={false}
+		/>
+
+		<MultiInput
+			id="updated"
+			title="Updated"
+			label="Updated Feature"
+			bind:values={updated}
+			placeholder="Updated"
+			minlength={0}
+			showErrors={false}
+		/>
+
+		<MultiInput
+			id="removed"
+			title="Removed"
+			label="Removed Feature"
+			bind:values={removed}
+			placeholder="Removed"
+			minlength={0}
+			showErrors={false}
+		/>
+
+		<BoolInput
+			id="prerelease"
+			bind:value={prerelease}
+			label="Prerelease"
+			description="Whether or not this release is a prerelease."
+			disabled={false}
+		/>
 
 		{#if status?.length > 0}
 			<OrderedList>
