@@ -16,9 +16,9 @@
         added: Array<string>, 
         updated: Array<string>, 
         removed: Array<string>, 
-        github_html: string | null, 
         created_at: string, 
         extra_description: string, 
+		github_html: string | null,
         prerelease: boolean
     }
 
@@ -42,9 +42,9 @@
                 added: c?.added,
                 updated: c?.updated,
                 removed: c?.removed,
-                github_html: c?.github_html,
                 created_at: c?.created_at,
                 extra_description: c?.extra_description,
+				github_html: c?.github_html,
                 prerelease: c?.prerelease
             }
         });
@@ -76,23 +76,23 @@
             <thead>
 				<tr>
 					<Th handler={data.handler} orderBy="version">Version</Th>
-					<Th handler={data.handler} orderBy="added">Added</Th>
-					<Th handler={data.handler} orderBy="updated">Updated</Th>
-					<Th handler={data.handler} orderBy="removed">Removed</Th>
-					<Th handler={data.handler} orderBy="github_html">GitHub HTML</Th>
-					<Th handler={data.handler} orderBy="created_at">Created At</Th>
+					<Th handler={data.handler} orderBy="added" align="left">Added</Th>
+					<Th handler={data.handler} orderBy="updated" align="left">Updated</Th>
+					<Th handler={data.handler} orderBy="removed" align="left">Removed</Th>
 					<Th handler={data.handler} orderBy="extra_description">Extra Description</Th>
 					<Th handler={data.handler} orderBy="prerelease">Prerelease</Th>	
+					<Th handler={data.handler} orderBy="github_html">Github HTML</Th>
+					<Th handler={data.handler} orderBy="created_at">Created At</Th>
 				</tr>
 				<tr>
 					<ThFilter handler={data.handler} filterBy="version" />
 					<ThFilter handler={data.handler} filterBy="added" />
 					<ThFilter handler={data.handler} filterBy="updated" />
 					<ThFilter handler={data.handler} filterBy="removed" />
-					<ThFilter handler={data.handler} filterBy="github_html" />
-					<ThFilter handler={data.handler} filterBy="created_at" />
 					<ThFilter handler={data.handler} filterBy="extra_description" />
 					<ThFilter handler={data.handler} filterBy="prerelease" />
+					<ThFilter handler={data.handler} filterBy="github_html" />
+					<ThFilter handler={data.handler} filterBy="created_at" />
 				</tr>
 			</thead>
 			<tbody>
@@ -123,20 +123,16 @@
 							</UnorderedList>
 						</td>
 						<td>
-							{#if row.github_html}
-								{@html row.github_html}
-							{:else}
-								-
-							{/if}
-						</td>
-						<td>
-							{row.created_at}
-						</td>
-						<td>
 							{row.extra_description}
 						</td>
 						<td>
 							{row.prerelease}
+						</td>
+						<td>
+							{row.github_html ? row?.github_html : "-"}
+						</td>
+						<td>
+							{new Date(row.created_at)}
 						</td>
 					</tr>
 				{/each}
@@ -146,3 +142,21 @@
 {:catch err}
 	<ErrorComponent msg={`Failed to fetch partner list: ${err}`} />
 {/await}
+
+<style>
+    table {
+        color: white;
+        width: 210%;
+        margin: 0 !important;
+    }
+    tbody td {
+        border: 1px solid #f5f5f5;
+        padding: 4px 20px;
+    }
+    tbody tr {
+        transition: all, 0.2s;
+    }
+    tbody tr:hover {
+        background: #252323;
+    }
+</style>

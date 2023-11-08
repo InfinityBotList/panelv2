@@ -1,14 +1,20 @@
 <script lang="ts">
-	import type { QuickAction } from './QuickAction';
+	import type { QuickAction, Option } from './QuickAction';
 
 	export let subMenuOpened: boolean = false;
 
 	export let index: number;
 	export let action: QuickAction;
 	export let actionsLength: number;
+
+	let options: Option[] = [];
+
+	$: if (action.options) {
+		options = action.options();
+	}
 </script>
 
-{#if action.options}
+{#if options}
 	<button
 		class="w-full border border-themable-700/50 p-3 text-xl bg-black hover:bg-slate-800 {index === 0
 			? 'rounded-t-md'
@@ -22,7 +28,7 @@
 	</button>
 
 	{#if subMenuOpened}
-		{#each action.options as a}
+		{#each options as a}
 			<a
 				class="block text-center w-full border border-red-300 border-opacity-50 p-3 text-xl bg-black hover:bg-slate-800"
 				href={a.link}

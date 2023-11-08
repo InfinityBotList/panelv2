@@ -1,4 +1,5 @@
 <script lang="ts">
+	import logger from '$lib/logger';
 	import { panelState } from '$lib/panelState';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
@@ -14,7 +15,10 @@
 			name: 'Index',
 			description: 'Index Page',
 			link: '/panel',
-			enabled: () => true
+			enabled: () => {
+				logger.info("QuickAction", $panelState)
+				return true
+			}
 		},
 		{
 			name: 'Bot Queue',
@@ -45,7 +49,7 @@
 			description: 'Manage entities!',
 			link: '/panel/rpc',
 			enabled: () => $panelState?.capabilities?.includes('Rpc') || false,
-			options: ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
+			options: () => ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
 				return {
 					name: type,
 					description: `Manage ${type}s!`,
@@ -64,7 +68,6 @@
 	let perms: String[] = [];
 
 	$: {
-		quickActions = [];
 		perms = [];
 
 		if ($panelState?.userPerms?.owner) perms.push('Owner');

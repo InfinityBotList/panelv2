@@ -8,6 +8,6 @@ export interface QuickAction {
 	name: string;
 	description: string;
 	link: string;
-	options?: Option[];
+	options?: () => Option[];
 	enabled: () => boolean;
 }
