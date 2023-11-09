@@ -9,6 +9,7 @@
 	import { Color } from '../../../components/button/colors';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
+	import InputTextArea from '../../../components/inputs/InputTextArea.svelte';
 	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
 
 	let version: string;
@@ -78,7 +79,7 @@
 			showErrors={false}
 		/>
 
-		<InputText
+		<InputTextArea
 			id="extra_description"
 			bind:value={extra_description}
 			label="extra_description"

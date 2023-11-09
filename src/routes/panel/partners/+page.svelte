@@ -76,7 +76,7 @@
 					</CardLinkButton>
 				</svelte:fragment>
 				<div slot="extra">
-					<ManagePartner {partner} />
+					<ManagePartner {partner} partnerTypes={partners?.partners?.partner_types} mainScope={partners.scope} partnerIds={partners?.partners?.partners?.map(p => p.id)} />
 				</div>
 			</Card>
 		{/each}

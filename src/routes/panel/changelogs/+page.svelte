@@ -10,6 +10,7 @@
     import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 	import ListItem from '../../../components/ListItem.svelte';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
+	import ManageChangelog from './ManageChangelog.svelte';
 
     interface ChangelogRow { 
         version: string, 
@@ -44,7 +45,7 @@
                 removed: c?.removed,
                 created_at: c?.created_at,
                 extra_description: c?.extra_description,
-				github_html: c?.github_html,
+				github_html: c?.github_html || null,
                 prerelease: c?.prerelease
             }
         });
@@ -83,6 +84,7 @@
 					<Th handler={data.handler} orderBy="prerelease">Prerelease</Th>	
 					<Th handler={data.handler} orderBy="github_html">Github HTML</Th>
 					<Th handler={data.handler} orderBy="created_at">Created At</Th>
+					<Th handler={data.handler} orderBy="version">Actions</Th>
 				</tr>
 				<tr>
 					<ThFilter handler={data.handler} filterBy="version" />
@@ -93,6 +95,7 @@
 					<ThFilter handler={data.handler} filterBy="prerelease" />
 					<ThFilter handler={data.handler} filterBy="github_html" />
 					<ThFilter handler={data.handler} filterBy="created_at" />
+					<ThFilter handler={data.handler} filterBy="version" />
 				</tr>
 			</thead>
 			<tbody>
@@ -133,6 +136,9 @@
 						</td>
 						<td>
 							{new Date(row.created_at)}
+						</td>
+						<td>
+							<ManageChangelog changelog={row} />
 						</td>
 					</tr>
 				{/each}
