@@ -82,7 +82,7 @@
 		<InputTextArea
 			id="extra_description"
 			bind:value={extra_description}
-			label="extra_description"
+			label="Extra Description"
 			placeholder="Leave blank if none"
 			minlength={0}
 			showErrors={false}

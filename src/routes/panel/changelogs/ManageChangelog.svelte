@@ -145,7 +145,7 @@
 		<InputTextArea
 			id="extra_description"
 			bind:value={changelog.extra_description}
-			label="extra_description"
+			label="Extra Description"
 			placeholder="Leave blank if none"
 			minlength={0}
 			showErrors={false}
@@ -154,7 +154,7 @@
 		<InputTextArea
 			id="github_html"
 			bind:value={githubHtml}
-			label="github_html"
+			label="Github HTML"
 			placeholder="Leave blank if none"
 			minlength={0}
 			showErrors={false}
