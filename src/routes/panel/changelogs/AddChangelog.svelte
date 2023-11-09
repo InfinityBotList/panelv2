@@ -81,8 +81,8 @@
 		<InputText
 			id="extra_description"
 			bind:value={extra_description}
-			label="Version"
-			placeholder="4.x.x"
+			label="extra_description"
+			placeholder="Leave blank if none"
 			minlength={0}
 			showErrors={false}
 		/>
