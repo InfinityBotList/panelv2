@@ -220,9 +220,13 @@
 		addStatus('Adding partner to database...');
 
 		let res = await panelQuery({
-			AddPartner: {
+			UpdatePartners: {
 				login_token: $panelAuthState?.loginToken || '',
-				partner: partner
+				action: {
+					Create: {
+						partner,
+					}
+				}
 			}
 		});
 

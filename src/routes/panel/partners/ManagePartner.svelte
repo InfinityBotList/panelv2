@@ -15,6 +15,8 @@
 	import Icon from '@iconify/svelte';
 	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
 	import logger from '$lib/logger';
+	import { commonButtonReactStates, setupWarning, type WarningBox as WB } from '../../../components/warningbox/warningBox';
+	import WarningBox from '../../../components/warningbox/WarningBox.svelte';
 
 	// File stuff
 	let imageFile: File;
@@ -23,7 +25,6 @@
 	let imageFilePreviewBox: HTMLDivElement;
 
 	let showActionsModal: boolean = false;
-	let showWarningModal: boolean = false;
 	export let partnerTypes: PartnerType[];
 	export let partnerIds: string[];
 	export let mainScope: string;
@@ -35,59 +36,38 @@
 		status = status;
 	};
 
-	interface WarningBox {
-		header: string;
-		text: string;
-		nonce?: string;
-		buttonText: {
-			normal: string;
-			loading: string;
-			success: string;
-			error: string;
-		};
-		inputtedText?: string;
-		onConfirm: () => Promise<boolean>;
-	}
-
-	const createWarning = (wb: WarningBox) => {
-		wb.nonce =
-			Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-		warningBox = wb;
-		showActionsModal = false;
-		showWarningModal = true;
-	};
-
-	export let warningBox: WarningBox | null = null;
 	const deletePartner = async () => {
-		createWarning({
-			header: 'Confirm Deletion',
-			text: `Are you sure you want to delete partner '${partner.name}' with ID ${partner.id}? This is an irreversible action.`,
-			buttonText: {
-				normal: 'Delete Partner',
-				loading: 'Deleting partner...',
-				success: 'Successfully deleted this partner',
-				error: 'Failed to delete partner'
-			},
-			onConfirm: async () => {
-				let res = await panelQuery({
-					DeletePartner: {
-						login_token: $panelAuthState?.loginToken || '',
-						partner_id: partner?.id || ''
+		let res = await panelQuery({
+			UpdatePartners: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: {
+					Delete: {
+						id: partner?.id || ''
 					}
-				});
-
-				if (!res.ok) {
-					let err = await res.text();
-					error(`Could not delete partner: ${err}`);
-					return false;
 				}
-
-				success('Successfully deleted partner');
-				return true;
 			}
 		});
 
+		if (!res.ok) {
+			let err = await res.text();
+			error(`Could not delete partner: ${err}`);
+			return false;
+		}
+
+		success('Successfully deleted partner');
 		return true;
+	}
+
+	export let warningBox: WB = {
+		header: 'Confirm Deletion',
+		text: `Are you sure you want to delete partner '${partner.name}' with ID ${partner.id}? This is an irreversible action.`,
+		buttonStates: {
+			normal: 'Delete Partner',
+			loading: 'Deleting partner...',
+			success: 'Successfully deleted this partner',
+			error: 'Failed to delete partner'
+		},
+		onConfirm: deletePartner,
 	};
 
 	const editPartner = async () => {
@@ -268,9 +248,13 @@
 		addStatus('Editting partner in database...');
 
 		let res = await panelQuery({
-			EditPartner: {
+			UpdatePartners: {
 				login_token: $panelAuthState?.loginToken || '',
-				partner: partner
+				action: {
+					Update: {
+						partner,
+					}
+				}
 			}
 		});
 
@@ -418,70 +402,15 @@
 		<GreyText>Note that this is IRREVERSIBLE</GreyText>
 		<ButtonReact
 			color={Color.Red}
-			states={{
-				loading: 'Deleting partner...',
-				success: 'Successfully deleted this partner',
-				error: 'Failed to delete partner'
+			states={commonButtonReactStates}
+			onClick={async () => {
+				setupWarning(warningBox);
+				return true
 			}}
-			onClick={deletePartner}
 			icon="mdi:trash-can-outline"
 			text="Delete Partner"
 		/>
 	</Modal>
 {/if}
 
-{#if showWarningModal && warningBox && warningBox.nonce}
-	<Modal bind:showModal={showWarningModal}>
-		<h1 slot="header" class="font-semibold text-2xl">{warningBox.header}</h1>
-
-		<p class="font-semibold text-xl">{warningBox.text}</p>
-
-		<p>
-			To confirm, please type the following: <code class="select-none cursor-pointer"
-				>{warningBox.nonce}</code
-			>
-		</p>
-
-		<div class="mb-5" />
-
-		<InputText
-			id="wb-input"
-			label="Are you sure? This is dangerous"
-			placeholder="Dangerous nilly!"
-			bind:value={warningBox.inputtedText}
-			minlength={1}
-			showErrors={false}
-		/>
-
-		<div class="mb-5" />
-
-		<ButtonReact
-			color={Color.Red}
-			states={{
-				loading: warningBox.buttonText?.loading,
-				success: warningBox.buttonText?.success,
-				error: warningBox.buttonText?.error
-			}}
-			onClick={async () => {
-				if (!warningBox) {
-					error('Internal error: no warningBox found');
-					return false;
-				}
-
-				if (warningBox.inputtedText != warningBox.nonce) {
-					error('Please type the nonce correctly');
-					return false;
-				}
-
-				let res = await warningBox.onConfirm();
-
-				if (res) {
-					showWarningModal = false;
-				}
-				return res;
-			}}
-			icon="mdi:trash-can-outline"
-			text={warningBox.buttonText?.normal}
-		/>
-	</Modal>
-{/if}
+<WarningBox bind:warningBox={warningBox} />

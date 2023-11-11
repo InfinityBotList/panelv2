@@ -13,8 +13,9 @@
 
 	const fetchPartnerList = async () => {
 		let res = await panelQuery({
-			GetPartnerList: {
-				login_token: $panelAuthState?.loginToken || ''
+			UpdatePartners: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: "List"
 			}
 		});
 
