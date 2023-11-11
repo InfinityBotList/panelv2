@@ -174,6 +174,14 @@
 			disabled={false}
 		/>
 
+		<BoolInput
+			id="published"
+			bind:value={changelog.published}
+			label="Published"
+			description="Whether or not this release is published and visible on official clients. Note that even unpublished changelogs are still visible on the API and sent to the client"
+			disabled={false}
+		/>
+
         <ButtonReact
             color={Color.Themable}
             onClick={editChangelog}

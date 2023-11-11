@@ -21,6 +21,7 @@
         extra_description: string, 
 		github_html: string | null,
         prerelease: boolean
+		published: boolean
     }
 
     let rows: Readable<ChangelogRow[]>;
@@ -46,7 +47,8 @@
                 created_at: c?.created_at,
                 extra_description: c?.extra_description,
 				github_html: c?.github_html || null,
-                prerelease: c?.prerelease
+                prerelease: c?.prerelease,
+				published: c?.published
             }
         });
 
@@ -82,6 +84,7 @@
 					<Th handler={data.handler} orderBy="removed" align="left">Removed</Th>
 					<Th handler={data.handler} orderBy="extra_description">Extra Description</Th>
 					<Th handler={data.handler} orderBy="prerelease">Prerelease</Th>	
+					<Th handler={data.handler} orderBy="published">Published</Th>	
 					<Th handler={data.handler} orderBy="github_html">Github HTML</Th>
 					<Th handler={data.handler} orderBy="created_at">Created At</Th>
 					<Th handler={data.handler} orderBy="version">Actions</Th>
@@ -93,6 +96,7 @@
 					<ThFilter handler={data.handler} filterBy="removed" />
 					<ThFilter handler={data.handler} filterBy="extra_description" />
 					<ThFilter handler={data.handler} filterBy="prerelease" />
+					<ThFilter handler={data.handler} filterBy="published" />
 					<ThFilter handler={data.handler} filterBy="github_html" />
 					<ThFilter handler={data.handler} filterBy="created_at" />
 					<ThFilter handler={data.handler} filterBy="version" />
@@ -130,6 +134,9 @@
 						</td>
 						<td>
 							{row.prerelease}
+						</td>
+						<td>
+							{row.published}
 						</td>
 						<td>
 							{row.github_html ? row?.github_html : "-"}
