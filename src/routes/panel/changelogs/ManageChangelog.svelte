@@ -201,6 +201,7 @@
 			states={commonButtonReactStates}
 			onClick={async () => {
 				setupWarning(warningBox);
+				showActionsModal = false;
 				return true
 			}}
 			icon="mdi:trash-can-outline"

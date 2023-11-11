@@ -16,6 +16,7 @@ export interface WarningBox {
 
 export const setupWarning = (wb: WarningBox) => {
     wb.nonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    wb = wb // Ensure warningBox is updated
 };
 
 export const commonButtonReactStates = {
