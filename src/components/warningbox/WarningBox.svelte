@@ -8,27 +8,6 @@
 
     export let show: boolean = false
     export let warningBox: WarningBox | null = null;
-
-	let currentNonce: string
-
-	$: {
-		if(!currentNonce && warningBox?.nonce) {
-			currentNonce = warningBox.nonce
-			show = false
-			show = true
-		}
-
-		if(currentNonce && !warningBox?.nonce) {
-			currentNonce = ''
-			show = false
-		}
-
-		if(currentNonce && warningBox?.nonce && currentNonce != warningBox.nonce) {
-			currentNonce = warningBox.nonce
-			show = false
-			show = true
-		}
-	}
 </script>
 
 {#if show && warningBox && warningBox.nonce}

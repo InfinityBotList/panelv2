@@ -15,6 +15,7 @@
 	import WarningBox from '../../../components/warningbox/WarningBox.svelte';
 
 	let showActionsModal: boolean = false;
+	let showWarningBox: boolean = false;
 
     let githubHtml: string;
 
@@ -202,6 +203,7 @@
 			onClick={async () => {
 				setupWarning(warningBox);
 				showActionsModal = false;
+				showWarningBox = true
 				return true
 			}}
 			icon="mdi:trash-can-outline"
@@ -210,4 +212,4 @@
 	</Modal>
 {/if}
 
-<WarningBox bind:warningBox={warningBox} />
+<WarningBox bind:warningBox={warningBox} bind:show={showWarningBox} />
