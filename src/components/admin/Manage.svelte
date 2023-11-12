@@ -16,6 +16,8 @@
 	import InputNumber from '../inputs/InputNumber.svelte';
 	import Loading from '../Loading.svelte';
 	import FileUploadElement from './FileUploadElement.svelte';
+	import OrderedList from '../OrderedList.svelte';
+	import ListItem from '../ListItem.svelte';
 
 	let showActionsModal: boolean = false;
 
@@ -36,15 +38,13 @@
 	const deleteObject = async () => {
         addStatus(`=> Deleting ${data?.schema?.name}`)
         try {
-            let res = await data?.schema?.delete({
+            await data?.schema?.delete({
                 data: editData,
-                files: fileData
+                files: fileData,
+                addStatus,
             })
-
-            if(!res) {
-                error(`Could not delete ${data?.schema?.name} with invalid status: ${res}`);
-            }
         } catch (err) {
+            addStatus(`Could not delete ${data?.schema?.name}: ${err}`)
             error(`Could not delete ${data?.schema?.name}: ${err}`);
             return false
         }
@@ -56,19 +56,18 @@
 	const editObject = async () => {
         addStatus(`=> Editting ${data?.schema?.name}`)
         try {
-            let res = await data?.schema?.update({
+            await data?.schema?.update({
                 data: editData,
-                files: fileData
+                files: fileData,
+                addStatus,
             })
-
-            if(!res) {
-                error(`Could not update ${data?.schema?.name} with invalid status: ${res}`);
-            }
         } catch (err) {
+            addStatus(`Could not update ${data?.schema?.name}: ${err}`)
             error(`Could not update ${data?.schema?.name}: ${err}`);
             return false
         }
 
+        addStatus(`Successfully updated ${data?.schema?.name}`)
 		success(`Successfully updated ${data?.schema?.name}`);
 		return true;
 	};
@@ -206,6 +205,14 @@
             />
         {:else}
             <p class="text-red-500">You do not have permission to delete this entry</p>
+        {/if}
+
+        {#if status?.length > 0}
+            <OrderedList>
+                {#each status as s}
+                    <ListItem>{s}</ListItem>
+                {/each}
+            </OrderedList>
         {/if}
 	</Modal>
 {/if}

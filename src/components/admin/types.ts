@@ -93,6 +93,10 @@ export interface Entry<T> {
      * Data being created/updated
      */
     data: T
+    /**
+     * Function that when called adds a status entry
+     */
+    addStatus: (s: string) => void
 }
 
 export interface BaseSchema<T> {
@@ -139,21 +143,21 @@ export interface BaseSchema<T> {
      * @param data The data to add
      * @returns Whether the data was added successfully
      */
-    create: (data: Entry<T>) => Promise<boolean>,
+    create: (data: Entry<T>) => Promise<void>,
     /**
      * A function to update an existing data entry in the database
      * 
      * @param data The data to update
      * @returns Whether the data was updated successfully
      */
-    update: (data: Entry<T>) => Promise<boolean>,
+    update: (data: Entry<T>) => Promise<void>,
     /**
      * A function to delete an existing data entry in the database
      * 
      * @param data The data to delete
      * @returns Whether the data was deleted successfully
      */
-    delete: (data: Entry<T>) => Promise<boolean>,
+    delete: (data: Entry<T>) => Promise<void>,
 }
 
 /**

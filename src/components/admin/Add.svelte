@@ -13,6 +13,8 @@
 	import InputNumber from '../inputs/InputNumber.svelte';
 	import Loading from '../Loading.svelte';
 	import FileUploadElement from './FileUploadElement.svelte';
+	import OrderedList from '../OrderedList.svelte';
+	import ListItem from '../ListItem.svelte';
 
 	export let schema: Schema<any>;
 
@@ -33,19 +35,18 @@
 	const addObject = async () => {
         addStatus(`=> Adding a ${schema?.name}`)
         try {
-            let res = await schema?.create({
+            await schema?.create({
                 data: createData,
-                files: fileData
+                files: fileData,
+                addStatus,
             })
-
-            if(!res) {
-                error(`Could not add ${schema?.name} with invalid status: ${res}`);
-            }
         } catch (err) {
+            addStatus(`Could not add ${schema?.name}: ${err}`)
             error(`Could not add ${schema?.name}: ${err}`);
             return false
         }
 
+        addStatus(`Successfully added ${schema?.name}`)
 		success(`Successfully added ${schema?.name}`);
 		return true;
 	};
@@ -164,5 +165,13 @@
         {:catch err}
             <p class="text-red-500">{err?.toString()}</p>
         {/await}
+
+        {#if status?.length > 0}
+            <OrderedList>
+                {#each status as s}
+                    <ListItem>{s}</ListItem>
+                {/each}
+            </OrderedList>
+        {/if}
 	</Modal>
 {/if}
