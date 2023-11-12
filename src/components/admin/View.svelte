@@ -91,6 +91,12 @@
                             </td>
                             {/if}
                         {/each}
+						<td>
+                            <Manage data={{
+                                schema,
+                                manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
+                            }} />
+						</td>
 					</tr>
 				{/each}
 			</tbody>
