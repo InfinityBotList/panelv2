@@ -58,7 +58,7 @@ export interface Partner {
                 id: "links",
                 label: "Links",
                 arrayLabel: "Links",
-                type: "text[kv]",
+                type: "ibl:link",
                 helpText: "The links of the partner",
                 required: true,
                 disabled: false,
