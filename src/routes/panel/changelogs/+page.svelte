@@ -272,6 +272,7 @@ export interface ChangelogEntry {
 					writable: false,
 					configurable: false
 				});
+				Object.preventExtensions(this);
 			}
 		}
 	}
