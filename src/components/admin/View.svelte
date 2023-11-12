@@ -6,7 +6,7 @@
 	import ListItem from '../ListItem.svelte';
 	import UnorderedList from '../UnorderedList.svelte';
 	import type { Schema } from './types';
-	import { castToArray, fetchFields } from './logic';
+	import { castToArray, fetchFields, validateDataWithFields } from './logic';
 	import Manage from './Manage.svelte';
 	import OrderedList from '../OrderedList.svelte';
 
@@ -17,6 +17,10 @@
         let viewData = await schema?.viewAll()
 
         if(!viewData) viewData = []
+
+        if(viewData.length > 0 && schema?.strictSchemaValidation) {
+            validateDataWithFields(viewData[0], fetchFields('view', schema?.fields))
+        }
 
         let eRows = await schema?.viewToTable(viewData);
 

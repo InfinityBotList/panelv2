@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { panelQuery } from '$lib/fetch';
-	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
 	import GreyText from '../GreyText.svelte';
 	import Modal from '../Modal.svelte';
@@ -18,7 +16,6 @@
 	import InputNumber from '../inputs/InputNumber.svelte';
 
 	let showActionsModal: boolean = false;
-	let showWarningBox: boolean = false;
 
 	export let data: ManageSchema<any>;
     let pkey: string = '';
@@ -65,12 +62,11 @@
 		return true;
 	};
 
-	let warningBox: WB = {
-        ...data.schema.warningBox('delete', data.manageData),
-		onConfirm: deleteObject,
-	};
+	let warningBoxDelete: WB | undefined;
+    let showWarningBoxDelete: boolean = false;
 
     $: {
+        warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
         editData = data?.manageData || {}
         pkey = data?.schema?.getPrimaryKey('update')
         fields = fetchFields('update', editData)
@@ -163,9 +159,13 @@
 			color={Color.Red}
 			states={commonButtonReactStates}
 			onClick={async () => {
-				setupWarning(warningBox);
+                if(!warningBoxDelete) {
+                    error('Internal error: no warningBoxDelete found');
+                    return false;
+                }
+				setupWarning(warningBoxDelete);
 				showActionsModal = false;
-				showWarningBox = true
+				showWarningBoxDelete = true
 				return true
 			}}
 			icon="mdi:trash-can-outline"
@@ -174,4 +174,4 @@
 	</Modal>
 {/if}
 
-<WarningBox bind:warningBox={warningBox} bind:show={showWarningBox} />
+<WarningBox bind:warningBox={warningBoxDelete} bind:show={showWarningBoxDelete} />

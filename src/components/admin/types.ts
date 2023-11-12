@@ -21,7 +21,7 @@ export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "no
 
 export type Capability = "view" | "create" | "update" | "delete";
 
-export type FieldFetch = ((cap: Capability) => Field | Field)[]
+export type FieldFetch = (((cap: Capability) => Field | null) | Field | null)[]
 
 export interface Field {
     /**
@@ -57,8 +57,9 @@ export interface Field {
      */
     disabled: boolean,
     /**
-     * Render method, is optional
+     * Render method of the field
      * 
+     * Set to 'text' when in doubt
      */
     renderMethod: FieldRenderMethod
 }
@@ -100,7 +101,7 @@ export interface BaseSchema<T> {
      * 
      * @return A data entry
      */
-    view: (key: string, value: string) => Promise<T>
+    view: (key: string, value: string) => Promise<T | null | undefined>
     /**
      * A function to create a new data entry in the database
      * 
@@ -150,7 +151,7 @@ export interface Schema<T> extends BaseSchema<T> {
      * 
      * Note that only 'delete' actually supports warnings at this time
      */
-    warningBox: (cap: Capability, data: T) => WarningBox
+    warningBox: (cap: Capability, data: T, func: () => Promise<boolean>) => WarningBox
     /**
      * This function is called as a reactive store when the management modal is opened
      */

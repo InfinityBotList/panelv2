@@ -2,174 +2,289 @@
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
-	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import type { ChangelogEntry } from '$lib/generated/arcadia/ChangelogEntry';
-	import AddChangelog from './AddChangelog.svelte';
-	import type { Readable } from 'svelte/store';
-    import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
-	import ListItem from '../../../components/ListItem.svelte';
-	import UnorderedList from '../../../components/UnorderedList.svelte';
-	import ManageChangelog from './ManageChangelog.svelte';
+	import type { BaseSchema, Capability, FieldFetch, Schema } from '../../../components/admin/types';
+	import logger from '$lib/logger';
+	import View from '../../../components/admin/View.svelte';
 
-    interface ChangelogRow { 
-        version: string, 
-        added: Array<string>, 
-        updated: Array<string>, 
-        removed: Array<string>, 
-        created_at: string, 
-        extra_description: string, 
-		github_html: string | null,
-        prerelease: boolean
-		published: boolean
-    }
+	/* 
+export interface ChangelogEntry { 
+	version: string, 
+	added: Array<string>, 
+	updated: Array<string>, 
+	removed: Array<string>, 
+	github_html: string | null, 
+	created_at: string, 
+	extra_description: string, 
+	prerelease: boolean, 
+	published: boolean, 
+}
+	*/
 
-    let rows: Readable<ChangelogRow[]>;
-    
-	const fetchChangelogList = async () => {
-		let res = await panelQuery({
-			UpdateChangelog: {
-				login_token: $panelAuthState?.loginToken || '',
-                action: "ListEntries"
+	class ChangelogSchema implements BaseSchema<ChangelogEntry>, Schema<ChangelogEntry> {
+		name: string = "Changelog";
+		fields: FieldFetch = [
+			{
+				id: "version",
+				label: "Version",
+				type: "text",
+				helpText: "The version of the changelog entry",
+				required: true,
+				disabled: false,
+				renderMethod: "text",
+			},
+			(cap) => {
+				return {
+					id: "added",
+					label: "Added",
+					arrayLabel: "Added Features",
+					type: "text[]",
+					helpText: "ABC was added...",
+					required: true,
+					disabled: false,
+					renderMethod: cap == "view" ? "unordered-list" : "text",
+				}
+			},
+			(cap) => {
+				return {
+					id: "updated",
+					label: "Updated",
+					arrayLabel: "Updated Features",
+					type: "text[]",
+					helpText: "ABC was updated...",
+					required: true,
+					disabled: false,
+					renderMethod: cap == "view" ? "unordered-list" : "text",
+				}
+			},
+			(cap) => {
+				return {
+					id: "removed",
+					label: "Removed",
+					arrayLabel: "Removed Features",
+					type: "text[]",
+					helpText: "ABC was removed...",
+					required: true,
+					disabled: false,
+					renderMethod: cap == "view" ? "unordered-list" : "text",
+				}
+			},
+			(cap) => {
+				if(cap != "create") {
+					return {
+						id: "github_html",
+						label: "Github HTML",
+						type: "textarea",
+						helpText: "Github HTML for the changelog entry",
+						required: false,
+						disabled: false,
+						renderMethod: "text",
+					}
+				}
+				return null
+			},
+			{
+				id: "extra_description",
+				label: "Extra Description",
+				type: "textarea",
+				helpText: "Extra description for the changelog entry",
+				required: false,
+				disabled: false,
+				renderMethod: "text",
+			},
+			{
+				id: "prerelease",
+				label: "Prerelease",
+				type: "boolean",
+				helpText: "Is this a prerelease?",
+				required: false,
+				disabled: false,
+				renderMethod: "text",
+			},
+			{
+				id: "published",
+				label: "Published",
+				type: "boolean",
+				helpText: "Is this published?",
+				required: false,
+				disabled: false,
+				renderMethod: "text",
+			},
+			{
+				id: "created_at",
+				label: "Created At",
+				type: "text",
+				helpText: "The date the changelog entry was created",
+				required: false,
+				disabled: false,
+				renderMethod: "text",
+			},
+		]
+
+		strictSchemaValidation: boolean = true
+
+		getCaps(): Capability[] {
+			if($panelState?.capabilities?.includes("ChangelogManagement")) {
+				return ["view", "create", "update", "delete"]
 			}
-		});
 
-		if (!res.ok) throw new Error('Failed to fetch partner list');
+			throw new Error("User does not have permission to view changelogs")
+		}
 
-		let changelogEntries: ChangelogEntry[] = await res.json();
+		getPrimaryKey(cap: Capability) {
+			return "version"
+		}
 
-        let changelogRows: ChangelogRow[] = changelogEntries?.map(c => {
-            return {
-                version: c?.version,
-                added: c?.added,
-                updated: c?.updated,
-                removed: c?.removed,
-                created_at: c?.created_at,
-                extra_description: c?.extra_description,
-				github_html: c?.github_html || null,
-                prerelease: c?.prerelease,
-				published: c?.published
-            }
-        });
+		async viewAll() {
+			let res = await panelQuery({
+				UpdateChangelog: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: "ListEntries"
+				}
+			})
 
-        const handler = new DataHandler(changelogRows, { rowsPerPage: 10 })
-        rows = handler.getRows()
+			if(!res.ok) throw new Error(`Failed to fetch changelog entries: ${await res.text()}`)
 
-		return {
-			handler,
-            changelogEntries,
-            changelogRows
+			let changelogEntries: ChangelogEntry[] = await res.json()
+
+			return changelogEntries
+		}
+
+		async view(key: string, value: string) {
+			let changelogEntries = await this.viewAll()
+
+			return changelogEntries.find(ce => {
+				// @ts-ignore
+				return ce[key] == value
+			})
+		}
+
+		async create(data: ChangelogEntry) {
+			let res = await panelQuery({
+				UpdateChangelog: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						CreateEntry: {
+							version: data.version,
+							added: data.added,
+							updated: data.updated,
+							removed: data.removed,
+							extra_description: data.extra_description,
+							prerelease: data.prerelease,
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to create changelog entry: ${await res.text()}`)
+
+			return true
+		}
+
+		async update(data: ChangelogEntry) {
+			let res = await panelQuery({
+				UpdateChangelog: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						UpdateEntry: {
+							version: data.version,
+							added: data.added,
+							updated: data.updated,
+							removed: data.removed,
+							github_html: data.github_html,
+							extra_description: data.extra_description,
+							prerelease: data.prerelease,
+							published: data.published,
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to update changelog entry: ${await res.text()}`)
+
+			return true
+		}
+
+		async delete(data: ChangelogEntry) {
+			let res = await panelQuery({
+				UpdateChangelog: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						DeleteEntry: {
+							version: data.version
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to delete changelog entry: ${await res.text()}`)
+
+			return true
+		}
+
+		async viewToTable(data: ChangelogEntry[]) {
+			return {
+				fields: this.fields,
+				data: data?.map(d => {
+					return {
+						version: d?.version,
+						added: d?.added,
+						updated: d?.updated,
+						removed: d?.removed,
+						github_html: d?.github_html,
+						extra_description: d?.extra_description,
+						prerelease: d?.prerelease,
+						published: d?.published,
+						created_at: new Date(d?.created_at),
+					}
+				})
+			}
+		}
+
+		async onManagementModalOpen(data: ChangelogEntry) {
+			logger.info("ChangelogSchema", "onManagementModalOpen", data)
 		};
-	};
+
+		warningBox(cap: Capability, data: ChangelogEntry, func: () => Promise<boolean>) {
+			switch (cap) {
+				case "delete":
+					return {
+						header: 'Confirm Deletion',
+						text: `Are you sure you want to delete changelog entry for version '${data.version}'? This is an irreversible action.`,
+						buttonStates: {
+							normal: 'Delete Changelog',
+							loading: 'Deleting changelog...',
+							success: 'Successfully deleted this changelog',
+							error: 'Failed to delete changelog'
+						},
+						onConfirm: func
+					}
+				default:
+					throw new Error(`Unsupported capability for warningBox: ${cap}`)
+			}
+		}
+
+		constructor() {
+			// Freeze all properties on the class
+			for (let key of Object.keys(this)) {
+				Object.defineProperty(this, key, {
+					writable: false,
+					configurable: false
+				});
+			}
+		}
+	}
+
+	let schema: ChangelogSchema | undefined;
+
+	$: {
+		schema = new ChangelogSchema()
+	}
 </script>
 
-{#await fetchChangelogList()}
-	<Loading msg="Fetching changelog list..." />
-{:then data}
-	<h1 class="text-3xl font-semibold">Changelog Management</h1>
-
-	{#if $panelState?.capabilities?.includes("ChangelogManagement")}
-		<AddChangelog />
-	{:else}
-		<div class="mb-3"></div>
-	{/if}
-
-	<Datatable handler={data.handler} search={false}>
-        <table>
-            <thead>
-				<tr>
-					<Th handler={data.handler} orderBy="version">Version</Th>
-					<Th handler={data.handler} orderBy="added" align="left">Added</Th>
-					<Th handler={data.handler} orderBy="updated" align="left">Updated</Th>
-					<Th handler={data.handler} orderBy="removed" align="left">Removed</Th>
-					<Th handler={data.handler} orderBy="extra_description">Extra Description</Th>
-					<Th handler={data.handler} orderBy="prerelease">Prerelease</Th>	
-					<Th handler={data.handler} orderBy="published">Published</Th>	
-					<Th handler={data.handler} orderBy="github_html">Github HTML</Th>
-					<Th handler={data.handler} orderBy="created_at">Created At</Th>
-					<Th handler={data.handler} orderBy="version">Actions</Th>
-				</tr>
-				<tr>
-					<ThFilter handler={data.handler} filterBy="version" />
-					<ThFilter handler={data.handler} filterBy="added" />
-					<ThFilter handler={data.handler} filterBy="updated" />
-					<ThFilter handler={data.handler} filterBy="removed" />
-					<ThFilter handler={data.handler} filterBy="extra_description" />
-					<ThFilter handler={data.handler} filterBy="prerelease" />
-					<ThFilter handler={data.handler} filterBy="published" />
-					<ThFilter handler={data.handler} filterBy="github_html" />
-					<ThFilter handler={data.handler} filterBy="created_at" />
-					<ThFilter handler={data.handler} filterBy="version" />
-				</tr>
-			</thead>
-			<tbody>
-                {#each $rows as row}
-					<tr>
-						<td>
-							{row.version}
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.added as added}
-									<ListItem>{added}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.updated as updated}
-									<ListItem>{updated}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.removed as removed}
-									<ListItem>{removed}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-							{row.extra_description}
-						</td>
-						<td>
-							{row.prerelease}
-						</td>
-						<td>
-							{row.published}
-						</td>
-						<td>
-							{row.github_html ? row?.github_html : "-"}
-						</td>
-						<td>
-							{new Date(row.created_at)}
-						</td>
-						<td>
-							<ManageChangelog changelog={row} />
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</Datatable>
-{:catch err}
-	<ErrorComponent msg={`Failed to fetch partner list: ${err}`} />
-{/await}
-
-<style>
-    table {
-        color: white;
-        width: 210%;
-        margin: 0 !important;
-    }
-    tbody td {
-        border: 1px solid #f5f5f5;
-        padding: 4px 20px;
-    }
-    tbody tr {
-        transition: all, 0.2s;
-    }
-    tbody tr:hover {
-        background: #252323;
-    }
-</style>
+{#if schema}
+	<View {schema}/>
+{:else}
+	<Loading msg="Internally creating changelog schema..." />
+{/if}
