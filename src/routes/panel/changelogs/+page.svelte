@@ -102,14 +102,19 @@ export interface ChangelogEntry {
 				disabled: false,
 				renderMethod: "text",
 			},
-			{
-				id: "published",
-				label: "Published",
-				type: "boolean",
-				helpText: "Is this published?",
-				required: false,
-				disabled: false,
-				renderMethod: "text",
+			async (cap: Capability) => {
+				if(cap != "create") {
+					return {
+						id: "published",
+						label: "Published",
+						type: "boolean",
+						helpText: "Is this published?",
+						required: false,
+						disabled: false,
+						renderMethod: "text",
+					}
+				}
+				return null
 			},
 			async (cap) => {
 				if(cap == "view") {
@@ -183,8 +188,6 @@ export interface ChangelogEntry {
 			})
 
 			if(!res.ok) throw new Error(`Failed to create changelog entry: ${await res.text()}`)
-
-			return true
 		}
 
 		async update(data: Entry<ChangelogEntry>) {
@@ -207,8 +210,6 @@ export interface ChangelogEntry {
 			})
 
 			if(!res.ok) throw new Error(`Failed to update changelog entry: ${await res.text()}`)
-
-			return true
 		}
 
 		async delete(data: Entry<ChangelogEntry>) {
@@ -224,8 +225,6 @@ export interface ChangelogEntry {
 			})
 
 			if(!res.ok) throw new Error(`Failed to delete changelog entry: ${await res.text()}`)
-
-			return true
 		}
 
 		async viewToTable(data: ChangelogEntry[]) {
