@@ -1,7 +1,9 @@
+import logger from "$lib/logger"
 import type { Field, FieldFetch, Capability } from "./types"
 
 export const fetchFields = (cap: Capability, ff: FieldFetch) => {
     let fields: Field[] = []
+    logger.info("FetchFields", cap, ff)
     for(let field of ff) {
         if(!field) {
             continue
