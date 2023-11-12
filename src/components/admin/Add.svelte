@@ -52,7 +52,20 @@
 
     const fetchStateAndSetupAddData = async () => {
         let res = await fetchFields('create', schema?.fields)
+
+        for(let k of res) {
+            switch (k.type) {
+                case "text[]":
+                    createData[k.id] = []
+                    break
+                case "file":
+                fileKeys.push(k.id)
+            }
+        }
+
         fileKeys = res.filter(f => f.type == 'file').map(f => f.id)
+
+
         return res
     }
 
