@@ -1,7 +1,7 @@
 import logger from "$lib/logger"
 import type { Field, FieldFetch, Capability } from "./types"
 
-export const fetchFields = (cap: Capability, ff: FieldFetch) => {
+export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: string) => {
     let fields: Field[] = []
     logger.info("FetchFields", cap, ff)
     for(let field of ff) {
@@ -10,13 +10,17 @@ export const fetchFields = (cap: Capability, ff: FieldFetch) => {
         }
 
         if(field instanceof Function) {
-            let f = field as (cap: Capability) => Field | null
-            let fCap = f(cap)
+            let f = field as (cap: Capability, reason?: string) => Promise<Field | null>
+            let fCap = await f(cap, reason)
 
             if(!fCap) {
                 continue
             }
 
+            if(fCap?.type == "file" && !fCap?.fileUploadData) {
+                throw new Error("File upload field must have fileUploadData")
+            }
+ 
             fields.push(fCap)
             continue
         }

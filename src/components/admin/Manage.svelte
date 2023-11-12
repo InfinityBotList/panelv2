@@ -10,17 +10,22 @@
 	import InputTextArea from '../inputs/InputTextArea.svelte';
 	import { commonButtonReactStates, setupWarning, type WarningBox as WB } from '../warningbox/warningBox';
 	import WarningBox from '../warningbox/WarningBox.svelte';
-	import type { Field, ManageSchema } from './types';
+	import type { ManageSchema } from './types';
 	import { title } from '$lib/strings';
 	import { fetchFields } from './logic';
 	import InputNumber from '../inputs/InputNumber.svelte';
+	import Loading from '../Loading.svelte';
+	import FileUploadElement from './FileUploadElement.svelte';
 
 	let showActionsModal: boolean = false;
 
 	export let data: ManageSchema<any>;
     let pkey: string = '';
-    let fields: Field[] = [];
-    let editData: any = {};
+    let editData: {[key: string]: any} = {};
+
+    // Files support
+    let fileKeys: string[]
+    let fileData: { [key: string]: File } = {}
 
     let status: string[] = [];
     const addStatus = (s: string) => {
@@ -31,7 +36,10 @@
 	const deleteObject = async () => {
         addStatus(`=> Deleting ${data?.schema?.name}`)
         try {
-            let res = await data?.schema?.delete(editData)
+            let res = await data?.schema?.delete({
+                data: editData,
+                files: fileData
+            })
 
             if(!res) {
                 error(`Could not delete ${data?.schema?.name} with invalid status: ${res}`);
@@ -48,7 +56,10 @@
 	const editObject = async () => {
         addStatus(`=> Editting ${data?.schema?.name}`)
         try {
-            let res = await data?.schema?.update(editData)
+            let res = await data?.schema?.update({
+                data: editData,
+                files: fileData
+            })
 
             if(!res) {
                 error(`Could not update ${data?.schema?.name} with invalid status: ${res}`);
@@ -62,6 +73,12 @@
 		return true;
 	};
 
+    const fetchStateAndSetupEditData = async () => {
+        let res = await fetchFields('update', data?.schema?.fields)
+        fileKeys = res.filter(f => f.type == 'file').map(f => f.id)
+        return res
+    }
+
 	let warningBoxDelete: WB | undefined;
     let showWarningBoxDelete: boolean = false;
 
@@ -69,8 +86,7 @@
         warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
         editData = data?.manageData || {}
         pkey = data?.schema?.getPrimaryKey('update')
-        fields = fetchFields('update', data?.schema?.fields)
-        data?.schema?.onManagementModalOpen(editData)
+        data?.schema?.onOpen('update', 'showComponent', editData)
     }
 </script>
 
@@ -89,88 +105,108 @@
 
         <h2 class="text-xl font-semibold">Edit {title(data?.schema?.name)} Entry</h2>
 
-        {#each fields as field}
-            {#if field.type == "text"}
-                <InputText
-                    id={field.id}
-                    bind:value={editData[field.id]}
-                    label={field.label}
-                    placeholder={field.helpText}
-                    minlength={0}
-                    showErrors={false}
-		        />
-            {:else if field.type == "textarea"}
-                <InputTextArea
-                    id={field.id}
-                    bind:value={editData[field.id]}
-                    label={field.label}
-                    placeholder={field.helpText}
-                    minlength={0}
-                    showErrors={false}
-                />
-            {:else if field.type == "text[]"}
-                <MultiInput
-                    id={field.id}
-                    title={field.label}
-                    label={field.arrayLabel ? field.arrayLabel : field.label}
-                    bind:values={editData[field.id]}
-                    placeholder={field.helpText}
-                    minlength={0}
-                    showErrors={false}
-                />
-            {:else if field.type == "number"}
-                <InputNumber
-                    id={field.id}
-                    bind:value={editData[field.id]}
-                    label={field.label}
-                    placeholder={field.helpText}
-                    minlength={0}
-                    showErrors={false}
-                />
-            {:else if field.type == "boolean"}
-                <BoolInput 
-                    id={field.id}
-                    bind:value={editData[field.id]}
-                    label={field.label}
-                    description={field.helpText}
-                    disabled={field.disabled}
+        {#await fetchStateAndSetupEditData()}
+            <Loading msg="Loading field list" />
+        {:then fields}
+            {#each fields as field}
+                {#if field.type == "text"}
+                    <InputText
+                        id={field.id}
+                        bind:value={editData[field.id]}
+                        label={field.label}
+                        placeholder={field.helpText}
+                        minlength={0}
+                        showErrors={false}
+                    />
+                {:else if field.type == "textarea"}
+                    <InputTextArea
+                        id={field.id}
+                        bind:value={editData[field.id]}
+                        label={field.label}
+                        placeholder={field.helpText}
+                        minlength={0}
+                        showErrors={false}
+                    />
+                {:else if field.type == "text[]"}
+                    <MultiInput
+                        id={field.id}
+                        title={field.label}
+                        label={field.arrayLabel ? field.arrayLabel : field.label}
+                        bind:values={editData[field.id]}
+                        placeholder={field.helpText}
+                        minlength={0}
+                        showErrors={false}
+                    />
+                {:else if field.type == "number"}
+                    <InputNumber
+                        id={field.id}
+                        bind:value={editData[field.id]}
+                        label={field.label}
+                        placeholder={field.helpText}
+                        minlength={0}
+                        showErrors={false}
+                    />
+                {:else if field.type == "boolean"}
+                    <BoolInput 
+                        id={field.id}
+                        bind:value={editData[field.id]}
+                        label={field.label}
+                        description={field.helpText}
+                        disabled={field.disabled}
+                    />
+                {:else if field.type == "file"}
+                    <FileUploadElement
+                        bind:outputFile={fileData[field.id]}
+                        {field}
+                        cap="update"
+                    />
+                {:else}
+                    <p class="text-red-500">Unsupported field type {field.type}: {JSON.stringify(field)}</p>
+                {/if}
+            {/each}
+
+            {#if data?.schema?.getCaps()?.includes("update")}
+                <ButtonReact
+                    color={Color.Themable}
+                    onClick={editObject}
+                    icon="mdi:plus"
+                    text={`Edit ${title(data?.schema?.name)}`}
+                    states={{
+                        loading: 'Editting entry...',
+                        success: 'Entry editted!',
+                        error: 'Failed to edit entry!'
+                    }}
                 />
             {:else}
-                <p class="text-red-500">Unsupported field type {field.type}: {JSON.stringify(field)}</p>
+                <p class="text-red-500">You do not have permission to edit this entry</p>
             {/if}
-        {/each}
-
-
-        <ButtonReact
-            color={Color.Themable}
-            onClick={editObject}
-            icon="mdi:plus"
-            text={`Edit ${title(data?.schema?.name)}`}
-            states={{
-                loading: 'Editting entry...',
-                success: 'Entry editted!',
-                error: 'Failed to edit entry!'
-            }}
-        />
+        {:catch err}
+            <p class="text-red-500">{err?.toString()}</p>
+        {/await}
 
 		<h2 class="text-xl font-semibold">Delete {title(data?.schema?.name)} Entry</h2>
 		<GreyText>Note that this is IRREVERSIBLE</GreyText>
-		<ButtonReact
-			color={Color.Red}
-			states={commonButtonReactStates}
-			onClick={async () => {
-                if(!warningBoxDelete) {
-                    error('Internal error: no warningBoxDelete found');
-                    return false;
-                }
-				setupWarning(warningBoxDelete);
-				showActionsModal = false;
-				showWarningBoxDelete = true
-				return true
-			}}
-			icon="mdi:trash-can-outline"
-			text="Delete Entry"
-		/>
+
+        {#if data?.schema?.getCaps()?.includes("delete")}
+            <ButtonReact
+                color={Color.Red}
+                states={commonButtonReactStates}
+                onClick={async () => {
+                    if(!warningBoxDelete) {
+                        error('Internal error: no warningBoxDelete found');
+                        return false;
+                    }
+                    setupWarning(warningBoxDelete);
+                    showActionsModal = false;
+                    showWarningBoxDelete = true
+                    return true
+                }}
+                icon="mdi:trash-can-outline"
+                text="Delete Entry"
+            />
+        {:else}
+            <p class="text-red-500">You do not have permission to delete this entry</p>
+        {/if}
 	</Modal>
 {/if}
 

@@ -6,11 +6,7 @@ export type FieldType =
     | "text[]" 
     | "number"
     | "boolean"
-    | {
-        "select": {
-            options: string[]
-        }
-    };
+    | "file"
 
 /**
  * How the field is rendered in the data table
@@ -21,8 +17,25 @@ export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "no
 
 export type Capability = "view" | "create" | "update" | "delete";
 
-export type FieldFetch = (((cap: Capability) => Field | null) | Field | null)[]
+export type FieldFetch = (((cap: Capability, reason?: string) => Promise<Field | null>) | Field | null)[]
 
+/** 
+ * Data for a file upload field
+ */
+export interface FieldFileUploadData {
+    /**
+     * Acceptable mime types for the file upload
+     */
+    acceptableMimeTypes: string[],
+    /**
+     * A function to render a preview, if null a preview won't be rendered
+     */
+    renderPreview: (cap: Capability, file: File, fileMimeType: string, box: HTMLDivElement) => Promise<void>,
+}
+
+/**
+ * Data for a field
+ */
 export interface Field {
     /**
      * The id of the field
@@ -57,11 +70,29 @@ export interface Field {
      */
     disabled: boolean,
     /**
+     * If this is a file upload, this must be set
+     */
+    fileUploadData?: FieldFileUploadData
+    /**
      * Render method of the field
      * 
      * Set to 'text' when in doubt
      */
     renderMethod: FieldRenderMethod
+}
+
+/**
+ * This contains the data for a create/upload/delete that will be sent
+ */
+export interface Entry<T> {
+    /**
+     * Files being created/updated
+     */
+    files: { [key: string]: File}
+    /**
+     * Data being created/updated
+     */
+    data: T
 }
 
 export interface BaseSchema<T> {
@@ -108,21 +139,21 @@ export interface BaseSchema<T> {
      * @param data The data to add
      * @returns Whether the data was added successfully
      */
-    create: (data: T) => Promise<boolean>,
+    create: (data: Entry<T>) => Promise<boolean>,
     /**
      * A function to update an existing data entry in the database
      * 
      * @param data The data to update
      * @returns Whether the data was updated successfully
      */
-    update: (data: T) => Promise<boolean>,
+    update: (data: Entry<T>) => Promise<boolean>,
     /**
      * A function to delete an existing data entry in the database
      * 
      * @param data The data to delete
      * @returns Whether the data was deleted successfully
      */
-    delete: (data: T) => Promise<boolean>,
+    delete: (data: Entry<T>) => Promise<boolean>,
 }
 
 /**
@@ -153,9 +184,9 @@ export interface Schema<T> extends BaseSchema<T> {
      */
     warningBox: (cap: Capability, data: T, func: () => Promise<boolean>) => WarningBox
     /**
-     * This function is called as a reactive store when the management modal is opened
+     * This function is called when a modal is opened
      */
-    onManagementModalOpen: (data: T) => any
+    onOpen: (cap: Capability, evt: string, data?: T) => any
 }
 
 export interface ManageSchema<T> {

@@ -9,6 +9,7 @@
 	import { castToArray, fetchFields, validateDataWithFields } from './logic';
 	import Manage from './Manage.svelte';
 	import OrderedList from '../OrderedList.svelte';
+	import Add from './Add.svelte';
 
     export let schema: Schema<any>;
     let rows: Readable<any[]>;
@@ -19,7 +20,7 @@
         if(!viewData) viewData = []
 
         if(viewData.length > 0 && schema?.strictSchemaValidation) {
-            validateDataWithFields(viewData[0], fetchFields('view', schema?.fields))
+            validateDataWithFields(viewData[0], await fetchFields('view', schema?.fields, "strictSchemaValidation"))
         }
 
         let eRows = await schema?.viewToTable(viewData);
@@ -27,7 +28,7 @@
         const handler = new DataHandler(eRows.data, { rowsPerPage: 10 })
         rows = handler.getRows()
 
-        let fields = fetchFields('view', eRows.fields)
+        let fields = await fetchFields('view', eRows.fields)
         let pkey = schema?.getPrimaryKey('view')
 
 		return {
@@ -43,8 +44,8 @@
 {#await fetchData()}
 	<Loading msg="Fetching entries..." />
 {:then data}
-	{#if schema?.getCaps()}
-		<!--<Add />-->
+	{#if schema?.getCaps()?.includes("create")}
+		<Add {schema} />
 	{:else}
 		<div class="mb-3"></div>
 	{/if}

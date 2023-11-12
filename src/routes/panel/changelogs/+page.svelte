@@ -4,7 +4,7 @@
 	import { panelState } from '$lib/panelState';
 	import Loading from '../../../components/Loading.svelte';
 	import type { ChangelogEntry } from '$lib/generated/arcadia/ChangelogEntry';
-	import type { BaseSchema, Capability, FieldFetch, Schema } from '../../../components/admin/types';
+	import type { BaseSchema, Capability, Entry, FieldFetch, Schema } from '../../../components/admin/types';
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 
@@ -34,7 +34,7 @@ export interface ChangelogEntry {
 				disabled: false,
 				renderMethod: "text",
 			},
-			(cap) => {
+			async (cap) => {
 				return {
 					id: "added",
 					label: "Added",
@@ -46,7 +46,7 @@ export interface ChangelogEntry {
 					renderMethod: cap == "view" ? "unordered-list" : "text",
 				}
 			},
-			(cap) => {
+			async (cap) => {
 				return {
 					id: "updated",
 					label: "Updated",
@@ -58,7 +58,7 @@ export interface ChangelogEntry {
 					renderMethod: cap == "view" ? "unordered-list" : "text",
 				}
 			},
-			(cap) => {
+			async (cap) => {
 				return {
 					id: "removed",
 					label: "Removed",
@@ -70,7 +70,7 @@ export interface ChangelogEntry {
 					renderMethod: cap == "view" ? "unordered-list" : "text",
 				}
 			},
-			(cap) => {
+			async (cap) => {
 				if(cap != "create") {
 					return {
 						id: "github_html",
@@ -111,7 +111,7 @@ export interface ChangelogEntry {
 				disabled: false,
 				renderMethod: "text",
 			},
-			(cap) => {
+			async (cap) => {
 				if(cap == "view") {
 					return {
 						id: "created_at",
@@ -165,18 +165,18 @@ export interface ChangelogEntry {
 			})
 		}
 
-		async create(data: ChangelogEntry) {
+		async create(data: Entry<ChangelogEntry>) {
 			let res = await panelQuery({
 				UpdateChangelog: {
 					login_token: $panelAuthState?.loginToken || '',
 					action: {
 						CreateEntry: {
-							version: data.version,
-							added: data.added,
-							updated: data.updated,
-							removed: data.removed,
-							extra_description: data.extra_description,
-							prerelease: data.prerelease,
+							version: data.data.version,
+							added: data.data.added,
+							updated: data.data.updated,
+							removed: data.data.removed,
+							extra_description: data.data.extra_description,
+							prerelease: data.data.prerelease,
 						}
 					}
 				}
@@ -187,20 +187,20 @@ export interface ChangelogEntry {
 			return true
 		}
 
-		async update(data: ChangelogEntry) {
+		async update(data: Entry<ChangelogEntry>) {
 			let res = await panelQuery({
 				UpdateChangelog: {
 					login_token: $panelAuthState?.loginToken || '',
 					action: {
 						UpdateEntry: {
-							version: data.version,
-							added: data.added,
-							updated: data.updated,
-							removed: data.removed,
-							github_html: data.github_html,
-							extra_description: data.extra_description,
-							prerelease: data.prerelease,
-							published: data.published,
+							version: data.data.version,
+							added: data.data.added,
+							updated: data.data.updated,
+							removed: data.data.removed,
+							github_html: data.data.github_html,
+							extra_description: data.data.extra_description,
+							prerelease: data.data.prerelease,
+							published: data.data.published,
 						}
 					}
 				}
@@ -211,13 +211,13 @@ export interface ChangelogEntry {
 			return true
 		}
 
-		async delete(data: ChangelogEntry) {
+		async delete(data: Entry<ChangelogEntry>) {
 			let res = await panelQuery({
 				UpdateChangelog: {
 					login_token: $panelAuthState?.loginToken || '',
 					action: {
 						DeleteEntry: {
-							version: data.version
+							version: data.data.version
 						}
 					}
 				}
@@ -247,8 +247,8 @@ export interface ChangelogEntry {
 			}
 		}
 
-		async onManagementModalOpen(data: ChangelogEntry) {
-			logger.info("ChangelogSchema", "onManagementModalOpen", data)
+		async onOpen(cap: Capability, evt: string, data?: ChangelogEntry) {
+			logger.info("ChangelogSchema", "onOpen", { cap, evt, data })
 		};
 
 		warningBox(cap: Capability, data: ChangelogEntry, func: () => Promise<boolean>) {
