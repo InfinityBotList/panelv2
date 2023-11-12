@@ -111,15 +111,20 @@ export interface ChangelogEntry {
 				disabled: false,
 				renderMethod: "text",
 			},
-			{
-				id: "created_at",
-				label: "Created At",
-				type: "text",
-				helpText: "The date the changelog entry was created",
-				required: false,
-				disabled: false,
-				renderMethod: "text",
-			},
+			(cap) => {
+				if(cap == "view") {
+					return {
+						id: "created_at",
+						label: "Created At",
+						type: "text",
+						helpText: "The date the changelog entry was created",
+						required: false,
+						disabled: false,
+						renderMethod: "text",
+					}
+				}
+				return null
+			}
 		]
 
 		strictSchemaValidation: boolean = true
