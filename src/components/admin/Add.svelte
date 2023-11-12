@@ -103,6 +103,8 @@
                         placeholder={field.helpText}
                         minlength={0}
                         showErrors={false}
+                        required={field.required}
+                        disabled={field.disabled}
                     />
                 {:else if field.type == "textarea"}
                     <InputTextArea
@@ -112,6 +114,8 @@
                         placeholder={field.helpText}
                         minlength={0}
                         showErrors={false}
+                        required={field.required}
+                        disabled={field.disabled}
                     />
                 {:else if field.type == "text[]"}
                     <MultiInput
@@ -131,6 +135,8 @@
                         placeholder={field.helpText}
                         minlength={0}
                         showErrors={false}
+                        required={field.required}
+                        disabled={field.disabled}
                     />
                 {:else if field.type == "boolean"}
                     <BoolInput 
@@ -138,6 +144,7 @@
                         bind:value={createData[field.id]}
                         label={field.label}
                         description={field.helpText}
+                        required={field.required}
                         disabled={field.disabled}
                     />
                 {:else if field.type == "file"}

@@ -2,6 +2,7 @@
 	export let value: boolean = false;
 
 	export let disabled: boolean;
+	export let required: boolean = false;
 	export let id: string;
 	export let label: string;
 	export let description: string;
@@ -15,6 +16,8 @@
 		bind:checked={value}
 		aria-disabled={disabled ? true : false}
 		disabled={disabled ? true : false}
+		required={required ? true : false}
+		aria-required={required ? true : false}
 		class={disabled ? 'cursor-not-allowed bg-slate-400' : 'cursor-pointer'}
 	/>
 	<label for={id} class="text-white text-left">

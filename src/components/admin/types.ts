@@ -60,7 +60,7 @@ export interface Field {
     /**
      * Whether or not the field is required
      * 
-     * This flag is frontend only and is not currently respected at all
+     * This flag is frontend only
      */
     required: boolean,
     /**

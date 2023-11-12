@@ -9,6 +9,8 @@
 	export let showErrors: boolean = true;
 	export let description: string = '';
 	export let inpClass: string = 'mb-4';
+	export let required: boolean = true;
+	export let disabled: boolean = false;
 
 	let success: boolean | null = null;
 
@@ -43,9 +45,16 @@
 		{minlength}
 		type="text"
 		{id}
-		class="w-full mx-auto mt-2 flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6"
+		class={
+			disabled
+				? 'w-full mx-auto mt-2 flex bg-black bg-opacity-30 text-grey-100 rounded-xl border border-white/10 opacity-75 py-4 px-6 disabled cursor-not-allowed'
+				: 'w-full mx-auto mt-2 flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6'
+		}
 		{placeholder}
-		required
+		{required}
+		{disabled}
+		aria-disabled={disabled}
+		aria-required={required}
 		bind:value
 	/>
 
