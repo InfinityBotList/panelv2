@@ -78,7 +78,7 @@
                                 <td>
                                     <UnorderedList>    
                                         {#each castToArray(row[field.id]) as cols}
-                                            <ListItem>{cols}</ListItem>
+                                            <ListItem>{field.type == "text[kv]" ? JSON.stringify(cols) : cols}</ListItem>
                                         {/each}
                                     </UnorderedList>
                                 </td>
