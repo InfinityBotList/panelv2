@@ -91,36 +91,6 @@
                             </td>
                             {/if}
                         {/each}
-						<td>
-							{row.version}
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.added as added}
-									<ListItem>{added}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.updated as updated}
-									<ListItem>{updated}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-							<UnorderedList>
-								{#each row.removed as removed}
-									<ListItem>{removed}</ListItem>
-								{/each}
-							</UnorderedList>
-						</td>
-						<td>
-                            <Manage data={{
-                                schema,
-                                manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
-                            }} />
-						</td>
 					</tr>
 				{/each}
 			</tbody>
