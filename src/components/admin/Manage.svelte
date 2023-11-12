@@ -69,7 +69,7 @@
         warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
         editData = data?.manageData || {}
         pkey = data?.schema?.getPrimaryKey('update')
-        fields = fetchFields('update', editData)
+        fields = fetchFields('update', data?.schema?.fields)
         data?.schema?.onManagementModalOpen(editData)
     }
 </script>
