@@ -11,6 +11,8 @@
 	export let placeholder: string;
 	export let minlength: number;
 	export let showErrors: boolean = false;
+	export let required: boolean = true;
+	export let disabled: boolean = false;
 
 	const deleteValue = (i: number) => {
 		values = values.filter((_, index) => index !== i);
@@ -24,7 +26,7 @@
 <Label {id} {label} />
 <div {id}>
 	{#each values as value, i}
-		<KvMultiInputElement {title} {placeholder} {minlength} {showErrors} {i} bind:value />
+		<KvMultiInputElement {title} {placeholder} {minlength} {showErrors} {i} bind:value {required} {disabled} />
 		<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
 		<ButtonReact onclick={() => addValue(i)}>Add</ButtonReact>
 	{/each}

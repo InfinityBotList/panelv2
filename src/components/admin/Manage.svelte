@@ -4,20 +4,15 @@
 	import Modal from '../Modal.svelte';
 	import ButtonReact from '../button/ButtonReact.svelte';
 	import { Color } from '../button/colors';
-	import InputText from '../inputs/InputText.svelte';
-	import MultiInput from '../inputs/multi/simple/MultiInput.svelte';
-	import BoolInput from '../inputs/BoolInput.svelte';
-	import InputTextArea from '../inputs/InputTextArea.svelte';
 	import { commonButtonReactStates, setupWarning, type WarningBox as WB } from '../warningbox/warningBox';
 	import WarningBox from '../warningbox/WarningBox.svelte';
 	import type { ManageSchema } from './types';
 	import { title } from '$lib/strings';
 	import { fetchFields } from './logic';
-	import InputNumber from '../inputs/InputNumber.svelte';
 	import Loading from '../Loading.svelte';
-	import FileUploadElement from './FileUploadElement.svelte';
 	import OrderedList from '../OrderedList.svelte';
 	import ListItem from '../ListItem.svelte';
+	import InputHandler from './InputHandler.svelte';
 
 	let showActionsModal: boolean = false;
 
@@ -108,67 +103,11 @@
             <Loading msg="Loading field list" />
         {:then fields}
             {#each fields as field}
-                {#if field.type == "text"}
-                    <InputText
-                        id={field.id}
-                        bind:value={editData[field.id]}
-                        label={field.label}
-                        placeholder={field.helpText}
-                        minlength={0}
-                        showErrors={false}
-                        required={field.required}
-                        disabled={field.disabled}
-                    />
-                {:else if field.type == "textarea"}
-                    <InputTextArea
-                        id={field.id}
-                        bind:value={editData[field.id]}
-                        label={field.label}
-                        placeholder={field.helpText}
-                        minlength={0}
-                        showErrors={false}
-                        required={field.required}
-                        disabled={field.disabled}
-                    />
-                {:else if field.type == "text[]"}
-                    <MultiInput
-                        id={field.id}
-                        title={field.label}
-                        label={field.arrayLabel ? field.arrayLabel : field.label}
-                        bind:values={editData[field.id]}
-                        placeholder={field.helpText}
-                        minlength={0}
-                        showErrors={false}
-                    />
-                {:else if field.type == "number"}
-                    <InputNumber
-                        id={field.id}
-                        bind:value={editData[field.id]}
-                        label={field.label}
-                        placeholder={field.helpText}
-                        minlength={0}
-                        showErrors={false}
-                        required={field.required}
-                        disabled={field.disabled}
-                    />
-                {:else if field.type == "boolean"}
-                    <BoolInput 
-                        id={field.id}
-                        bind:value={editData[field.id]}
-                        label={field.label}
-                        description={field.helpText}
-                        required={field.required}
-                        disabled={field.disabled}
-                    />
-                {:else if field.type == "file"}
-                    <FileUploadElement
-                        bind:outputFile={fileData[field.id]}
-                        {field}
-                        cap="update"
-                    />
-                {:else}
-                    <p class="text-red-500">Unsupported field type {field.type}: {JSON.stringify(field)}</p>
-                {/if}
+                <InputHandler 
+                    {field}
+                    bind:data={editData}
+                    bind:fileData
+                />
             {/each}
 
             {#if data?.schema?.getCaps()?.includes("update")}

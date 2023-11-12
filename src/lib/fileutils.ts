@@ -308,3 +308,38 @@ export const prettifyBytes = (b: number | bigint) => {
         return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)}GB`
     }
 }
+
+/**
+ * Convert between any image formats the browser supports
+ * @param source A Blob (or File) containing the image to convert
+ * @param type The MIME type of the target format
+ * @returns The converted image
+ */
+export const convertImage = async (source: Blob, type: string): Promise<Blob> => {
+    let image = await createImageBitmap(source);
+
+    let canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    let context = canvas.getContext("2d");
+
+    if(!context) {
+        throw new Error("Failed to create canvas context");
+    }
+
+    context.drawImage(image, 0, 0);
+
+    let result: Blob = await new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            if (blob != null) {
+                resolve(blob);
+            } else {
+                reject(new Error("Failed to convert file"));
+            }
+        }, type, 1);
+    });
+
+    image.close();
+    return result;
+}

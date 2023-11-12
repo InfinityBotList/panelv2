@@ -1,3 +1,4 @@
+<!--TODO, not yet done or enabled anywhere-->
 <script lang="ts">
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
@@ -8,7 +9,6 @@
 	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
 	import type { Partners } from '$lib/generated/arcadia/Partners';
-	import ManagePartner from './ManagePartner.svelte';
 
 	const fetchPartnerList = async () => {
 		let res = await panelQuery({
@@ -67,9 +67,6 @@
 						View
 					</CardLinkButton>
 				</svelte:fragment>
-				<div slot="extra">
-					<ManagePartner {partner} partnerTypes={partners?.partners?.partner_types} mainScope={partners.scope} partnerIds={partners?.partners?.partners?.map(p => p.id)} />
-				</div>
 			</Card>
 		{/each}
 	</Column>

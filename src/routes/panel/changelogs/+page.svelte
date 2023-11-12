@@ -23,7 +23,7 @@ export interface ChangelogEntry {
 	*/
 
 	class ChangelogSchema implements BaseSchema<ChangelogEntry>, Schema<ChangelogEntry> {
-		name: string = "Changelog";
+		name: string = "changelog";
 		fields: FieldFetch = [
 			{
 				id: "version",
@@ -116,19 +116,14 @@ export interface ChangelogEntry {
 				}
 				return null
 			},
-			async (cap) => {
-				if(cap == "view") {
-					return {
-						id: "created_at",
-						label: "Created At",
-						type: "text",
-						helpText: "The date the changelog entry was created",
-						required: false,
-						disabled: false,
-						renderMethod: "text",
-					}
-				}
-				return null
+			{
+				id: "created_at",
+				label: "Created At",
+				type: "text",
+				helpText: "The date the changelog entry was created",
+				required: false,
+				disabled: true,
+				renderMethod: "text",
 			}
 		]
 

@@ -7,6 +7,8 @@
 	export let showErrors: boolean = false;
 	export let i: number;
 	export let value: [string, string];
+	export let required: boolean = true;
+	export let disabled: boolean = false;
 
 	// Get key and value from value
 	let key = value[0];
@@ -25,6 +27,8 @@
 			bind:value={key}
 			{minlength}
 			{showErrors}
+			{required}
+			{disabled}
 		/>
 	</div>
 	<div class="lg:pt-0 block w-1/2">
@@ -35,6 +39,8 @@
 			bind:value={val}
 			{minlength}
 			{showErrors}
+			{required}
+			{disabled}
 		/>
 	</div>
 </div>

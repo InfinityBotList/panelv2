@@ -14,6 +14,8 @@
 	export let small: boolean = true;
 	export let showErrors: boolean = false;
 	export let showLabel: boolean = true;
+	export let required: boolean = true;
+	export let disabled: boolean = false;
 
 	const deleteValue = (i: number) => {
 		values = values.filter((_, index) => index !== i);
@@ -41,6 +43,8 @@
 					bind:value
 					{minlength}
 					{showErrors}
+					{required}
+					{disabled}
 				>
 					<div class="mt-1">
 						<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
@@ -55,6 +59,9 @@
 					{placeholder}
 					bind:value
 					{minlength}
+					{showErrors}
+					{required}
+					{disabled}
 				>
 					<div class="mt-1">
 						<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>

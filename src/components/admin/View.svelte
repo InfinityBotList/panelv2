@@ -83,13 +83,13 @@
                                     </UnorderedList>
                                 </td>
                             {:else if field.renderMethod == "ordered-list"}
-                            <td>
-                                <OrderedList>    
-                                    {#each castToArray(row[field.id]) as cols}
-                                        <ListItem>{cols}</ListItem>
-                                    {/each}
-                                </OrderedList>
-                            </td>
+                                <td>
+                                    <OrderedList>    
+                                        {#each castToArray(row[field.id]) as cols}
+                                            <ListItem>{cols}</ListItem>
+                                        {/each}
+                                    </OrderedList>
+                                </td>
                             {/if}
                         {/each}
 						<td>

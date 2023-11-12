@@ -2,86 +2,444 @@
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
-	import Card from '../../../components/Card.svelte';
-	import CardLinkButton from '../../../components/CardLinkButton.svelte';
-	import Column from '../../../components/Column.svelte';
-	import ErrorComponent from '../../../components/Error.svelte';
 	import Loading from '../../../components/Loading.svelte';
+	import type { Partner } from '$lib/generated/arcadia/Partner';
+	import type { BaseSchema, Capability, Entry, FieldFetch, Schema } from '../../../components/admin/types';
+	import logger from '$lib/logger';
+	import View from '../../../components/admin/View.svelte';
 	import type { Partners } from '$lib/generated/arcadia/Partners';
-	import AddPartner from './AddPartner.svelte';
-	import ManagePartner from './ManagePartner.svelte';
+	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
+	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
+	import { convertImage, uploadFileChunks } from '$lib/fileutils';
 
-	const fetchPartnerList = async () => {
-		let res = await panelQuery({
-			UpdatePartners: {
-				login_token: $panelAuthState?.loginToken || '',
-				action: "List"
+	/* 
+export interface Partner { 
+    id: string, 
+    name: string, 
+    short: string, 
+    links: Array<Link>, 
+    type: string, 
+    created_at: string, 
+    user_id: string, 
+}
+	*/
+
+	class PartnerSchema implements BaseSchema<Partner>, Schema<Partner> {
+		name: string = "partner";
+		fields: FieldFetch = [
+			{
+				id: "id",
+				label: "ID",
+				type: "text",
+				helpText: "The ID of the partner",
+				required: true,
+				disabled: false,
+				renderMethod: "text",
+			},
+			{
+                id: "name",
+                label: "Name",
+                type: "text",
+                helpText: "The name of the partner",
+                required: true,
+                disabled: false,
+                renderMethod: "text",
+            },
+            {
+                id: "short",
+                label: "Short",
+                type: "textarea", // Its technically short description but longer makes it better/easier
+                helpText: "The short description of the partner",
+                required: true,
+                disabled: false,
+                renderMethod: "text",
+            },
+            {
+                id: "links",
+                label: "Links",
+                arrayLabel: "Links",
+                type: "text[kv]",
+                helpText: "The links of the partner",
+                required: true,
+                disabled: false,
+                renderMethod: "unordered-list",
+            },
+            async (_) => {
+                if(!this.partnerTypes) {
+                    await this.viewAll() // Calling this will set the partner types
+                }
+
+                return {
+                    id: "type",
+                    label: "Type",
+                    type: "text[choice]",
+                    selectMenuChoices: this.partnerTypes.map(t => {
+                        return {
+                            value: t.id,
+                            id: t.id,
+                            label: t.name
+                        }
+                    }),
+                    helpText: "The type of the partner",
+                    required: true,
+                    disabled: false,
+                    renderMethod: "text",
+                }
+            },
+            {
+                id: "created_at",
+                label: "Created At",
+                type: "text",
+                helpText: "The date the partner was created",
+                required: false,
+                disabled: true,
+                renderMethod: "text",
+            },
+            {
+                id: "user_id",
+                label: "User ID",
+                type: "text",
+                helpText: "The user ID of the partner",
+                required: true,
+                disabled: false,
+                renderMethod: "text",
+            },
+		]
+
+		strictSchemaValidation: boolean = true
+
+		getCaps(): Capability[] {
+			if($panelState?.capabilities?.includes("PartnerManagement")) {
+				return ["view", "create", "update", "delete"]
 			}
-		});
 
-		if (!res.ok) throw new Error('Failed to fetch partner list');
-
-		let partners: Partners = await res.json();
-
-		let scopeRes = await panelQuery({
-			GetMainCdnScope: {
-				login_token: $panelAuthState?.loginToken || ''
-			}
-		})
-
-		if(!scopeRes.ok) {
-			let err = await scopeRes.text();
-			throw new Error(`Failed to fetch main CDN scope: ${err}`);
+			throw new Error("User does not have permission to view partners")
 		}
 
-		let scope: string = await scopeRes.text();
+		getPrimaryKey(cap: Capability) {
+			return "id"
+		}
 
-		return {
-			partners,
-			scope
+		async viewAll() {
+			let res = await panelQuery({
+				UpdatePartners: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: "List"
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to fetch partner list: ${await res.text()}`)
+
+			let partners: Partners = await res.json()
+
+            this.partnerTypes = partners.partner_types
+            this.partnerIds = partners.partners.map(p => p.id)
+
+			return partners.partners
+		}
+
+		async view(key: string, value: string) {
+			let entries = await this.viewAll()
+
+			return entries.find(e => {
+				// @ts-ignore
+				return e[key] == value
+			})
+		}
+
+		async create(data: Entry<Partner>) {
+            await this.parseEdit('create', data)
+			let res = await panelQuery({
+				UpdatePartners: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						Create: {
+							partner: data.data,
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to create partner: ${await res.text()}`)
+		}
+
+		async update(data: Entry<Partner>) {
+            await this.parseEdit('update', data)
+			let res = await panelQuery({
+				UpdatePartners: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						Update: {
+							partner: data.data,
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to update partner: ${await res.text()}`)
+		}
+
+		async delete(data: Entry<Partner>) {
+			let res = await panelQuery({
+				UpdatePartners: {
+					login_token: $panelAuthState?.loginToken || '',
+					action: {
+						Delete: {
+							id: data.data.id
+						}
+					}
+				}
+			})
+
+			if(!res.ok) throw new Error(`Failed to delete partner: ${await res.text()}`)
+		}
+
+		async viewToTable(data: Partner[]) {
+			return {
+				fields: this.fields,
+				data: data?.map(d => {
+					return {
+						id: d.id,
+                        name: d.name,
+                        short: d.short,
+                        links: d.links,
+                        type: d.type,
+                        created_at: new Date(d.created_at),
+                        user_id: d.user_id
+					}
+				})
+			}
+		}
+
+		async onOpen(cap: Capability, evt: string, data?: Partner) {
+			logger.info("PartnerSchema", "onOpen", { cap, evt, data })
 		};
-	};
+
+		warningBox(cap: Capability, data: Partner, func: () => Promise<boolean>) {
+			switch (cap) {
+				case "delete":
+					return {
+						header: 'Confirm Deletion',
+						text: `Are you sure you want to delete partner '${data.id}' ('${data.name}')? This is an irreversible action.`,
+						buttonStates: {
+							normal: 'Delete Partner',
+							loading: 'Deleting partner...',
+							success: 'Successfully deleted this partner',
+							error: 'Failed to delete partner'
+						},
+						onConfirm: func
+					}
+				default:
+					throw new Error(`Unsupported capability for warningBox: ${cap}`)
+			}
+		}
+
+		constructor() {
+            // Do nothing
+        }
+
+        // Not part of admin panel
+        private partnerTypes: PartnerType[] = []
+        private partnerIds: string[] = []
+        private mainScope: string = ''
+
+        private async parseEdit(cap: Capability, entry: Entry<Partner>) {
+            if(cap == "create") {
+                if(this.partnerIds.includes(entry.data.id)) {
+                    throw new Error('Partner ID already exists');
+                }
+
+                if(Object.entries(entry.files).length == 0) {
+                    throw new Error("No files were uploaded for avatar")
+                }
+            }
+
+            if(!this.mainScope) {
+                let scopeRes = await panelQuery({
+                    GetMainCdnScope: {
+                        login_token: $panelAuthState?.loginToken || ''
+                    }
+                })
+
+                if(!scopeRes.ok) {
+                    let err = await scopeRes.text();
+                    throw new Error(`Failed to fetch main CDN scope: ${err}`);
+                }
+
+		        this.mainScope = await scopeRes.text();
+            }
+
+            if(!this.partnerIds.length || !this.partnerTypes.length) {
+                throw new Error('Partner schema has not been initialized yet')
+            }
+
+            entry?.addStatus("Checking links...");
+
+            for (let link of entry.data.links) {
+                if (!link.name || !link.value) {
+                    throw new Error(`Link name or value is empty: ${link.name} ${link.value}`);
+                }
+
+                if (!link.value.startsWith("https://")) {
+                    throw new Error(`Link value must start with https://: ${link.name} ${link.value}`);
+                }
+		    }
+
+            entry?.addStatus("Checking user ID...");
+
+            let userRes = await panelQuery({
+                GetUserPerms: {
+                    user_id: entry.data.user_id
+                }
+            });
+
+            if(!userRes.ok) {
+                let err = await userRes.text();
+                throw new Error(`Failed to check user ID: ${err}`);
+                return false;
+            }
+
+            if (entry?.files?.length) {
+                entry?.addStatus("Checking image...");
+
+                let image = entry?.files[0]
+
+                if(!image.type?.startsWith("image/")) {
+                    throw new Error("Invalid image mime type");
+                }
+
+                entry?.addStatus("Checking existing partner image list...");
+
+                let files = await panelQuery({
+                    UpdateCdnAsset: {
+                        login_token: $panelAuthState?.loginToken || '',
+                        path: 'partners',
+                        name: '',
+                        action: 'ListPath',
+                        cdn_scope: this.mainScope
+                    }
+                });
+
+                if (!files.ok) {
+                    let err = await files.text();
+                    throw new Error(`Failed to list CDN path: ${err}`);
+                }
+
+                let filesJson: CdnAssetItem[] = await files.json();
+
+                logger.info('PartnerSchema.parseEdit', 'Got CDN files', filesJson);
+
+                let paths = filesJson.map((f) => f.name);
+
+                entry?.addStatus(`=> Found existing images in path: ${paths}`);
+
+                for (let path of paths) {
+                    if (path == `${entry.data.id}.webp`) {
+                        entry?.addStatus(`=> Deleting existing partner image: ${path}`);
+
+                        let del = await panelQuery({
+                            UpdateCdnAsset: {
+                                login_token: $panelAuthState?.loginToken || '',
+                                path: 'partners',
+                                name: path,
+                                action: 'Delete',
+                                cdn_scope: this.mainScope
+                            }
+                        });
+
+                        if (!del.ok) {
+                            let err = await del.text();
+                            throw new Error(`Failed to delete existing partner image: ${err}`);
+                        }
+
+                        entry?.addStatus(`=> Deleted existing partner image: ${path}`);
+                    } else if (path?.split('.')?.length != 2 || !path.endsWith(".webp")) {
+                        entry?.addStatus(`=> Deleting unknown file: ${path}`);
+
+                        let del = await panelQuery({
+                            UpdateCdnAsset: {
+                                login_token: $panelAuthState?.loginToken || '',
+                                path: 'partners',
+                                name: path,
+                                action: 'Delete',
+                                cdn_scope: this.mainScope
+                            }
+                        });
+
+                        if (!del.ok) {
+                            let err = await del.text();
+                            throw new Error(`Failed to delete unknown file: ${err}`);
+                        }
+
+                        entry?.addStatus(`=> Deleted unknown file: ${path}`);
+                    }
+                }
+
+                // Convert image to webp
+                entry?.addStatus("=> Converting image to webp...");
+
+                let webp = await convertImage(image, "webp");
+
+                // Calculate sha512 hash of the image
+                entry?.addStatus('=> Calculating image hash...');
+                let hash = await crypto.subtle.digest(
+                    'sha-512',
+                    await webp.arrayBuffer()
+                );
+
+                // Convert hash to hex
+                let hashArray = Array.from(new Uint8Array(hash));
+                let hashHex = hashArray
+                    .map((b) => b.toString(16).padStart(2, '0'))
+                    .join('');
+
+                entry?.addStatus(`=> Calculated image hash: ${hashHex}`);
+
+                entry?.addStatus('=> Uploading image chunks to CDN...');
+
+                let chunkIds = await uploadFileChunks(webp, {
+                    onChunkUploaded: (chunkId, size) => {
+                        entry?.addStatus(`=> Uploaded chunk ${chunkId} (${size} bytes)`);
+                    },
+                })
+
+                entry?.addStatus('=> Creating file with chunk IDs on CDN...');
+
+                let upload = await panelQuery({
+                    UpdateCdnAsset: {
+                        login_token: $panelAuthState?.loginToken || '',
+                        path: 'avatars/partners',
+                        name: `${entry.data.id}.webp`,
+                        action: {
+                            AddFile: {
+                                overwrite: false,
+                                chunks: chunkIds,
+                                sha512: hashHex
+                            }
+                        },
+                        cdn_scope: this.mainScope
+                    }
+                });
+
+                if (!upload.ok) {
+                    let err = await upload.text();
+                    throw new Error(`Failed to upload image to CDN: ${err}`);
+                }
+
+                entry?.addStatus('=> Uploaded image to CDN');
+            }
+        }
+	}
+
+	let schema: PartnerSchema | undefined;
+
+	$: {
+		schema = new PartnerSchema()
+	}
 </script>
 
-{#await fetchPartnerList()}
-	<Loading msg="Fetching partner list..." />
-{:then partners}
-	<h1 class="text-3xl font-semibold">Partner Management</h1>
-
-	{#if $panelState?.capabilities?.includes("CdnManagement")}
-		<AddPartner partnerTypes={partners?.partners?.partner_types} mainScope={partners.scope} partnerIds={partners?.partners?.partners?.map(p => p.id)}/>
-	{:else}
-		<div class="mb-3"></div>
-	{/if}
-
-	<Column>
-		{#each partners.partners.partners as partner, i}
-			<Card>
-				<img
-					slot="image"
-					src={`${$panelState?.coreConstants?.cdn_url}/avatars/partners/${partner?.id}.webp`}
-					alt=""
-				/>
-				<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
-				<svelte:fragment slot="short">{partner?.short}</svelte:fragment>
-				<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
-				<svelte:fragment slot="type">{partner?.type}</svelte:fragment>
-				<svelte:fragment slot="actionA">
-					<CardLinkButton
-						target="_blank"
-						link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
-						showArrow={false}
-						double={false}
-					>
-						View
-					</CardLinkButton>
-				</svelte:fragment>
-				<div slot="extra">
-					<ManagePartner {partner} partnerTypes={partners?.partners?.partner_types} mainScope={partners.scope} partnerIds={partners?.partners?.partners?.map(p => p.id)} />
-				</div>
-			</Card>
-		{/each}
-	</Column>
-{:catch err}
-	<ErrorComponent msg={`Failed to fetch partner list: ${err}`} />
-{/await}
+{#if schema}
+	<View {schema}/>
+{:else}
+	<Loading msg="Internally creating partner schema..." />
+{/if}

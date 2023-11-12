@@ -20,6 +20,10 @@ export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: stri
             if(fCap?.type == "file" && !fCap?.fileUploadData) {
                 throw new Error("File upload field must have fileUploadData")
             }
+
+            if(fCap?.type == "text[choice]" && !fCap?.selectMenuChoices) {
+                throw new Error("Text choice field must have selectMenuChoices")
+            }
  
             fields.push(fCap)
             continue

@@ -1,9 +1,12 @@
+import type { SMOption } from "../inputs/select/select";
 import type { WarningBox } from "../warningbox/warningBox";
 
 export type FieldType = 
     "text" 
-    | "textarea"
-    | "text[]" 
+    | "textarea" // Long (extended answer)
+    | "text[]"  // Array of text
+    | "text[kv]" // Key-value pair of text to text
+    | "text[choice]" // Select menu for text
     | "number"
     | "boolean"
     | "file"
@@ -73,6 +76,10 @@ export interface Field {
      * If this is a file upload, this must be set
      */
     fileUploadData?: FieldFileUploadData
+    /**
+     * Select menu choices (if it is to be a choice field)
+     */
+    selectMenuChoices?: SMOption[],
     /**
      * Render method of the field
      * 
