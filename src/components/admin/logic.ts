@@ -1,3 +1,4 @@
+import type { Link } from "$lib/generated/arcadia/Link"
 import logger from "$lib/logger"
 import type { Field, FieldFetch, Capability } from "./types"
 
@@ -17,12 +18,30 @@ export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: stri
                 continue
             }
 
+            // File
+            if(fCap?.fileUploadData && fCap?.type != "file") {
+                throw new Error("File upload field must have type file")
+            }
             if(fCap?.type == "file" && !fCap?.fileUploadData) {
                 throw new Error("File upload field must have fileUploadData")
             }
 
+            // Select menu
+            if(fCap?.selectMenuChoices?.length && fCap?.type != "text[choice]") {
+                throw new Error("Select menu choices field must have type text[choice]")
+            }
             if(fCap?.type == "text[choice]" && !fCap?.selectMenuChoices) {
                 throw new Error("Text choice field must have selectMenuChoices")
+            }
+
+            // Custom renderer
+            const customRenderers = ["custom", "custom[html]"]
+            
+            if(fCap?.customRenderer && !customRenderers.includes(fCap?.renderMethod)) {
+                throw new Error("Custom renderer field must have renderMethod set to custom")
+            }
+            if(customRenderers.includes(fCap?.renderMethod) && !fCap?.customRenderer) {
+                throw new Error("Custom render method field must have customRenderer set")
             }
  
             fields.push(fCap)
@@ -59,4 +78,8 @@ export const cast = <T>(v: any): T => {
 
 export const castToArray = <T>(v: any): T[] => {
     return cast<any[]>(v)
+}
+
+export const castToLinkArray = (v: any): Link[] => {
+    return cast<Link[]>(v)
 }

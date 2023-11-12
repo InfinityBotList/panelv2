@@ -3,6 +3,7 @@
 	import InputNumber from "../inputs/InputNumber.svelte";
 	import InputText from "../inputs/InputText.svelte";
     import InputTextArea from "../inputs/InputTextArea.svelte";
+	import ExtraLinks from "../inputs/multi/extralinks/ExtraLinks.svelte";
 	import KvMultiInput from "../inputs/multi/kv/KVMultiInput.svelte";
 	import MultiInput from "../inputs/multi/simple/MultiInput.svelte";
 	import Select from "../inputs/select/Select.svelte";
@@ -52,6 +53,18 @@
     />
 {:else if field.type == "text[kv]"}
     <KvMultiInput
+        id={field.id}
+        title={field.label}
+        label={field.arrayLabel ? field.arrayLabel : field.label}
+        bind:values={data[field.id]}
+        placeholder={field.helpText}
+        minlength={0}
+        showErrors={false}
+        required={field.required}
+        disabled={field.disabled}
+    />
+    {:else if field.type == "ibl:link"}
+    <ExtraLinks
         id={field.id}
         title={field.label}
         label={field.arrayLabel ? field.arrayLabel : field.label}

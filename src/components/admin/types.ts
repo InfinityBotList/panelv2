@@ -6,6 +6,7 @@ export type FieldType =
     | "textarea" // Long (extended answer)
     | "text[]"  // Array of text
     | "text[kv]" // Key-value pair of text to text
+    | "ibl:link" // Extra links (IBL specific type)
     | "text[choice]" // Select menu for text
     | "number"
     | "boolean"
@@ -16,7 +17,7 @@ export type FieldType =
  * 
  * Defaults: text as default, unordered-list for array
  */
-export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "none"
+export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "custom" | "custom[html]"
 
 export type Capability = "view" | "create" | "update" | "delete";
 
@@ -86,6 +87,10 @@ export interface Field {
      * Set to 'text' when in doubt
      */
     renderMethod: FieldRenderMethod
+    /**
+     * Custom renderer function. Note that renderMethod must be custom when this is set
+     */
+    customRenderer?: (cap: Capability, data: any) => Promise<string>
 }
 
 /**

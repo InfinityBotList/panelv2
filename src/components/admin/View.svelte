@@ -6,7 +6,7 @@
 	import ListItem from '../ListItem.svelte';
 	import UnorderedList from '../UnorderedList.svelte';
 	import type { Schema } from './types';
-	import { castToArray, fetchFields, validateDataWithFields } from './logic';
+	import { castToArray, castToLinkArray, fetchFields, validateDataWithFields } from './logic';
 	import Manage from './Manage.svelte';
 	import OrderedList from '../OrderedList.svelte';
 	import Add from './Add.svelte';
@@ -78,7 +78,16 @@
                                 <td>
                                     <UnorderedList>    
                                         {#each castToArray(row[field.id]) as cols}
-                                            <ListItem>{field.type == "text[kv]" ? JSON.stringify(cols) : cols}</ListItem>
+                                            <ListItem>
+                                                {#if field.type == "text[kv]"}
+                                                    {JSON.stringify(cols)}
+                                                {:else if field.type == "ibl:link"}
+                                                    {#each castToLinkArray(cols) as link}
+                                                        <a href={link?.value} target="_blank">{link.name}</a>
+                                                    {/each}
+                                                {/if}
+                                                {field.type == "text[kv]" ? JSON.stringify(cols) : cols}
+                                            </ListItem>
                                         {/each}
                                     </UnorderedList>
                                 </td>
@@ -89,6 +98,14 @@
                                             <ListItem>{cols}</ListItem>
                                         {/each}
                                     </OrderedList>
+                                </td>
+                            {:else if field.renderMethod == "custom"}
+                                <td>
+                                    {field?.customRenderer ? field?.customRenderer('view', row[field.id]) : row[field.id]}
+                                </td>
+                            {:else if field.renderMethod == "custom[html]"}
+                                <td>
+                                    {@html field?.customRenderer ? field?.customRenderer('view', row[field.id]) : row[field.id]}
                                 </td>
                             {/if}
                         {/each}

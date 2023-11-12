@@ -3,9 +3,17 @@
 	import type { Link } from '$lib/generated/arcadia/Link';
 	import KvMultiInput from '../kv/KVMultiInput.svelte';
 
+	export let id: string = 'extra-links';
+	export let title: string = "Links"
+	export let label = title;
 	export let values: Link[] = [];
+	export let placeholder: string = "Link";
+	export let minlength: number = 5;
+	export let showErrors: boolean = false;
+	export let required: boolean = true;
+	export let disabled: boolean = false;
 
-	let internalValues: [string, string][] = [];
+	let internalValues: [string, string][] = values.map(({ name, value }) => [name, value]) || [];
 
 	$: {
 		values = internalValues.map(([k, v]) => ({ name: k, value: v })) || [];
@@ -13,9 +21,13 @@
 </script>
 
 <KvMultiInput
-	id="extra-links"
+	{id}
 	bind:values={internalValues}
-	title="Links"
-	placeholder="Link"
-	minlength={5}
+	{title}
+	{label}
+	{placeholder}
+	{minlength}
+	{showErrors}
+	{required}
+	{disabled}
 />
