@@ -13,6 +13,7 @@
 	import OrderedList from '../OrderedList.svelte';
 	import ListItem from '../ListItem.svelte';
 	import InputHandler from './InputHandler.svelte';
+	import { onMount } from 'svelte';
 
 	export let show: boolean = true;
 
@@ -25,6 +26,18 @@
     let fileData: { [key: string]: File } = {}
 
     let status: string[] = [];
+
+	let warningBoxDelete: WB | undefined;
+    let showWarningBoxDelete: boolean = false;
+
+    // State setup
+    onMount(() => {
+        warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
+        pkey = data?.schema?.getPrimaryKey('update')
+        data?.schema?.onOpen('update', 'showComponent', editData)
+        editData = data?.manageData || {}
+    })
+
     const addStatus = (s: string) => {
         status.push(s);
         status = status;
@@ -71,15 +84,6 @@
         let res = await fetchFields('update', data?.schema?.fields)
         fileKeys = res.filter(f => f.type == 'file').map(f => f.id)
         return res
-    }
-
-	let warningBoxDelete: WB | undefined;
-    let showWarningBoxDelete: boolean = false;
-
-    $: {
-        warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
-        pkey = data?.schema?.getPrimaryKey('update')
-        data?.schema?.onOpen('update', 'showComponent', editData)
     }
 </script>
 
