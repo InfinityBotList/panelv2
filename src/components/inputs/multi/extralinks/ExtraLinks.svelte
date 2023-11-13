@@ -17,7 +17,7 @@
 	let internalValues: [string, string][] = []
 
 	onMount(() => {
-		internalValues = values.map(({ name, value }) => [name, value]);
+		internalValues = values.map(l => [l.name, l.value]);
 	})
 
 	$: {
