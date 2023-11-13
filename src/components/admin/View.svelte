@@ -82,7 +82,7 @@
                                                 {#if field.type == "text[kv]"}
                                                     {JSON.stringify(cols)}
                                                 {:else if field.type == "ibl:link"}
-                                                    <a href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
+                                                    <a class="text-blue-400 hover:text-blue-500" href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
                                                 {:else}
                                                     {cols}
                                                 {/if}
@@ -98,7 +98,7 @@
                                                 {#if field.type == "text[kv]"}
                                                     {JSON.stringify(cols)}
                                                 {:else if field.type == "ibl:link"}
-                                                    <a href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
+                                                    <a class="text-blue-400 hover:text-blue-500" href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
                                                 {:else}
                                                     {cols}
                                                 {/if}
