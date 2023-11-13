@@ -2,8 +2,8 @@ import type { Link } from "$lib/generated/arcadia/Link"
 import logger from "$lib/logger"
 import type { Field, FieldFetch, Capability } from "./types"
 
-export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: string) => {
-    let fields: Field[] = []
+export const fetchFields = async <T> (cap: Capability, ff: FieldFetch<T>, reason?: string) => {
+    let fields: Field<T>[] = []
     logger.info("FetchFields", cap, ff)
     for(let field of ff) {
         if(!field) {
@@ -11,7 +11,7 @@ export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: stri
         }
 
         if(field instanceof Function) {
-            let f = field as (cap: Capability, reason?: string) => Promise<Field | null>
+            let f = field as (cap: Capability, reason?: string) => Promise<Field<T> | null>
             let fCap = await f(cap, reason)
 
             if(!fCap) {
@@ -47,13 +47,13 @@ export const fetchFields = async (cap: Capability, ff: FieldFetch, reason?: stri
             fields.push(fCap)
             continue
         }
-        fields.push(field as Field)
+        fields.push(field as Field<T>)
     }
 
     return fields
 }
 
-export const validateDataWithFields = (data: any, fields: Field[]) => {
+export const validateDataWithFields = <T>(data: any, fields: Field<T>[]) => {
     let fieldSet = new Set(fields.map(f => f.id))
     let dataKeySet = new Set(Object.keys(data))
 

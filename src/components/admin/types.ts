@@ -21,12 +21,12 @@ export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "cu
 
 export type Capability = "view" | "create" | "update" | "delete";
 
-export type FieldFetch = (((cap: Capability, reason?: string) => Promise<Field | null>) | Field | null)[]
+export type FieldFetch<T> = (((cap: Capability, reason?: string) => Promise<Field<T> | null>) | Field<T> | null)[]
 
 /** 
  * Data for a file upload field
  */
-export interface FieldFileUploadData {
+export interface FieldFileUploadData<T> {
     /**
      * Acceptable mime types for the file upload
      */
@@ -34,13 +34,13 @@ export interface FieldFileUploadData {
     /**
      * A function to render a preview, if null a preview won't be rendered
      */
-    renderPreview: (cap: Capability, file: File, fileMimeType: string, box: HTMLDivElement) => Promise<void>,
+    renderPreview: (cap: Capability, file: File, data: T, box: HTMLDivElement) => Promise<void>,
 }
 
 /**
  * Data for a field
  */
-export interface Field {
+export interface Field<T> {
     /**
      * The id of the field
      */
@@ -76,7 +76,7 @@ export interface Field {
     /**
      * If this is a file upload, this must be set
      */
-    fileUploadData?: FieldFileUploadData
+    fileUploadData?: FieldFileUploadData<T>
     /**
      * Select menu choices (if it is to be a choice field)
      */
@@ -100,7 +100,7 @@ export interface Entry<T> {
     /**
      * Files being created/updated
      */
-    files: { [key: string]: File}
+    files: { [key: string]: File }
     /**
      * Data being created/updated
      */
@@ -119,7 +119,7 @@ export interface BaseSchema<T> {
     /**
      * The fields of the schema   
      */
-    fields: FieldFetch,
+    fields: FieldFetch<T>,
     /** 
      * Strictly verify that data has same keys as schema 
     */
@@ -175,8 +175,8 @@ export interface BaseSchema<T> {
 /**
  * Wrapper type to allow viewToTable to also return the fields
  */
-export interface ViewToTableResponse {
-    fields: FieldFetch,
+export interface ViewToTableResponse<T> {
+    fields: FieldFetch<T>,
     data: any[]
 }
 
@@ -192,7 +192,7 @@ export interface Schema<T> extends BaseSchema<T> {
      * @param data The data to convert
      * @returns The converted data
      */
-    viewToTable: (data: T[]) => Promise<ViewToTableResponse>,
+    viewToTable: (data: T[]) => Promise<ViewToTableResponse<T>>,
     /**
      * This function takes in a capability and responds with a warningbox
      * 

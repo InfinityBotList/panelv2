@@ -10,7 +10,7 @@
 	import type { Partners } from '$lib/generated/arcadia/Partners';
 	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
 	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
-	import { convertImage, uploadFileChunks } from '$lib/fileutils';
+	import { convertImage, renderPreview, uploadFileChunks } from '$lib/fileutils';
 
 	/* 
 export interface Partner { 
@@ -26,7 +26,7 @@ export interface Partner {
 
 	class PartnerSchema implements BaseSchema<Partner>, Schema<Partner> {
 		name: string = "partner";
-		fields: FieldFetch = [
+		fields: FieldFetch<Partner> = [
 			{
 				id: "id",
 				label: "ID",
@@ -44,6 +44,47 @@ export interface Partner {
                 required: true,
                 disabled: false,
                 renderMethod: "text",
+            },
+            {
+                id: "avatar",
+                label: "Avatar",
+                type: "file",
+                helpText: "The avatar of the partner",
+                required: true,
+                disabled: false,
+                renderMethod: "custom[html]",
+                fileUploadData: {
+                    acceptableMimeTypes: [
+                        "image/png",
+                        "image/jpeg",
+                        "image/gif",
+                        "image/webp"
+			        ],
+                    renderPreview: async (cap, file, data, box) => {
+                        if(!this.mainScope) {
+                            await this.fetchCdnMainScope()
+                        }
+
+                        return await renderPreview(async (_, __) => {
+                            return file
+                        }, this.mainScope, {
+                            name: `${data.id}.${file.type.split('/')[1]}`,
+                            path: "partners",
+                            size: BigInt(0),
+                            last_modified: BigInt(0),
+                            permissions: 0o644,
+                            is_dir: false
+                        }, box)
+                    },
+                },
+                customRenderer: async (cap: Capability, data: any) => {
+                    switch (cap) {
+                        case "view":
+                            return `<img width="20px" src="${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp" />`
+                        default:
+                            return `${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp`
+                    }
+                }
             },
             {
                 id: "short",
@@ -238,10 +279,25 @@ export interface Partner {
             // Do nothing
         }
 
-        // Not part of admin panel
+        // Not part of admin panel def
         private partnerTypes: PartnerType[] = []
         private partnerIds: string[] = []
         private mainScope: string = ''
+
+        private async fetchCdnMainScope() {
+            let scopeRes = await panelQuery({
+                GetMainCdnScope: {
+                    login_token: $panelAuthState?.loginToken || ''
+                }
+            })
+
+            if(!scopeRes.ok) {
+                let err = await scopeRes.text();
+                throw new Error(`Failed to fetch main CDN scope: ${err}`);
+            }
+
+            this.mainScope = await scopeRes.text();
+        }
 
         private async parseEdit(cap: Capability, entry: Entry<Partner>) {
             if(cap == "create") {
@@ -255,18 +311,7 @@ export interface Partner {
             }
 
             if(!this.mainScope) {
-                let scopeRes = await panelQuery({
-                    GetMainCdnScope: {
-                        login_token: $panelAuthState?.loginToken || ''
-                    }
-                })
-
-                if(!scopeRes.ok) {
-                    let err = await scopeRes.text();
-                    throw new Error(`Failed to fetch main CDN scope: ${err}`);
-                }
-
-		        this.mainScope = await scopeRes.text();
+                await this.fetchCdnMainScope()
             }
 
             if(!this.partnerIds.length || !this.partnerTypes.length) {

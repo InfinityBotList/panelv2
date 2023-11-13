@@ -10,7 +10,7 @@
 	import FileUploadElement from "./FileUploadElement.svelte";
 	import type { Field } from "./types";
 
-    export let field: Field
+    export let field: Field<any>
 
     export let data: { [key: string]: any }
     export let fileData: { [key: string]: File }
@@ -108,6 +108,7 @@
 {:else if field.type == "file"}
     <FileUploadElement
         bind:outputFile={fileData[field.id]}
+        {data}
         {field}
         cap="update"
     />
