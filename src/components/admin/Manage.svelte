@@ -35,6 +35,11 @@
         pkey = data?.schema?.getPrimaryKey('update')
         data?.schema?.onOpen('update', 'showComponent', editData)
         editData = data?.manageData || {}
+
+        return () => {
+            editData = {}
+            pkey = ''
+        }
     })
 
     const addStatus = (s: string) => {
