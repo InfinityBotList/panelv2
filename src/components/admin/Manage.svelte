@@ -30,19 +30,11 @@
 	let warningBoxDelete: WB | undefined;
     let showWarningBoxDelete: boolean = false;
 
-    // State setup
-    onMount(() => {
+    $: {
         pkey = data?.schema?.getPrimaryKey('update')
         data?.schema?.onOpen('update', 'showComponent', editData)
         editData = data?.manageData || {}
-
-        return () => {
-            editData = {}
-            pkey = ''
-            warningBoxDelete = undefined
-            showWarningBoxDelete = false
-        }
-    })
+    }
 
     const addStatus = (s: string) => {
         status.push(s);
