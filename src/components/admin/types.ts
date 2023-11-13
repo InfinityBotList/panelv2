@@ -26,7 +26,7 @@ export type FieldFetch<T> = (((cap: Capability, reason?: string) => Promise<Fiel
 /** 
  * Data for a file upload field
  */
-export interface FieldFileUploadData<T> {
+export interface FieldFileUploadData {
     /**
      * Acceptable mime types for the file upload
      */
@@ -76,7 +76,7 @@ export interface Field<T> {
     /**
      * If this is a file upload, this must be set
      */
-    fileUploadData?: FieldFileUploadData<T>
+    fileUploadData?: FieldFileUploadData
     /**
      * Select menu choices (if it is to be a choice field)
      */
@@ -90,7 +90,7 @@ export interface Field<T> {
     /**
      * Custom renderer function. Note that renderMethod must be custom when this is set
      */
-    customRenderer?: (cap: Capability, data: any) => Promise<string>
+    customRenderer?: (cap: Capability, data: T) => Promise<string>
 }
 
 /**

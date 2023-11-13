@@ -124,7 +124,7 @@
                             {:else if field.renderMethod == "custom[html]"}
                                 <td>
                                     {#if field?.customRenderer}
-                                        {#await field?.customRenderer('view', row[field.id])}
+                                        {#await field?.customRenderer('view', row)}
                                             <p class="animate-pulse">Loading {field.id}</p>
                                         {:then data}
                                             {@html data}
