@@ -40,7 +40,6 @@
 		};
 	};
 
-    let showManageOpen: boolean = false
     let currentlyOpenManageIndex: number;
 </script>
 
@@ -139,14 +138,13 @@
                                 <button
                                 class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
                                 on:click={() => {
-                                    showManageOpen = true;
                                     currentlyOpenManageIndex = i
                                 }}
                             >
                                 Manage
                             </button>
                             {#if currentlyOpenManageIndex == i}
-                                <Manage bind:show={showManageOpen} data={{
+                                <Manage data={{
                                     schema,
                                     manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
                                 }} />

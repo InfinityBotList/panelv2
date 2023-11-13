@@ -14,7 +14,7 @@
 	import ListItem from '../ListItem.svelte';
 	import InputHandler from './InputHandler.svelte';
 
-	export let show: boolean = false;
+	let show: boolean = false;
 
 	export let data: ManageSchema<any>;
     let pkey: string = '';
