@@ -39,6 +39,8 @@
         return () => {
             editData = {}
             pkey = ''
+            warningBoxDelete = undefined
+            showWarningBoxDelete = false
         }
     })
 
