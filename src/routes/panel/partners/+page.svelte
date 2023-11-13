@@ -306,7 +306,7 @@ export interface Partner {
                     throw new Error('Partner ID already exists');
                 }
 
-                if(Object.entries(entry.files).length == 0) {
+                if(!entry?.files?.["avatar"]) {
                     throw new Error("No files were uploaded for avatar")
                 }
             }
@@ -342,13 +342,12 @@ export interface Partner {
             if(!userRes.ok) {
                 let err = await userRes.text();
                 throw new Error(`Failed to check user ID: ${err}`);
-                return false;
             }
 
-            if (entry?.files?.length) {
+            if (entry?.files?.["avatar"]) {
                 entry?.addStatus("Checking image...");
 
-                let image = entry?.files[0]
+                let image = entry?.files["avatar"]
 
                 if(!image.type?.startsWith("image/")) {
                     throw new Error("Invalid image mime type");
