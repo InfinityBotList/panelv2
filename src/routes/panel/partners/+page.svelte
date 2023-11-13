@@ -358,7 +358,7 @@ export interface Partner {
                 let files = await panelQuery({
                     UpdateCdnAsset: {
                         login_token: $panelAuthState?.loginToken || '',
-                        path: 'partners',
+                        path: 'avatars/partners',
                         name: '',
                         action: 'ListPath',
                         cdn_scope: this.mainScope
@@ -385,7 +385,7 @@ export interface Partner {
                         let del = await panelQuery({
                             UpdateCdnAsset: {
                                 login_token: $panelAuthState?.loginToken || '',
-                                path: 'partners',
+                                path: 'avatars/partners',
                                 name: path,
                                 action: 'Delete',
                                 cdn_scope: this.mainScope
@@ -404,7 +404,7 @@ export interface Partner {
                         let del = await panelQuery({
                             UpdateCdnAsset: {
                                 login_token: $panelAuthState?.loginToken || '',
-                                path: 'partners',
+                                path: 'avatars/partners',
                                 name: path,
                                 action: 'Delete',
                                 cdn_scope: this.mainScope
