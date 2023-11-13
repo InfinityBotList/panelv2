@@ -18,7 +18,7 @@
 
 	export let data: ManageSchema<any>;
     let pkey: string = '';
-    let editData: {[key: string]: any} = {};
+    let editData: {[key: string]: any} = data?.manageData || {};
 
     // Files support
     let fileKeys: string[]
@@ -78,7 +78,6 @@
 
     $: {
         warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
-        editData = data?.manageData || {}
         pkey = data?.schema?.getPrimaryKey('update')
         data?.schema?.onOpen('update', 'showComponent', editData)
     }
