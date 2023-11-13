@@ -32,7 +32,7 @@
 	};
 
 	$: {
-		logger.info('CapabilityChooser', selectedCaps);
+		logger.info('CapabilityChooser', selectedCaps, { caps: $panelState?.capabilities });
 		if ($panelState) {
 			$panelState.capabilities = allCaps?.filter((_, i) => selectedCaps[i]);
 		}

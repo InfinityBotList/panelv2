@@ -208,7 +208,7 @@
 						</p>
 					{/if}
 				</div>
-			{:else if currentStep == 1 && (!selectedId && selectedId != 0) && selectedEntity}
+			{:else if currentStep == 1 && selectedEntity}
 				<h2 class="text-white font-black text-xl">
 					Alright! Let's make sure we have the right {$page.params.targetType} in mind!
 				</h2>
