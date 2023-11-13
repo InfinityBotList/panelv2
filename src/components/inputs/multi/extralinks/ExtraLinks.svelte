@@ -19,7 +19,7 @@
 
 	onMount(() => {
 		internalValues = values.map(l => [l.name, l.value]);
-		logger.info('ExtraLinks.onMount', { values, internalValues})
+		logger.info('ExtraLinks.onMount', values, internalValues)
 	})
 
 	$: {
