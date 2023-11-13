@@ -80,7 +80,7 @@ export interface Partner {
                 customRenderer: async (cap: Capability, data: any) => {
                     switch (cap) {
                         case "view":
-                            return `<img width="20px" src="${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp" />`
+                            return `<img style="border-radius: 50%;" width="50px" src="${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp" />`
                         default:
                             return `${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp`
                     }
