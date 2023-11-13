@@ -7,10 +7,7 @@
 	import { panelQuery } from '$lib/fetch';
 	import type { RPCWebAction } from '$lib/generated/arcadia/RPCWebAction';
 	import Column from '../../../../components/Column.svelte';
-	import Card from '../../../../components/Card.svelte';
-	import CardLinkButton from '../../../../components/CardLinkButton.svelte';
 	import { panelState } from '$lib/panelState';
-	import { title } from '$lib/strings';
 	import Select from './Select.svelte';
 	import Modal from '../../../../components/Modal.svelte';
 	import RPC from '../../../../components/rpc/RPC.svelte';
@@ -90,6 +87,7 @@
 			let err = await res.text();
 
 			error(err || 'Unknown error while fetching');
+			return false
 		}
 
 		let resultsJson: PartialEntity[] = await res.json();
