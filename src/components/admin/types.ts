@@ -34,7 +34,7 @@ export interface FieldFileUploadData<T> {
     /**
      * A function to render a preview, if null a preview won't be rendered
      */
-    renderPreview: (cap: Capability, file: File, data: T, box: HTMLDivElement) => Promise<void>,
+    renderPreview: (cap: Capability, file: File, box: HTMLDivElement) => Promise<void>,
 }
 
 /**

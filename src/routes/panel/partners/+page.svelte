@@ -60,7 +60,7 @@ export interface Partner {
                         "image/gif",
                         "image/webp"
 			        ],
-                    renderPreview: async (cap, file, data, box) => {
+                    renderPreview: async (cap, file, box) => {
                         if(!this.mainScope) {
                             await this.fetchCdnMainScope()
                         }
@@ -68,7 +68,7 @@ export interface Partner {
                         return await renderPreview(async (_, __) => {
                             return file
                         }, this.mainScope, {
-                            name: `${data.id}.${file.type.split('/')[1]}`,
+                            name: `${Date.now()}.webp`,
                             path: "partners",
                             size: BigInt(0),
                             last_modified: BigInt(0),

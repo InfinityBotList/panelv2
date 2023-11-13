@@ -8,13 +8,12 @@
 	import MultiInput from "../inputs/multi/simple/MultiInput.svelte";
 	import Select from "../inputs/select/Select.svelte";
 	import FileUploadElement from "./FileUploadElement.svelte";
-	import type { Field } from "./types";
+	import type { Field, Schema } from "./types";
 
     export let field: Field<any>
 
     export let data: { [key: string]: any }
     export let fileData: { [key: string]: File }
-
 </script>
 
 {#if field.type == "text"}
@@ -108,7 +107,6 @@
 {:else if field.type == "file"}
     <FileUploadElement
         bind:outputFile={fileData[field.id]}
-        {data}
         {field}
         cap="update"
     />

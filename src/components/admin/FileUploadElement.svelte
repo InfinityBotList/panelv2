@@ -4,7 +4,6 @@
 	import type { Field, Capability } from "./types";
 
     export let field: Field<any>;
-    export let data: { [key: string]: any };
     export let cap: Capability;
 
     let file: File;
@@ -33,7 +32,7 @@
     {#if field.fileUploadData?.renderPreview}
         <p class="font-semibold">File Preview ({fileMimeType.split('/')[1]})</p>
 
-        {#await field.fileUploadData?.renderPreview(cap, file, data, filePreviewBox)}
+        {#await field.fileUploadData?.renderPreview(cap, file, filePreviewBox)}
             <Icon icon="mdi:loading" class="inline animate-spin text-2xl" />
             <span class="text-xl">Loading Preview</span>
         {:catch err}
