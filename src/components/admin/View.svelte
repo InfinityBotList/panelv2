@@ -39,6 +39,8 @@
             viewData
 		};
 	};
+
+    let showManageOpen: boolean = false
 </script>
 
 {#await fetchData()}
@@ -116,11 +118,21 @@
                                 </td>
                             {/if}
                         {/each}
-						<td>
-                            <Manage data={{
-                                schema,
-                                manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
-                            }} />
+                            <td>
+                                <button
+                                class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
+                                on:click={() => {
+                                    showManageOpen = true;
+                                }}
+                            >
+                                Manage
+                            </button>
+                            {#if showManageOpen}
+                                <Manage bind:show={showManageOpen} data={{
+                                    schema,
+                                    manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
+                                }} />
+                            {/if}
 						</td>
 					</tr>
 				{/each}

@@ -14,7 +14,7 @@
 	import ListItem from '../ListItem.svelte';
 	import InputHandler from './InputHandler.svelte';
 
-	let showActionsModal: boolean = false;
+	export let show: boolean = false;
 
 	export let data: ManageSchema<any>;
     let pkey: string = '';
@@ -84,17 +84,8 @@
     }
 </script>
 
-<button
-	class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
-	on:click={() => {
-		showActionsModal = true;
-	}}
->
-	Manage
-</button>
-
-{#if showActionsModal}
-	<Modal bind:showModal={showActionsModal}>
+{#if show}
+	<Modal bind:showModal={show}>
 		<h1 slot="header" class="font-semibold text-2xl">Editting {data?.schema?.name} for {pkey} {data?.manageData?.[pkey]}</h1>
 
         <h2 class="text-xl font-semibold">Edit {title(data?.schema?.name)} Entry</h2>
@@ -142,7 +133,7 @@
                         return false;
                     }
                     setupWarning(warningBoxDelete);
-                    showActionsModal = false;
+                    show = false;
                     showWarningBoxDelete = true
                     return true
                 }}
