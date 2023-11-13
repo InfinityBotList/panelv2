@@ -3,6 +3,7 @@
 	import type { Link } from '$lib/generated/arcadia/Link';
 	import { onMount } from 'svelte';
 	import KvMultiInput from '../kv/KVMultiInput.svelte';
+	import logger from '$lib/logger';
 
 	export let id: string = 'extra-links';
 	export let title: string = "Links"
@@ -18,6 +19,7 @@
 
 	onMount(() => {
 		internalValues = values.map(l => [l.name, l.value]);
+		logger.info('ExtraLinks.onMount', { values, internalValues})
 	})
 
 	$: {

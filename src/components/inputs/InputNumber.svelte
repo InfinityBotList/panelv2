@@ -19,7 +19,6 @@
 	function checkLength() {
 		if (!showErrors) return;
 
-		console.log(value);
 		if (!value) {
 			success = null;
 			return;
