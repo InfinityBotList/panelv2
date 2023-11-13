@@ -24,7 +24,7 @@ export interface ChangelogEntry {
 
 	class ChangelogSchema implements BaseSchema<ChangelogEntry>, Schema<ChangelogEntry> {
 		name: string = "changelog";
-		fields: FieldFetch = [
+		fields: FieldFetch<ChangelogEntry> = [
 			{
 				id: "version",
 				label: "Version",
@@ -128,6 +128,7 @@ export interface ChangelogEntry {
 		]
 
 		strictSchemaValidation: boolean = true
+		strictSchemaValidationIgnore: string[] = [];
 
 		getCaps(): Capability[] {
 			if($panelState?.capabilities?.includes("ChangelogManagement")) {

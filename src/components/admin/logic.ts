@@ -1,6 +1,6 @@
 import type { Link } from "$lib/generated/arcadia/Link"
 import logger from "$lib/logger"
-import type { Field, FieldFetch, Capability } from "./types"
+import type { Field, FieldFetch, Capability, Schema } from "./types"
 
 export const fetchFields = async <T> (cap: Capability, ff: FieldFetch<T>, reason?: string) => {
     let fields: Field<T>[] = []
@@ -53,9 +53,9 @@ export const fetchFields = async <T> (cap: Capability, ff: FieldFetch<T>, reason
     return fields
 }
 
-export const validateDataWithFields = <T>(data: any, fields: Field<T>[]) => {
-    let fieldSet = new Set(fields.map(f => f.id))
-    let dataKeySet = new Set(Object.keys(data))
+export const validateDataWithFields = <T>(data: any, schema: Schema<T>, fields: Field<T>[]) => {
+    let fieldSet = new Set(fields.filter(f => !schema.strictSchemaValidationIgnore?.includes(f.id)).map(f => f.id))
+    let dataKeySet = new Set(Object.keys(data).filter(k => !schema.strictSchemaValidationIgnore?.includes(k)))
 
     // Get the difference between the field set and the data key set
     let fs_minus_dks = new Set([...fieldSet].filter(x => !dataKeySet.has(x)))

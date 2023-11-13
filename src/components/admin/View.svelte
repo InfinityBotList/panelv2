@@ -20,7 +20,7 @@
         if(!viewData) viewData = []
 
         if(viewData.length > 0 && schema?.strictSchemaValidation) {
-            validateDataWithFields(viewData[0], await fetchFields('view', schema?.fields, "strictSchemaValidation"))
+            validateDataWithFields(viewData[0], schema, await fetchFields('view', schema?.fields, "strictSchemaValidation"))
         }
 
         let eRows = await schema?.viewToTable(viewData);

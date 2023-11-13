@@ -125,6 +125,10 @@ export interface BaseSchema<T> {
     */
     strictSchemaValidation: boolean,
     /**
+     * Fields to ignore for schema validation
+     */
+    strictSchemaValidationIgnore: string[],
+    /**
      * Returns the capabilities the user has regarding the schema
      * 
      * @returns The capabilities of the schema

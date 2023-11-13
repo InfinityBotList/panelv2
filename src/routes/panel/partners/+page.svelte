@@ -148,6 +148,7 @@ export interface Partner {
 		]
 
 		strictSchemaValidation: boolean = true
+        strictSchemaValidationIgnore: string[] = ["avatar"];
 
 		getCaps(): Capability[] {
 			if($panelState?.capabilities?.includes("PartnerManagement")) {
