@@ -85,8 +85,9 @@
                                                     {#each castToLinkArray(cols) as link}
                                                         <a href={link?.value} target="_blank">{link.name}</a>
                                                     {/each}
+                                                {:else}
+                                                    {cols}
                                                 {/if}
-                                                {field.type == "text[kv]" ? JSON.stringify(cols) : cols}
                                             </ListItem>
                                         {/each}
                                     </UnorderedList>
@@ -95,7 +96,17 @@
                                 <td>
                                     <OrderedList>    
                                         {#each castToArray(row[field.id]) as cols}
-                                            <ListItem>{cols}</ListItem>
+                                            <ListItem>
+                                                {#if field.type == "text[kv]"}
+                                                    {JSON.stringify(cols)}
+                                                {:else if field.type == "ibl:link"}
+                                                    {#each castToLinkArray(cols) as link}
+                                                        <a href={link?.value} target="_blank">{link.name}</a>
+                                                    {/each}
+                                                {:else}
+                                                    {cols}
+                                                {/if}
+                                            </ListItem>
                                         {/each}
                                     </OrderedList>
                                 </td>

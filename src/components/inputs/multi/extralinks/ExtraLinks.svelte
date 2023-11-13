@@ -1,6 +1,7 @@
 <!--Wrapper around kv multi-input to provide a Link[]-->
 <script lang="ts">
 	import type { Link } from '$lib/generated/arcadia/Link';
+	import { onMount } from 'svelte';
 	import KvMultiInput from '../kv/KVMultiInput.svelte';
 
 	export let id: string = 'extra-links';
@@ -13,7 +14,11 @@
 	export let required: boolean = true;
 	export let disabled: boolean = false;
 
-	let internalValues: [string, string][] = values.map(({ name, value }) => [name, value]) || [];
+	let internalValues: [string, string][] = []
+
+	onMount(() => {
+		internalValues = values.map(({ name, value }) => [name, value]);
+	})
 
 	$: {
 		values = internalValues.map(([k, v]) => ({ name: k, value: v })) || [];

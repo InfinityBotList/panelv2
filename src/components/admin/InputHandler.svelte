@@ -63,7 +63,7 @@
         required={field.required}
         disabled={field.disabled}
     />
-    {:else if field.type == "ibl:link"}
+{:else if field.type == "ibl:link"}
     <ExtraLinks
         id={field.id}
         title={field.label}
