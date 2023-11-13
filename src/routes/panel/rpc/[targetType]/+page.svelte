@@ -18,6 +18,7 @@
 	import type { TargetType } from '$lib/generated/arcadia/TargetType';
 	import { afterNavigate } from '$app/navigation';
 	import type { PartialEntity } from '$lib/generated/arcadia/PartialEntity';
+	import PartialEntityCard from './PartialEntityCard.svelte';
 
 	let query: string;
 	let selectedEntity: PartialEntity;
@@ -102,21 +103,6 @@
 		results = resultsJson;
 
 		return true;
-	};
-
-	const getType = (e: PartialEntity) => {
-		if('Bot' in e) {
-			let bot = e.Bot
-
-			switch (bot?.type) {
-			case 'claimed':
-				return `Claimed by ${bot?.claimed_by}`;
-			default:
-				return title(bot?.type);
-			}
-		} else {
-			return 'Unknown';
-		}
 	};
 
 	const getRpcData = () => {
@@ -208,38 +194,14 @@
 
 						<Column>
 							{#each results as result, i}
-								{#if 'Bot' in result}
-									<Card>
-										<img slot="image" src={result?.Bot?.user?.avatar} alt="" />
-										<svelte:fragment slot="display-name">{result?.Bot?.user?.username}</svelte:fragment>
-										<svelte:fragment slot="short">{result?.Bot?.short}</svelte:fragment>
-										<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
-										<svelte:fragment slot="type">{getType(result)}</svelte:fragment>
-										<svelte:fragment slot="actionA">
-											<CardLinkButton
-												target="_blank"
-												link={`${$panelState?.coreConstants?.frontend_url}/bots/${result?.Bot?.bot_id}`}
-												showArrow={false}>View</CardLinkButton
-											>
-										</svelte:fragment>
-										<svelte:fragment slot="actionB">
-											{#if $page?.params?.targetType == 'Bot'}
-												<CardLinkButton
-													target="_blank"
-													link={`https://discord.com/api/v10/oauth2/authorize?client_id=${result?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-													showArrow={false}>Invite</CardLinkButton
-												>
-											{:else}
-												<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
-													>-</CardLinkButton
-												>
-											{/if}
-										</svelte:fragment>
-										<svelte:fragment slot="extra">
-											<Select index={i} bind:selected={selectedId} />
-										</svelte:fragment>
-									</Card>
-								{/if}
+								<PartialEntityCard 
+									{result}
+								>
+									<svelte:fragment slot="index">#{i+1}</svelte:fragment>
+									<svelte:fragment slot="extra">
+										<Select index={i} bind:selected={selectedId} />
+									</svelte:fragment>
+								</PartialEntityCard>
 							{/each}
 						</Column>
 					{:else}
@@ -255,38 +217,14 @@
 
 				<div class="p-3" />
 
-				{#if 'Bot' in selectedEntity}
-					<Card>
-						<img slot="image" src={selectedEntity?.Bot?.user?.avatar} alt="" />
-						<svelte:fragment slot="display-name">{selectedEntity?.Bot?.user?.username}</svelte:fragment>
-						<svelte:fragment slot="short">{selectedEntity?.Bot?.short}</svelte:fragment>
-						<svelte:fragment slot="type"><span class="font-semibold">{getType(selectedEntity)}</span></svelte:fragment>
-						<svelte:fragment slot="actionA">
-							<CardLinkButton
-								target="_blank"
-								link={`${$panelState?.coreConstants?.frontend_url}/bots/${selectedEntity?.Bot?.bot_id}`}
-								showArrow={false}>View</CardLinkButton
-							>
-						</svelte:fragment>
-						<svelte:fragment slot="actionB">
-							{#if $page?.params?.targetType == 'Bot'}
-								<CardLinkButton
-									target="_blank"
-									link={`https://discord.com/api/v10/oauth2/authorize?client_id=${selectedEntity?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
-									showArrow={false}>Invite</CardLinkButton
-								>
-							{:else}
-								<CardLinkButton target="_blank" link="" disabled={true} showArrow={false}
-									>-</CardLinkButton
-								>
-							{/if}
-						</svelte:fragment>
-					</Card>
-				{:else}
-					<p class="font-semibold text-xl text-red-500">
-						Unsupported entity found for preview in entity type {$page.params.targetType}
-					</p>
-				{/if}
+				<PartialEntityCard 
+					result={selectedEntity}
+				>
+					<svelte:fragment slot="index">#1</svelte:fragment>
+					<svelte:fragment slot="extra">
+						Selected
+					</svelte:fragment>
+				</PartialEntityCard>
 			{:else if currentStep == 2}
 				<h2 class="text-white font-black text-xl">Ready, set, action!</h2>
 

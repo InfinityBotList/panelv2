@@ -41,6 +41,7 @@
 	};
 
     let showManageOpen: boolean = false
+    let currentlyOpenManageIndex: number;
 </script>
 
 {#await fetchData()}
@@ -69,7 +70,7 @@
 				</tr>
 			</thead>
 			<tbody>
-                {#each $rows as row}
+                {#each $rows as row, i}
 					<tr>
                         {#each data.fields as field}
                             {#if field.renderMethod == "text"}
@@ -123,11 +124,12 @@
                                 class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
                                 on:click={() => {
                                     showManageOpen = true;
+                                    currentlyOpenManageIndex = i
                                 }}
                             >
                                 Manage
                             </button>
-                            {#if showManageOpen}
+                            {#if currentlyOpenManageIndex == i}
                                 <Manage bind:show={showManageOpen} data={{
                                     schema,
                                     manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
