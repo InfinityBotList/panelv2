@@ -8,6 +8,7 @@
 	export let id: string = 'extra-links';
 	export let title: string = "Links"
 	export let label = title;
+	export let initialValues: Link[];
 	export let values: Link[];
 	export let placeholder: string = "Link";
 	export let minlength: number = 5;
@@ -17,13 +18,10 @@
 
 	let internalValues: [string, string][] = []
 
-	onMount(() => {
-		internalValues = values.map(l => [l.name, l.value]);
-		logger.info('ExtraLinks.onMount', values, internalValues)
-	})
-
 	$: {
+		internalValues = initialValues.map(l => [l.name, l.value]);
 		values = internalValues.map(([k, v]) => ({ name: k, value: v })) || [];
+		logger.info('ExtraLinks.onMount', values, internalValues, initialValues)
 	}
 </script>
 

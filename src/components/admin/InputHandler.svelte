@@ -67,6 +67,7 @@
         id={field.id}
         title={field.label}
         label={field.arrayLabel ? field.arrayLabel : field.label}
+        initialValues={data[field.id]}
         bind:values={data[field.id]}
         placeholder={field.helpText}
         minlength={0}
