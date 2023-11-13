@@ -96,13 +96,15 @@
         {#await fetchStateAndSetupEditData()}
             <Loading msg="Loading field list" />
         {:then fields}
-            {#each fields as field}
-                <InputHandler 
-                    {field}
-                    bind:data={editData}
-                    bind:fileData
-                />
-            {/each}
+            {#if Object.keys(editData)?.length}
+                {#each fields as field}
+                    <InputHandler 
+                        {field}
+                        bind:data={editData}
+                        bind:fileData
+                    />
+                {/each}
+            {/if}
 
             {#if data?.schema?.getCaps()?.includes("update")}
                 <ButtonReact
