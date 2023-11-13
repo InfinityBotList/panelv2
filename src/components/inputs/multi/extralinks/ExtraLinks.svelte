@@ -8,7 +8,7 @@
 	export let id: string = 'extra-links';
 	export let title: string = "Links"
 	export let label = title;
-	export let values: Link[] = [];
+	export let values: Link[];
 	export let placeholder: string = "Link";
 	export let minlength: number = 5;
 	export let showErrors: boolean = false;
