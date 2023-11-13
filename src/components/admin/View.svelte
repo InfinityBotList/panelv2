@@ -83,6 +83,7 @@
                                                     {JSON.stringify(cols)}
                                                 {:else if field.type == "ibl:link"}
                                                     {#each castToLinkArray(cols) as link}
+                                                        {JSON.stringify(link)}
                                                         <a href={link?.value} target="_blank">{link.name}</a>
                                                     {/each}
                                                 {:else}
