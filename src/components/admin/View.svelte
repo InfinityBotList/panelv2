@@ -111,11 +111,27 @@
                                 </td>
                             {:else if field.renderMethod == "custom"}
                                 <td>
-                                    {field?.customRenderer ? field?.customRenderer('view', row[field.id]) : row[field.id]}
+                                    {#if field?.customRenderer}
+                                        {#await field?.customRenderer('view', row[field.id])}
+                                            <p class="animate-pulse">Loading {field.id}</p>
+                                        {:then data}
+                                            {data}
+                                        {/await}
+                                    {:else}
+                                        {row[field.id]}
+                                    {/if}
                                 </td>
                             {:else if field.renderMethod == "custom[html]"}
                                 <td>
-                                    {@html field?.customRenderer ? field?.customRenderer('view', row[field.id]) : row[field.id]}
+                                    {#if field?.customRenderer}
+                                        {#await field?.customRenderer('view', row[field.id])}
+                                            <p class="animate-pulse">Loading {field.id}</p>
+                                        {:then data}
+                                            {@html data}
+                                        {/await}
+                                    {:else}
+                                        {@html row[field.id]}
+                                    {/if}
                                 </td>
                             {/if}
                         {/each}
