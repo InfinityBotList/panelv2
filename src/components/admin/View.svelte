@@ -13,6 +13,7 @@
 
     export let schema: Schema<any>;
     let rows: Readable<any[]>;
+    let show = true
     
 	const fetchData = async () => {
         let viewData = await schema?.viewAll()
@@ -139,12 +140,13 @@
                                 class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
                                 on:click={() => {
                                     currentlyOpenManageIndex = i
+                                    show = true
                                 }}
                             >
                                 Manage
                             </button>
                             {#if currentlyOpenManageIndex == i}
-                                <Manage data={{
+                                <Manage bind:show data={{
                                     schema,
                                     manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
                                 }} />
