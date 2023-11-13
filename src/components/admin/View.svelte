@@ -41,7 +41,7 @@
 		};
 	};
 
-    let currentlyOpenManageIndex: number;
+    let currentlyOpenManageKey: string;
 </script>
 
 {#await fetchData()}
@@ -70,7 +70,7 @@
 				</tr>
 			</thead>
 			<tbody>
-                {#each $rows as row, i}
+                {#each $rows as row}
 					<tr>
                         {#each data.fields as field}
                             {#if field.renderMethod == "text"}
@@ -139,21 +139,21 @@
                                 <button
                                 class="inline-block py-4 px-3 text-xl text-themable-400 hover:bg-slate-700"
                                 on:click={() => {
-                                    currentlyOpenManageIndex = i
+                                    currentlyOpenManageKey = row[data.pkey]
                                     show = true
                                 }}
                             >
                                 Manage
                             </button>
-                            {#if currentlyOpenManageIndex == i}
-                                <Manage bind:show data={{
-                                    schema,
-                                    manageData: data.viewData.find(v => v?.[data.pkey] == row?.[data.pkey])
-                                }} />
-                            {/if}
 						</td>
 					</tr>
 				{/each}
+                {#if currentlyOpenManageKey}
+                    <Manage bind:show data={{
+                        schema,
+                        manageData: data.viewData.find(v => v?.[data.pkey] == currentlyOpenManageKey)
+                    }} />
+                {/if}
 			</tbody>
 		</table>
 	</Datatable>
