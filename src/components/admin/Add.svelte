@@ -55,7 +55,8 @@
                     createData[k.id] = []
                     break
                 case "file":
-                fileKeys.push(k.id)
+                    if(!fileKeys?.length) fileKeys = []
+                    fileKeys.push(k.id)
             }
         }
 
