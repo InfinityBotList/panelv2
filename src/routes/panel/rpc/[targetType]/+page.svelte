@@ -36,6 +36,13 @@
 		},
 		{
 			name: 'Confirm',
+			onClick: () => {
+				if(!selectedEntity) {
+					throw new Error('No entity selected');
+				}
+
+				modalVisible = true;
+			}
 		},
 		{
 			name: 'Action',
@@ -43,7 +50,7 @@
 	];
 
 	let currentStep: number = 0;
-	let modalVisible: boolean = true;
+	let modalVisible: boolean = false;
 
 	const fetchRpcMethods = async () => {
 		let actionsRes = await panelQuery({
