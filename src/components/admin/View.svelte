@@ -6,7 +6,7 @@
 	import ListItem from '../ListItem.svelte';
 	import UnorderedList from '../UnorderedList.svelte';
 	import type { Schema } from './types';
-	import { castToArray, castToLinkArray, fetchFields, validateDataWithFields } from './logic';
+	import { castToArray, castToLink, fetchFields, validateDataWithFields } from './logic';
 	import Manage from './Manage.svelte';
 	import OrderedList from '../OrderedList.svelte';
 	import Add from './Add.svelte';
@@ -82,10 +82,7 @@
                                                 {#if field.type == "text[kv]"}
                                                     {JSON.stringify(cols)}
                                                 {:else if field.type == "ibl:link"}
-                                                    {#each castToLinkArray(cols) as link}
-                                                        {JSON.stringify(link)}
-                                                        <a href={link?.value} target="_blank">{link.name}</a>
-                                                    {/each}
+                                                    <a href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
                                                 {:else}
                                                     {cols}
                                                 {/if}
@@ -101,9 +98,7 @@
                                                 {#if field.type == "text[kv]"}
                                                     {JSON.stringify(cols)}
                                                 {:else if field.type == "ibl:link"}
-                                                    {#each castToLinkArray(cols) as link}
-                                                        <a href={link?.value} target="_blank">{link.name}</a>
-                                                    {/each}
+                                                    <a href={castToLink(cols)?.value} target="_blank">{castToLink(cols)?.name}</a>
                                                 {:else}
                                                     {cols}
                                                 {/if}

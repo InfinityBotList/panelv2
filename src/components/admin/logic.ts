@@ -80,6 +80,6 @@ export const castToArray = <T>(v: any): T[] => {
     return cast<any[]>(v)
 }
 
-export const castToLinkArray = (v: any): Link[] => {
-    return cast<Link[]>(v)
+export const castToLink = (v: any): Link => {
+    return cast<Link>(v)
 }
