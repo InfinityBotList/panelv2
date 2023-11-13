@@ -32,7 +32,6 @@
 
     // State setup
     onMount(() => {
-        warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
         pkey = data?.schema?.getPrimaryKey('update')
         data?.schema?.onOpen('update', 'showComponent', editData)
         editData = data?.manageData || {}
@@ -96,15 +95,13 @@
         {#await fetchStateAndSetupEditData()}
             <Loading msg="Loading field list" />
         {:then fields}
-            {#if Object.keys(editData)?.length}
-                {#each fields as field}
-                    <InputHandler 
-                        {field}
-                        bind:data={editData}
-                        bind:fileData
-                    />
-                {/each}
-            {/if}
+            {#each fields as field}
+                <InputHandler 
+                    {field}
+                    bind:data={editData}
+                    bind:fileData
+                />
+            {/each}
 
             {#if data?.schema?.getCaps()?.includes("update")}
                 <ButtonReact
@@ -133,6 +130,7 @@
                 color={Color.Red}
                 states={commonButtonReactStates}
                 onClick={async () => {
+                    warningBoxDelete = data.schema.warningBox('delete', data.manageData, deleteObject)
                     if(!warningBoxDelete) {
                         error('Internal error: no warningBoxDelete found');
                         return false;
