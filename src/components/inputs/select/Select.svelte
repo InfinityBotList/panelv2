@@ -23,7 +23,7 @@ import type { SMOption } from "./select";
 		{id}
 		class={
 			disabled
-				? "w-full mx-auto mt-4 flex bg-black bg-opacity-50 text-white rounded-xl border border-white/10 focus:outline-none py-4 px-6"
+				? "w-full mx-auto mt-4 flex bg-black bg-opacity-50 text-gray-100 rounded-xl border border-white/10 focus:outline-none py-4 px-6"
 				: "w-full mx-auto mt-4 flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-white/10 focus:border-themable-400 focus:outline-none py-4 px-6"
 		}
 		bind:value
