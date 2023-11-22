@@ -121,7 +121,7 @@
             <p class="text-red-500">{err?.toString()}</p>
         {/await}
 
-		<h2 class="text-xl font-semibold">Delete {title(data?.schema?.name)} Entry</h2>
+		<h2 class="mt-4 text-xl font-semibold">Delete {title(data?.schema?.name)} Entry</h2>
 		<GreyText>Note that this is IRREVERSIBLE</GreyText>
 
         {#if data?.schema?.getCaps()?.includes("delete")}

@@ -45,6 +45,12 @@
 			enabled: () => $panelState?.capabilities?.includes("ChangelogManagement") || false
 		},
 		{
+			name: "Manage Blog",
+			description: "Manage the blog posts for the list",
+			link: "/panel/blog",
+			enabled: () => $panelState?.capabilities?.includes("BlogManagement") || false
+		},
+		{
 			name: 'RPC Actions',
 			description: 'Manage entities!',
 			link: '/panel/rpc',

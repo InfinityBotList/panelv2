@@ -12,12 +12,7 @@ Converted to SvelteKit from NextJS for panel use
 	import { error } from '$lib/toast';
 	import ButtonInner from './ButtonInner.svelte';
 	import type { Color } from './colors';
-
-	interface States {
-		loading: string;
-		success: string;
-		error: string;
-	}
+	import type { States } from './states';
 
 	let className: string = '';
 	export { className as class };

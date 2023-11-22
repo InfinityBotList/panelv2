@@ -1,3 +1,5 @@
+import type { Color } from "../button/colors";
+import type { ButtonStatesWithNormal } from "../button/states";
 import type { SMOption } from "../inputs/select/select";
 import type { WarningBox } from "../warningbox/warningBox";
 
@@ -21,7 +23,11 @@ export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "cu
 
 export type Capability = "view" | "create" | "update" | "delete";
 
-export type FieldFetch<T> = (((cap: Capability, reason?: string) => Promise<Field<T> | null>) | Field<T> | null)[]
+// Field fetch single represents a single field fetch
+export type FieldFetchSingle<T> = ((cap: Capability, reason?: string) => Promise<Field<T> | null>) | Field<T> | null
+export type FieldFetch<T> = FieldFetchSingle<T>[];
+
+export type CustomActionFetch<T> = ((cap: Capability) => Promise<CustomAction<T>>)[]
 
 /** 
  * Data for a file upload field
@@ -91,6 +97,45 @@ export interface Field<T> {
      * Custom renderer function. Note that renderMethod must be custom when this is set
      */
     customRenderer?: (cap: Capability, data: T) => Promise<string>
+}
+
+/**
+ * A custom action is an action that can be performed by clicking a button
+ */
+export interface CustomAction<T> {
+    /**
+     * The label of the action
+     */
+    label: string,
+    /**
+     * The help text of the action
+     */
+    helpText: string,
+    /**
+     * The action to call when the button is clicked
+     */
+    action: (cap: Capability, data: T) => Promise<boolean>,
+    /**
+     * A warning box (optional) for the action
+     */
+    warningBox?: (cap: Capability, data: T, func: () => Promise<boolean>) => WarningBox,
+    /**
+     * Button configuration
+     */
+    button: {
+        /**
+         * Button icon
+         */
+        icon: string
+        /** 
+        * Button color
+        */
+        color: Color
+        /**
+         * Button states
+         */
+        states: ButtonStatesWithNormal
+    }
 }
 
 /**
@@ -207,6 +252,10 @@ export interface Schema<T> extends BaseSchema<T> {
      * This function is called when a modal is opened
      */
     onOpen: (cap: Capability, evt: string, data?: T) => any
+    /**
+     * List of custom actions
+     */
+    customActions?: CustomActionFetch<T>
 }
 
 export interface ManageSchema<T> {

@@ -1,15 +1,10 @@
-export interface WarningBoxButtonStates {
-    normal: string;
-    loading: string;
-    success: string;
-    error: string;
-}
+import type { ButtonStatesWithNormal } from "../button/states";
 
 export interface WarningBox {
     header: string;
     text: string;
     nonce?: string;
-    buttonStates: WarningBoxButtonStates;
+    buttonStates: ButtonStatesWithNormal;
     inputtedText?: string;
     onConfirm: () => Promise<boolean>;
 }

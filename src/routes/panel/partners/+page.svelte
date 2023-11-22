@@ -4,7 +4,7 @@
 	import { panelState } from '$lib/panelState';
 	import Loading from '../../../components/Loading.svelte';
 	import type { Partner } from '$lib/generated/arcadia/Partner';
-	import type { BaseSchema, Capability, Entry, FieldFetch, Schema } from '../../../components/admin/types';
+	import type { BaseSchema, Capability, CustomAction, Entry, FieldFetch, Schema } from '../../../components/admin/types';
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 	import type { Partners } from '$lib/generated/arcadia/Partners';
@@ -241,13 +241,8 @@ export interface Partner {
 				fields: this.fields,
 				data: data?.map(d => {
 					return {
-						id: d.id,
-                        name: d.name,
-                        short: d.short,
-                        links: d.links,
-                        type: d.type,
+                        ...d,
                         created_at: new Date(d.created_at),
-                        user_id: d.user_id
 					}
 				})
 			}

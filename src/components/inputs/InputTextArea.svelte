@@ -52,6 +52,7 @@
 		{disabled}
 		aria-disabled={disabled}
 		aria-required={required}
+		rows={10}
 		bind:value
 	/>
 

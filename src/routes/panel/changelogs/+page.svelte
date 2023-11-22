@@ -4,7 +4,7 @@
 	import { panelState } from '$lib/panelState';
 	import Loading from '../../../components/Loading.svelte';
 	import type { ChangelogEntry } from '$lib/generated/arcadia/ChangelogEntry';
-	import type { BaseSchema, Capability, Entry, FieldFetch, Schema } from '../../../components/admin/types';
+	import type { BaseSchema, Capability, CustomAction, Entry, FieldFetch, Schema } from '../../../components/admin/types';
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 
@@ -228,14 +228,7 @@ export interface ChangelogEntry {
 				fields: this.fields,
 				data: data?.map(d => {
 					return {
-						version: d?.version,
-						added: d?.added,
-						updated: d?.updated,
-						removed: d?.removed,
-						github_html: d?.github_html,
-						extra_description: d?.extra_description,
-						prerelease: d?.prerelease,
-						published: d?.published,
+						...d,
 						created_at: new Date(d?.created_at),
 					}
 				})
