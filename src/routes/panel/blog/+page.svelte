@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { panelQuery } from "$lib/fetch";
+	import { fetchClient, panelQuery } from "$lib/fetch";
 	import type { BlogPost } from "$lib/generated/arcadia/BlogPost";
 	import { panelState } from "$lib/panelState";
     import { panelAuthState } from "$lib/panelAuthState";
@@ -9,6 +9,7 @@
 	import View from "../../../components/admin/View.svelte";
 	import Loading from "../../../components/Loading.svelte";
 	import { Color } from "../../../components/button/colors";
+	import type { Query } from "$lib/generated/htmlsanitize/Query";
 
     	/* 
 export interface BlogPost { 
@@ -196,7 +197,13 @@ export interface BlogPost {
                 return {
                     label: "Preview Post",
                     helpText: "See what the post will look like to a user",
-                    action: async (cap, data) => {
+                    action: async (cap, data, div) => {
+                        let content = await this.fetchContentFromHtmlSanitize(data.content)
+                        div.innerHTML = `
+                            <div class="desc">
+                                ${content}
+                            </div>
+                        `
                         return true
                     },
                     button: {
@@ -218,22 +225,23 @@ export interface BlogPost {
 			// Do nothing
 		}
 
-        private htmlSanitizeHash: { [key: string]: string } = {}
-
         private fetchContentFromHtmlSanitize = async (content: string) => {
-            // SHA512 the string
-            let hash = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(content))
-
-            // Convert hash to hex
-            let hashArray = Array.from(new Uint8Array(hash));
-            let hashHex = hashArray
-                .map((b) => b.toString(16).padStart(2, '0'))
-                .join('');
-            
-            let hsData = this.htmlSanitizeHash[hashHex]
-            if (hsData) {
-                return hsData
+            let data: Query = {
+                SanitizeRaw: {
+                    body: content
+                }
             }
+            let res = await fetchClient(`${$panelState?.coreConstants?.htmlsanitize_url}/query`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+
+            if(!res.ok) throw new Error(`Failed to sanitize HTML: ${await res.text()}`)
+
+            return await res.text()
         }
     }
 

@@ -8,12 +8,13 @@
 	import WarningBox from '../warningbox/WarningBox.svelte';
 	import type { ManageSchema } from './types';
 	import { title } from '$lib/strings';
-	import { fetchFields } from './logic';
+	import { fetchCustomActions, fetchFields } from './logic';
 	import Loading from '../Loading.svelte';
 	import OrderedList from '../OrderedList.svelte';
 	import ListItem from '../ListItem.svelte';
 	import InputHandler from './InputHandler.svelte';
-	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
+	import CustomAction from './CustomAction.svelte';
 
 	export let show: boolean = true;
 
@@ -83,6 +84,11 @@
         fileKeys = res.filter(f => f.type == 'file').map(f => f.id)
         return res
     }
+    
+    const setupCustomActions = async () => {
+        let res = await fetchCustomActions('update', data?.schema?.customActions || [])
+        return res
+    }
 </script>
 
 {#if show}
@@ -117,6 +123,22 @@
             {:else}
                 <p class="text-red-500">You do not have permission to edit this entry</p>
             {/if}
+
+            {#await setupCustomActions()}
+                <Icon icon="mdi:loading" class="inline animate-spin text-2xl" />
+                <span class="text-xl">Loading Custom Actions</span>
+            {:then actions}
+                {#each actions as action}
+                    <CustomAction 
+                        data={data?.manageData}
+                        {action}
+                        cap="update"
+                        bind:showContaining={show}
+                    />
+                {/each}
+            {:catch err}
+                <p class="text-red-500">{err?.toString()}</p>
+            {/await}
         {:catch err}
             <p class="text-red-500">{err?.toString()}</p>
         {/await}

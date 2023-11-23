@@ -1,6 +1,6 @@
 import type { Link } from "$lib/generated/arcadia/Link"
 import logger from "$lib/logger"
-import type { Field, FieldFetch, Capability, Schema } from "./types"
+import type { Field, FieldFetch, Capability, Schema, CustomActionFetch, CustomAction } from "./types"
 
 export const fetchFields = async <T> (cap: Capability, ff: FieldFetch<T>, reason?: string) => {
     let fields: Field<T>[] = []
@@ -51,6 +51,31 @@ export const fetchFields = async <T> (cap: Capability, ff: FieldFetch<T>, reason
     }
 
     return fields
+}
+
+export const fetchCustomActions = async <T> (cap: Capability, fca: CustomActionFetch<T>, reason?: string) => {
+    let actions: CustomAction<T>[] = []
+    logger.info("FetchCustomActions", cap, fca)
+    for(let action of fca) {
+        if(!action) {
+            continue
+        }
+
+        if(action instanceof Function) {
+            let f = action as (cap: Capability, reason?: string) => Promise<CustomAction<T> | null>
+            let fCap = await f(cap, reason)
+
+            if(!fCap) {
+                continue
+            }
+ 
+            actions.push(fCap)
+            continue
+        }
+        actions.push(action as CustomAction<T>)
+    }
+
+    return actions
 }
 
 export const validateDataWithFields = <T>(data: any, schema: Schema<T>, fields: Field<T>[]) => {

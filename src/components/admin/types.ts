@@ -27,7 +27,9 @@ export type Capability = "view" | "create" | "update" | "delete";
 export type FieldFetchSingle<T> = ((cap: Capability, reason?: string) => Promise<Field<T> | null>) | Field<T> | null
 export type FieldFetch<T> = FieldFetchSingle<T>[];
 
-export type CustomActionFetch<T> = ((cap: Capability) => Promise<CustomAction<T>>)[]
+// Custom action types
+export type CustomActionFetchSingle<T> =  ((cap: Capability, reason?: string) => Promise<CustomAction<T>>) | CustomAction<T> | null
+export type CustomActionFetch<T> = CustomActionFetchSingle<T>[]
 
 /** 
  * Data for a file upload field
@@ -114,11 +116,11 @@ export interface CustomAction<T> {
     /**
      * The action to call when the button is clicked
      */
-    action: (cap: Capability, data: T) => Promise<boolean>,
+    action: (cap: Capability, data: T, div: HTMLDivElement) => Promise<boolean>,
     /**
      * A warning box (optional) for the action
      */
-    warningBox?: (cap: Capability, data: T, func: () => Promise<boolean>) => WarningBox,
+    warningBox?: (cap: Capability, data: T, div: HTMLDivElement, func: () => Promise<boolean>) => WarningBox,
     /**
      * Button configuration
      */
