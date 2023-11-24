@@ -7,6 +7,7 @@
 	import type { BaseSchema, Capability, CustomAction, Entry, FieldFetch, Schema } from '../../../components/admin/types';
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
+	import { newField } from '../../../components/admin/helpers';
 
 	/* 
 export interface ChangelogEntry { 
@@ -103,27 +104,12 @@ export interface ChangelogEntry {
 				renderMethod: "text",
 			},
 			async (cap: Capability) => {
-				if(cap != "create") {
-					return {
-						id: "published",
-						label: "Published",
-						type: "boolean",
-						helpText: "Is this published?",
-						required: false,
-						disabled: false,
-						renderMethod: "text",
-					}
-				}
-				return null
+				if(cap == "create") return null
+				return newField("published", "Published", "Is this published?", false, false)
 			},
-			{
-				id: "created_at",
-				label: "Created At",
-				type: "text",
-				helpText: "The date the changelog entry was created",
-				required: false,
-				disabled: true,
-				renderMethod: "text",
+			async (cap: Capability) => {
+				if(cap == "create") return null
+				return newField("created_at", "Created At", "The date the changelog entry was created", false, true)
 			}
 		]
 
