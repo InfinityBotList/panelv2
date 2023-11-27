@@ -27,28 +27,35 @@
 			enabled: () => $panelState?.capabilities?.includes('ViewBotQueue') || false
 		},
 		{
-			name: 'Manage CDN',
+			name: 'CDN',
 			description: 'Manage the CDN(s) modifiable by this Arcadia instance',
 			link: '/panel/cdn',
 			enabled: () => $panelState?.capabilities?.includes('CdnManagement') || false
 		},
 		{
-			name: 'Manage Partners',
+			name: 'Partners',
 			description: 'Manage the partners on the list',
 			link: '/panel/partners',
 			enabled: () => $panelState?.capabilities?.includes('PartnerManagement') || false
 		},
 		{
-			name: "Manage Changelogs",
+			name: "Changelogs",
 			description: "Manage the changelogs for the list",
 			link: "/panel/changelogs",
 			enabled: () => $panelState?.capabilities?.includes("ChangelogManagement") || false
 		},
 		{
-			name: "Manage Blog",
+			name: "Blog",
 			description: "Manage the blog posts for the list",
 			link: "/panel/blog",
 			enabled: () => $panelState?.capabilities?.includes("BlogManagement") || false
+		},
+		{
+			name: "Applications",
+			description: "Manage the applications for the list",
+			link: "/panel/apps",
+			enabled: () => false // Does not work yet
+			//enabled: () => $panelState?.capabilities?.includes("ViewApps") || false
 		},
 		{
 			name: 'RPC Actions',

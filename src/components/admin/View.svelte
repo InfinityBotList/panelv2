@@ -112,7 +112,7 @@
                             {:else if field.renderMethod == "custom"}
                                 <td>
                                     {#if field?.customRenderer}
-                                        {#await field?.customRenderer('view', row[field.id])}
+                                        {#await field?.customRenderer('view', row)}
                                             <p class="animate-pulse">Loading {field.id}</p>
                                         {:then data}
                                             {data}
@@ -133,6 +133,8 @@
                                         {@html row[field.id]}
                                     {/if}
                                 </td>
+                            {:else if field.renderMethod != "none"}
+                                <p class="text-red-400">Unsupported render method: {field.renderMethod}</p>
                             {/if}
                         {/each}
                             <td>

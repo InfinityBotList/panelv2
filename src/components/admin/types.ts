@@ -19,7 +19,7 @@ export type FieldType =
  * 
  * Defaults: text as default, unordered-list for array
  */
-export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "custom" | "custom[html]"
+export type FieldRenderMethod = "text" | "unordered-list" | "ordered-list" | "custom" | "custom[html]" | "none"
 
 export type Capability = "view" | "create" | "update" | "delete";
 
