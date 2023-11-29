@@ -12,7 +12,6 @@
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
-	import Modal from '../../components/Modal.svelte';
 	import { panelLoginProtocolVersion } from '$lib/constants';
 
 	// Safari needs this patch here
@@ -30,8 +29,6 @@
 	});
 
 	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
-	let showModal = false;
-	let modalInstanceConfig: InstanceConfig | null = null
 
 	const login = async () => {
 		if (!instanceUrl) {
@@ -62,17 +59,12 @@
 		}
 
 		let instanceConfig: InstanceConfig = await res.json();
-		modalInstanceConfig = instanceConfig;
+		let modalInstanceConfig = instanceConfig;
 
-		if(instanceConfig?.warnings?.length > 0) {
-			showModal = true;
-			return true;
-		} else {
-			return await confirmLogin();
-		}
+		return await confirmLogin(modalInstanceConfig);
 	};
 
-	const confirmLogin = async () => {
+	const confirmLogin = async (modalInstanceConfig: InstanceConfig) => {
 		let res = await panelQuery({
 			GetLoginUrl: {
 				version: panelLoginProtocolVersion,
@@ -170,26 +162,3 @@
 	/>
 </article>
 
-{#if showModal && modalInstanceConfig}
-	<Modal
-		bind:showModal
-	>
-		<h1 slot="header" class="font-semibold text-2xl">Login</h1>
-		<OrderedList>
-			{#each modalInstanceConfig.warnings as warning}
-				<ListItem>{warning}</ListItem>
-			{/each}
-		</OrderedList>
-		<ButtonReact 
-			color={Color.Themable}
-			icon={'mdi:login'}
-			text={'Login'}
-			states={{
-				loading: 'Contacting instance...',
-				success: 'Redirecting you...',
-				error: 'Failed to login'
-			}}
-			onClick={confirmLogin}
-		/>
-	</Modal>
-{/if}

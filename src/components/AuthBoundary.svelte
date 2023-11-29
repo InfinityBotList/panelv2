@@ -9,6 +9,7 @@
 	import Loading from './Loading.svelte';
 	import { panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte';
+	import { panelLoginProtocolVersion } from '$lib/constants';
 
 	let loadingMsg = 'Waiting for monkeys?';
 	let navigating: boolean = false;
@@ -23,6 +24,13 @@
 	type CoreQuery = Record<keyof PanelState, (data: Record<string, any>) => PanelQuery>;
 
 	let coreQueries: CoreQuery = {
+		hello: () => {
+			return {
+				Hello: {
+					version: panelLoginProtocolVersion
+				}
+			}
+		},
 		auth: () => {
 			return {
 				GetIdentity: {

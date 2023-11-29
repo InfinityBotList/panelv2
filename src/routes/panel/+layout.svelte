@@ -54,8 +54,7 @@
 			name: "Applications",
 			description: "Manage the applications for the list",
 			link: "/panel/apps",
-			enabled: () => false // Does not work yet
-			//enabled: () => $panelState?.capabilities?.includes("ViewApps") || false
+			enabled: () => $panelState?.capabilities?.includes("ViewApps") || false
 		},
 		{
 			name: 'RPC Actions',
@@ -115,6 +114,17 @@
 
 		<PaneContent>
 			<div class="block mt-14">
+				<p>
+					{$panelState?.hello?.description}
+				</p>
+				{#if $panelState?.hello?.warnings}
+					<div class="text-yellow-500 rounded-lg">
+						{#each $panelState.hello.warnings as warning}
+							<p>{warning}</p>
+						{/each}
+					</div>
+				{/if}
+				<hr class="my-4" />
 				<slot />
 			</div>
 		</PaneContent>

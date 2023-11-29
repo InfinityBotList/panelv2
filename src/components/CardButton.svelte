@@ -36,7 +36,7 @@
 		aria-disabled={true}
 	>
 		{#if icon}
-			<Icon inline={true} {icon} class="text-white mr-1" />
+			<Icon inline={true} {icon} class="text-white mr-1 inline-block" />
 		{/if}
 		<slot />
 	</button>
@@ -45,7 +45,7 @@
 {#if link}
 	<a href={link} class={className}>
 		{#if icon}
-			<Icon inline={true} {icon} class="text-white mr-1" />
+			<Icon inline={true} {icon} class="text-white mr-1 inline-block" />
 		{/if}
 		<slot />
 	</a>
@@ -58,7 +58,7 @@
 		class={className}
 	>
 		{#if icon}
-			<Icon inline={true} {icon} class="text-white mr-1" />
+			<Icon inline={true} {icon} class="text-white mr-1 inline-block" />
 		{/if}
 		<slot />
 	</button>

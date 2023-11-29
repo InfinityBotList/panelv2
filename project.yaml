@@ -2,5 +2,4 @@ typegen:
   path: "src/lib/generated"
   projects:
     - arcadia
-    - popplio
     - htmlsanitize

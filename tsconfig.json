@@ -10,8 +10,6 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"preserveValueImports": false,
-		"importsNotUsedAsValues": "preserve"
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//
