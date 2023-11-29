@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { AppResponse } from "$lib/comp_types/apps";
-	import { panelQuery } from "$lib/fetch";
+	import { fetchClient, panelQuery } from "$lib/fetch";
+	import type { Query } from "$lib/generated/htmlsanitize/Query";
 	import { panelAuthState } from "$lib/panelAuthState";
+	import { panelState } from "$lib/panelState";
 	import { title } from "$lib/strings";
 	import { error, success } from "$lib/toast";
 	import Card from "../../../components/Card.svelte";
@@ -16,6 +18,8 @@
     export let app: AppResponse
     export let index: number;
 
+    let showHtmlForQuestions: { [key: string]: string } = {};
+    let htmlButtonText: { [key: string]: string } = {}
     let showActionsModal: boolean = false;
     let actionApproveDenyApp: string = "";
     let actionApproveDenyFeedback: string = "";
@@ -47,6 +51,48 @@
         success("Application approved!");
         return true
     }
+
+    const showAsHtml = async (id: string, answer: string) => {
+        if(showHtmlForQuestions[id]) {
+            delete showHtmlForQuestions[id];
+            delete htmlButtonText[id];
+            showHtmlForQuestions = showHtmlForQuestions
+            htmlButtonText = htmlButtonText
+            return true;
+        }
+
+        htmlButtonText[id] = "Sanitizing...";
+
+        let query: Query = {
+            SanitizeRaw: {
+                body: answer
+            }
+        }
+
+        let res = await fetchClient(`${$panelState?.coreConstants?.htmlsanitize_url}/query`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(query)
+        });
+
+        if(!res.ok) {
+            let err = await res.json();
+
+            htmlButtonText[id] = "Failed to sanitize: " + (err?.message?.toString() || err || "Unknown error") + ". Click to try again";
+
+            return false;
+        }
+
+        let sanitized = await res.text();
+        
+        showHtmlForQuestions[id] = sanitized;
+
+        htmlButtonText[id] = "Hide HTML";
+
+        return true;
+    }
 </script>
 
 <Card>
@@ -60,7 +106,24 @@
             <div class="mb-3">
                 <p class="font-semibold"><em>Question {i+1}</em></p>
                 <p><strong>{question?.question}</strong></p>
-                <p>{app?.answers[question?.id]}</p>
+                {#if question?.id in showHtmlForQuestions}
+                    <div class="desc prose text-white">
+                        {@html showHtmlForQuestions[question?.id]}
+                    </div>
+                {:else}
+                    <p class="desc">{app?.answers[question?.id]}</p>
+                {/if}
+
+                <button
+                    class="text-themable-400 hover:text-themable-500"
+                    on:click={(e) => {
+                        e.preventDefault();
+                        showAsHtml(question?.id, app?.answers[question?.id])
+                    }}
+                >
+                    {htmlButtonText[question.id] || "Show as HTML"}
+                </button>
+
                 <details>
                     <summary class="hover:cursor-pointer">Question Data</summary>
                     <ObjectRender object={question} />

@@ -17,7 +17,7 @@ const config = {
 	mode: 'jit',
 	important: true,
 	content: ['./src/**/*.{html,js,svelte,ts}'],
-	darkMode: 'media',
+	darkMode: 'none',
 	theme: {
 		extend: {
 			hueRotate: {
@@ -57,7 +57,9 @@ const config = {
 	variants: {
 		extend: {}
 	},
-	plugins: []
+	plugins: [
+		require('@tailwindcss/typography'),
+	]
 };
 
 module.exports = config;
