@@ -95,7 +95,7 @@
 			<span class="font-semibold">Permissions:</span>
 			<UnorderedList>
 				{#each ($panelState?.userPerms?.resolved_perms || []) as perm}
-					<ListItem className="{perm.startsWith('~') === true ? 'line-through text-red-600' : ''}">{perm}</ListItem>
+					<ListItem className="{perm.startsWith('~') === true ? 'line-through text-red-600' : ''}{perm.contains("*") ? 'font-bold text-green-600': ''}">{perm}</ListItem>
 				{/each}
 			</UnorderedList>
 		</InfoPane>
