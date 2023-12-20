@@ -95,13 +95,13 @@
 			<span class="font-semibold">Permissions:</span>
 			<UnorderedList>
 				{#each ($panelState?.userPerms?.resolved_perms || []) as perm}
-                                    {#if perm.startsWith("~")}
-                                       <ListItem className="text-red-600 line-through">{perm}</ListItem>
-                                    {:else if perm.endsWith(".*")}
-                                       <ListItem className="text-green-600 font-bold">{perm}</ListItem>
-                                    {:else}
-                                       <ListItem>{perm}</ListItem>
-                                    {/if}
+					{#if perm.startsWith("~")}
+						<ListItem className="text-red-600 line-through">{perm}</ListItem>
+					{:else if perm.endsWith(".*")}
+						<ListItem className="text-green-600 font-bold">{perm}</ListItem>
+					{:else}
+						<ListItem>{perm}</ListItem>
+					{/if}
 				{/each}
 			</UnorderedList>
 		</InfoPane>
