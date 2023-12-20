@@ -53,6 +53,18 @@
 
 		if (!res.ok) {
 			let err = await res.text();
+			if(err == "sessionAlreadyActive") {
+				localStorage.setItem(
+					'panelStateData',
+					JSON.stringify({
+						...$panelAuthState,
+						sessionState: 'active'
+					})
+				);
+
+				goto(redirect());
+				return;
+			}
 			throw new Error(err);
 		}
 
