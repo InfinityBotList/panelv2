@@ -10,6 +10,7 @@
 	import Loading from "../../../components/Loading.svelte";
 	import { Color } from "../../../components/button/colors";
 	import type { Query } from "$lib/generated/htmlsanitize/Query";
+	import { build, hasPerm } from "$lib/perms";
 
     	/* 
 export interface BlogPost { 
@@ -66,7 +67,8 @@ export interface BlogPost {
 		strictSchemaValidationIgnore: string[] = [];
 
 		getCaps(): Capability[] {
-			if($panelState?.capabilities?.includes("BlogManagement")) {
+            // TODO: Make this more granular
+			if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "update"))) {
 				return ["view", "create", "update", "delete"]
 			}
 

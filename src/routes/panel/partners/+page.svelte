@@ -11,6 +11,7 @@
 	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
 	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
 	import { convertImage, renderPreview, uploadFileChunks } from '$lib/fileutils';
+	import { build, hasPerm } from '$lib/perms';
 
 	/* 
 export interface Partner { 
@@ -151,12 +152,19 @@ export interface Partner {
         strictSchemaValidationIgnore: string[] = ["avatar"];
 
 		getCaps(): Capability[] {
-			if($panelState?.capabilities?.includes("PartnerManagement")) {
-				return ["view", "create", "update", "delete"]
-			}
+            let perms: Capability[] = ["view"] // All staff can view partners
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "create"))) {
+                perms.push("create")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "update"))) {
+                perms.push("update")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "delete"))) {
+                perms.push("delete")
+            }
 
-			throw new Error("User does not have permission to view partners")
-		}
+            return perms
+        }
 
 		getPrimaryKey(cap: Capability) {
 			return "id"

@@ -8,6 +8,7 @@
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 	import { newField } from '../../../components/admin/helpers';
+	import { build, hasPerm } from '$lib/perms';
 
 	/* 
 export interface ChangelogEntry { 
@@ -117,11 +118,18 @@ export interface ChangelogEntry {
 		strictSchemaValidationIgnore: string[] = [];
 
 		getCaps(): Capability[] {
-			if($panelState?.capabilities?.includes("ChangelogManagement")) {
-				return ["view", "create", "update", "delete"]
-			}
+			let perms: Capability[] = ["view"] // All staff can view changelog entries
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "create"))) {
+                perms.push("create")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "update"))) {
+                perms.push("update")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "delete"))) {
+                perms.push("delete")
+            }
 
-			throw new Error("User does not have permission to view changelogs")
+			return perms
 		}
 
 		getPrimaryKey(cap: Capability) {

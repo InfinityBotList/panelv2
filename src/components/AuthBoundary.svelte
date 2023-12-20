@@ -9,7 +9,7 @@
 	import Loading from './Loading.svelte';
 	import { panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte';
-	import { panelLoginProtocolVersion } from '$lib/constants';
+	import { panelHelloProtocolVersion } from '$lib/constants';
 
 	let loadingMsg = 'Waiting for monkeys?';
 	let navigating: boolean = false;
@@ -27,7 +27,7 @@
 		hello: () => {
 			return {
 				Hello: {
-					version: panelLoginProtocolVersion
+					version: panelHelloProtocolVersion
 				}
 			}
 		},
@@ -51,13 +51,6 @@
 			return {
 				GetUserPerms: {
 					user_id: authData?.user_id || ''
-				}
-			};
-		},
-		capabilities: () => {
-			return {
-				GetCapabilities: {
-					login_token: $panelAuthState?.loginToken || ''
 				}
 			};
 		},

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import CapabilityChooser from './CapabilityChooser.svelte';
 	import MfaReset from './MfaReset.svelte';
 </script>
 
@@ -7,4 +6,3 @@
 
 <MfaReset />
 <div class="mt-9" />
-<CapabilityChooser />

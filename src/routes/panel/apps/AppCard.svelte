@@ -4,6 +4,7 @@
 	import type { Query } from "$lib/generated/htmlsanitize/Query";
 	import { panelAuthState } from "$lib/panelAuthState";
 	import { panelState } from "$lib/panelState";
+	import { build, hasPerm } from "$lib/perms";
 	import { title } from "$lib/strings";
 	import { error, success } from "$lib/toast";
 	import Card from "../../../components/Card.svelte";
@@ -136,7 +137,7 @@
         {title(app?.position)} [{title(app?.state)}]
     </svelte:fragment>
     <svelte:fragment slot="actionA">
-        {#if app?.state == "pending"}
+        {#if app?.state == "pending" && hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "approve_deny"))}
             <CardButton icon="mdi:edit" onClick={() => showActionsModal = true}>
                 Approve/Deny
             </CardButton>
@@ -179,19 +180,21 @@
                 }
             ]}
         />
-
-        <ButtonReact 
-            color={Color.Themable}
-            text={actionApproveDenyApp == "approve" ? "Approve" : "Deny"}
-            icon="mdi:check"
-            states={
-                {
-                    loading: actionApproveDenyApp == "approve" ? "Approving..." : "Denying...",
-                    success: actionApproveDenyApp == "approve" ? "Approved!" : "Denied!",
-                    error: "Failed to approve/deny"
+        
+        {#if hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "approve_deny"))}
+            <ButtonReact 
+                color={Color.Themable}
+                text={actionApproveDenyApp == "approve" ? "Approve" : "Deny"}
+                icon="mdi:check"
+                states={
+                    {
+                        loading: actionApproveDenyApp == "approve" ? "Approving..." : "Denying...",
+                        success: actionApproveDenyApp == "approve" ? "Approved!" : "Denied!",
+                        error: "Failed to approve/deny"
+                    }
                 }
-            }
-            onClick={approveDenyAction}
-        />
+                onClick={approveDenyAction}
+            />
+        {/if}
     </Modal>
 {/if}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logger from '$lib/logger';
 	import { panelState } from '$lib/panelState';
+	import { build, hasPerm } from '$lib/perms';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
 	import UnorderedList from '../../components/UnorderedList.svelte';
@@ -24,43 +25,43 @@
 			name: 'Bot Queue',
 			description: 'View the bot queue',
 			link: '/panel/bots/queue',
-			enabled: () => $panelState?.capabilities?.includes('ViewBotQueue') || false
+			enabled: () => true, // This is always available
 		},
 		{
 			name: 'CDN',
 			description: 'Manage the CDN(s) modifiable by this Arcadia instance',
 			link: '/panel/cdn',
-			enabled: () => $panelState?.capabilities?.includes('CdnManagement') || false
+			enabled: () => hasPerm($panelState?.userPerms?.resolved_perms || [], build("cdn", "list_scopes"))
 		},
 		{
 			name: 'Partners',
-			description: 'Manage the partners on the list',
+			description: 'View and/or manage the partners on the list',
 			link: '/panel/partners',
-			enabled: () => $panelState?.capabilities?.includes('PartnerManagement') || false
+			enabled: () => true // All staff can view the partner list, other permissions are handled by admin panel code
 		},
 		{
 			name: "Changelogs",
-			description: "Manage the changelogs for the list",
+			description: "View and/or manage the changelogs for the list",
 			link: "/panel/changelogs",
-			enabled: () => $panelState?.capabilities?.includes("ChangelogManagement") || false
+			enabled: () => true // All staff can view the changelog entry list, other permissions are handled by admin panel code
 		},
 		{
 			name: "Blog",
 			description: "Manage the blog posts for the list",
 			link: "/panel/blog",
-			enabled: () => $panelState?.capabilities?.includes("BlogManagement") || false
+			enabled: () => true // All staff can view the blog post list, other permissions are handled by admin panel code
 		},
 		{
 			name: "Applications",
 			description: "Manage the applications for the list",
 			link: "/panel/apps",
-			enabled: () => $panelState?.capabilities?.includes("ViewApps") || false
+			enabled: () => hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "view"))
 		},
 		{
 			name: 'RPC Actions',
 			description: 'Manage entities!',
 			link: '/panel/rpc',
-			enabled: () => $panelState?.capabilities?.includes('Rpc') || false,
+			enabled: () => true,
 			options: () => ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
 				return {
 					name: type,
@@ -76,19 +77,6 @@
 			enabled: () => true
 		}
 	];
-
-	let perms: String[] = [];
-
-	$: {
-		perms = [];
-
-		if ($panelState?.userPerms?.owner) perms.push('Owner');
-		if ($panelState?.userPerms?.hadmin) perms.push('Head Staff Manager');
-		if ($panelState?.userPerms?.admin) perms.push('Staff Manager');
-		if ($panelState?.userPerms?.iblhdev) perms.push('Head Developer');
-		if ($panelState?.userPerms?.ibldev) perms.push('Developer');
-		if ($panelState?.userPerms?.staff) perms.push('Staff');
-	}
 </script>
 
 <AuthBoundary>
@@ -106,7 +94,7 @@
 
 			<span class="font-semibold">Permissions:</span>
 			<UnorderedList>
-				{#each perms as perm}
+				{#each ($panelState?.userPerms?.resolved_perms || []) as perm}
 					<ListItem>{perm}</ListItem>
 				{/each}
 			</UnorderedList>

@@ -1,1 +1,2 @@
-export const panelLoginProtocolVersion = 2
+export const panelLoginProtocolVersion = 3
+export const panelHelloProtocolVersion = 2
