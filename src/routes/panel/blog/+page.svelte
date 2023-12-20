@@ -67,12 +67,18 @@ export interface BlogPost {
 		strictSchemaValidationIgnore: string[] = [];
 
 		getCaps(): Capability[] {
-            // TODO: Make this more granular
-			if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "update"))) {
-				return ["view", "create", "update", "delete"]
-			}
+            let perms: Capability[] = ["view"] // All staff can view partners
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "create_entry"))) {
+                perms.push("create")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "update_entry"))) {
+                perms.push("update")
+            }
+            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "delete_entry"))) {
+                perms.push("delete")
+            }
 
-			throw new Error("User does not have permission to manage blog posts!")
+            return perms
 		}
 
 		getPrimaryKey(cap: Capability) {
