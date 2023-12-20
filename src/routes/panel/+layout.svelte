@@ -96,7 +96,7 @@
 			<UnorderedList>
 				{#each ($panelState?.userPerms?.resolved_perms || []) as perm}
                                     {#if perm.startsWith("~")}
-                                       <ListItem className="text-red-600 line-through'>{perm}</ListItem>
+                                       <ListItem className="text-red-600 line-through">{perm}</ListItem>
                                     {:else if perm.contains("*")}
                                        <ListItem className="text-green-600 font-bold">{perm}</ListItem>
                                     {:else}
