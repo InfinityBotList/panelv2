@@ -34,7 +34,7 @@ import type { SMOption } from "./select";
 	>
 		<option value="">{defaultLabel}</option>
 		{#each choices as choice}
-			<option id={choice.id} value={choice.id}>{choice.label}</option>
+			<option id={choice.id} value={choice.value}>{choice.label}</option>
 		{/each}
 	</select>
 </div>

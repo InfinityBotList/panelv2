@@ -75,7 +75,19 @@
 			description: 'Customize your experience!',
 			link: '/panel/settings',
 			enabled: () => true
-		}
+		},
+		{
+			name: "Staff Management",
+			description: "View and manage staff positions and permissions",
+			link: "/panel/staff",
+			enabled: () => true
+		},
+		{
+			name: 'Logout',
+			description: 'Logout from the panel',
+			link: '/panel/logout',
+			enabled: () => true
+		},
 	];
 </script>
 
