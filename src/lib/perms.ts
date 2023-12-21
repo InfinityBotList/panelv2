@@ -36,8 +36,7 @@ pub fn has_perm(perms: &Vec<String>, perm: &str) -> bool {
         }
 
         if (user_perm_namespace == perm_namespace
-            || user_perm_namespace == "global"
-            || perm_namespace == "global")
+            || user_perm_namespace == "global")
             && (user_perm_name == "*" || user_perm_name == perm_name)
         {
             // We have to check for all negator
@@ -101,7 +100,7 @@ export const hasPerm = (perms: string[], perm: string): boolean => {
             user_perm_namespace = user_perm_namespace.substring(1);
         }
 
-        if((user_perm_namespace == perm_namespace || user_perm_namespace == "global" || perm_namespace == "global") && (user_perm_name == "*" || user_perm_name == perm_name)) {
+        if((user_perm_namespace == perm_namespace || user_perm_namespace == "global") && (user_perm_name == "*" || user_perm_name == perm_name)) {
             // We have to check for all negator
             has_perm = user_perm_split;
 
