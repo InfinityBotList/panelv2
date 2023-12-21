@@ -16,8 +16,10 @@
     Staff Management
 </h1>
 
-{#each quickActions as action, index}
-    {#if action.enabled()}
-        <QuickMenuOption {index} {action} actionsLength={quickActions.length} />
-    {/if}
-{/each}
+<div class="bg-gray-500 bg-opacity-10 border border-themable-700/50 rounded-lg mt-3 md:p-4">
+    {#each quickActions as action, index}
+        {#if action.enabled()}
+            <QuickMenuOption {index} {action} actionsLength={quickActions.length} />
+        {/if}
+    {/each}
+</div>
