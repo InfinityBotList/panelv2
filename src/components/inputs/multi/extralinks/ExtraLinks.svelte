@@ -15,7 +15,7 @@
 	export let required: boolean = true;
 	export let disabled: boolean = false;
 
-	let internalValues: [string, string][] = values.map(({ name, value }) => [name, value]);
+	let internalValues: [string, string][] = values?.map(({ name, value }) => [name, value]) || [];
 
 	$: {
 		values = internalValues.map(([k, v]) => ({ name: k, value: v }));
