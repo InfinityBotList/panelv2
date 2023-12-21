@@ -102,6 +102,9 @@
 
 			if (!helloRes.ok) {
 				let err = await helloRes.text();
+				if($panelAuthState) {
+					$panelAuthState.authErr = "hello_failed"
+				}
 				throw new Error(err?.toString() || 'Unknown error');
 			}
 
@@ -118,6 +121,9 @@
 	<Loading msg={loadingMsg} />
 {:then res}
 	{#if res}
+		{#if $panelAuthState?.authErr}
+			<p class="text-xl text-red-400">Authentication failed: {$panelAuthState?.authErr}</p>
+		{/if}
 		<slot />
 	{:else}
 		<Loading msg={'Just a moment...'} />
