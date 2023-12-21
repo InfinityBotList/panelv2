@@ -44,14 +44,14 @@
         <svelte:fragment slot="actionA">
             <CardLinkButton
                 target="_blank"
-                link={`${$panelState?.coreConstants?.frontend_url}/bots/${result?.Bot?.bot_id}`}
+                link={`${$panelState?.core_constants?.frontend_url}/bots/${result?.Bot?.bot_id}`}
                 showArrow={false}>View</CardLinkButton
             >
         </svelte:fragment>
         <svelte:fragment slot="actionB">
             <CardLinkButton
                 target="_blank"
-                link={`https://discord.com/api/v10/oauth2/authorize?client_id=${result?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.coreConstants?.servers?.testing}`}
+                link={`https://discord.com/api/v10/oauth2/authorize?client_id=${result?.Bot?.client_id}&permissions=0&scope=bot%20applications.commands&guild_id=${$panelState?.core_constants?.servers?.testing}`}
                 showArrow={false}>Invite</CardLinkButton
             >
         </svelte:fragment>
@@ -71,14 +71,14 @@
         <svelte:fragment slot="actionA">
             <CardLinkButton
                 target="_blank"
-                link={`${$panelState?.coreConstants?.frontend_url}/servers/${result?.Server?.server_id}`}
+                link={`${$panelState?.core_constants?.frontend_url}/servers/${result?.Server?.server_id}`}
                 showArrow={false}>View</CardLinkButton
             >
         </svelte:fragment>
         <svelte:fragment slot="actionB">
             <CardLinkButton
                 target="_blank"
-                link={`${$panelState?.coreConstants?.frontend_url}/servers/${result?.Server?.server_id}/invite`}
+                link={`${$panelState?.core_constants?.frontend_url}/servers/${result?.Server?.server_id}/invite`}
                 showArrow={false}>Invite</CardLinkButton
             >
         </svelte:fragment>

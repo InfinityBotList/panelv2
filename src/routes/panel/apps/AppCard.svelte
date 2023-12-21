@@ -70,7 +70,7 @@
             }
         }
 
-        let res = await fetchClient(`${$panelState?.coreConstants?.htmlsanitize_url}/query`, {
+        let res = await fetchClient(`${$panelState?.core_constants?.htmlsanitize_url}/query`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -137,7 +137,7 @@
         {title(app?.position)} [{title(app?.state)}]
     </svelte:fragment>
     <svelte:fragment slot="actionA">
-        {#if app?.state == "pending" && hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "approve_deny"))}
+        {#if app?.state == "pending" && hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "approve_deny"))}
             <CardButton icon="mdi:edit" onClick={() => showActionsModal = true}>
                 Approve/Deny
             </CardButton>
@@ -181,7 +181,7 @@
             ]}
         />
         
-        {#if hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "approve_deny"))}
+        {#if hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "approve_deny"))}
             <ButtonReact 
                 color={Color.Themable}
                 text={actionApproveDenyApp == "approve" ? "Approve" : "Deny"}

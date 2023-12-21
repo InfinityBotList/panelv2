@@ -81,9 +81,9 @@ export interface Partner {
                 customRenderer: async (cap: Capability, data: any) => {
                     switch (cap) {
                         case "view":
-                            return `<img style="border-radius: 50%;" width="50px" src="${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp" />`
+                            return `<img style="border-radius: 50%;" width="50px" src="${$panelState?.core_constants?.cdn_url}/avatars/partners/${data.id}.webp" />`
                         default:
-                            return `${$panelState?.coreConstants?.cdn_url}/avatars/partners/${data.id}.webp`
+                            return `${$panelState?.core_constants?.cdn_url}/avatars/partners/${data.id}.webp`
                     }
                 }
             },
@@ -153,13 +153,13 @@ export interface Partner {
 
 		getCaps(): Capability[] {
             let perms: Capability[] = ["view"] // All staff can view partners
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "create"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("partners", "create"))) {
                 perms.push("create")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "update"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("partners", "update"))) {
                 perms.push("update")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("partners", "delete"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("partners", "delete"))) {
                 perms.push("delete")
             }
 
@@ -333,19 +333,6 @@ export interface Partner {
                     throw new Error(`Link value must start with https://: ${link.name} ${link.value}`);
                 }
 		    }
-
-            entry?.addStatus("Checking user ID...");
-
-            let userRes = await panelQuery({
-                GetUserPerms: {
-                    user_id: entry.data.user_id
-                }
-            });
-
-            if(!userRes.ok) {
-                let err = await userRes.text();
-                throw new Error(`Failed to check user ID: ${err}`);
-            }
 
             if (entry?.files?.["avatar"]) {
                 entry?.addStatus("Checking image...");

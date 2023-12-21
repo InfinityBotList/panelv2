@@ -7,12 +7,12 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { onMount } from 'svelte';
 	import { goto as gotoOnce } from '$app/navigation';
-	import type { InstanceConfig } from '$lib/generated/arcadia/InstanceConfig';
 	import { panelQuery } from '$lib/fetch';
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
-	import { panelLoginProtocolVersion } from '$lib/constants';
+	import { panelStartAuthProtocolVersion, panelStartAuthRequestScope, panelStartAuthResponseScope } from '$lib/constants';
+	import type { StartAuth } from '$lib/generated/arcadia/StartAuth';
 
 	// Safari needs this patch here
 	let navigating: boolean = false;
@@ -48,36 +48,30 @@
 		};
 
 		let res = await panelQuery({
-			Hello: {
-				version: panelLoginProtocolVersion
-			}
-		});
-
-		if (!res.ok) {
-			error('Failed to connect to instance');
-			return false;
-		}
-
-		let instanceConfig: InstanceConfig = await res.json();
-		let modalInstanceConfig = instanceConfig;
-
-		return await confirmLogin(modalInstanceConfig);
-	};
-
-	const confirmLogin = async (modalInstanceConfig: InstanceConfig) => {
-		let res = await panelQuery({
-			GetLoginUrl: {
-				version: panelLoginProtocolVersion,
+			StartAuth: {
+				version: panelStartAuthProtocolVersion,
+				scope: panelStartAuthRequestScope,
 				redirect_url: `${window.location.origin}/login/authorize`
 			}
 		});
 
 		if (!res.ok) {
-			error('Failed to get login URL');
+			let err = await res.text();
+			error(err?.toString() || 'Unknown error');
 			return false;
 		}
 
-		let loginUrl = await res.text();
+		let loginData: StartAuth = await res.json();
+
+		if(loginData?.scope != panelStartAuthRequestScope) {
+			error('Invalid request scope. Are you using a compatible instance URL?');
+			return false;
+		}
+
+		if(loginData?.response_scope != panelStartAuthResponseScope) {
+			error('Invalid response scope. Are you using a compatible instance URL?');
+			return false;
+		}
 
 		let redirectSearchParams = new URLSearchParams(window.location.search);
 		let redirect = redirectSearchParams?.get('redirect');
@@ -90,7 +84,7 @@
 			redirectUrl: redirect
 		};
 
-		loginUrl = `${loginUrl}&state=${utf8ToHex(JSON.stringify(loginState))}`;
+		let loginUrl = `${loginData?.login_url}&state=${utf8ToHex(JSON.stringify(loginState))}`;
 
 		// Open login URL in new tab using window.open
 		try {

@@ -68,13 +68,13 @@ export interface BlogPost {
 
 		getCaps(): Capability[] {
             let perms: Capability[] = ["view"] // All staff can view partners
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "create_entry"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("blog", "create_entry"))) {
                 perms.push("create")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "update_entry"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("blog", "update_entry"))) {
                 perms.push("update")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("blog", "delete_entry"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("blog", "delete_entry"))) {
                 perms.push("delete")
             }
 
@@ -239,7 +239,7 @@ export interface BlogPost {
                     body: content
                 }
             }
-            let res = await fetchClient(`${$panelState?.coreConstants?.htmlsanitize_url}/query`, {
+            let res = await fetchClient(`${$panelState?.core_constants?.htmlsanitize_url}/query`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

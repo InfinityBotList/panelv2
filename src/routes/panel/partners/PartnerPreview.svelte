@@ -50,7 +50,7 @@
 			<Card>
 				<img
 					slot="image"
-					src={`${$panelState?.coreConstants?.cdn_url}/avatars/partners/${partner?.id}.webp`}
+					src={`${$panelState?.core_constants?.cdn_url}/avatars/partners/${partner?.id}.webp`}
 					alt=""
 				/>
 				<svelte:fragment slot="display-name">{partner?.name}</svelte:fragment>
@@ -60,7 +60,7 @@
 				<svelte:fragment slot="actionA">
 					<CardLinkButton
 						target="_blank"
-						link={`${$panelState?.coreConstants?.frontend_url}/about/partners`}
+						link={`${$panelState?.core_constants?.frontend_url}/about/partners`}
 						showArrow={false}
 						double={false}
 					>

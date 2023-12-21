@@ -1,7 +1,7 @@
 <script lang="ts">
 	import logger from '$lib/logger';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
-	import { panelState, type PanelState } from '$lib/panelState';
+	import { panelState } from '$lib/panelState';
 	import { goto as gotoOnce } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PanelQuery } from '$lib/generated/arcadia/PanelQuery';
@@ -10,6 +10,7 @@
 	import { panelQuery } from '$lib/fetch';
 	import ErrorComponent from './Error.svelte';
 	import { panelHelloProtocolVersion } from '$lib/constants';
+	import type { Hello } from '$lib/generated/arcadia/Hello';
 
 	let loadingMsg = 'Waiting for monkeys?';
 	let navigating: boolean = false;
@@ -20,55 +21,6 @@
 		navigating = true;
 		return await gotoOnce(url);
 	}
-
-	type CoreQuery = Record<keyof PanelState, (data: Record<string, any>) => PanelQuery>;
-
-	let coreQueries: CoreQuery = {
-		hello: () => {
-			return {
-				Hello: {
-					version: panelHelloProtocolVersion
-				}
-			}
-		},
-		auth: () => {
-			return {
-				GetIdentity: {
-					login_token: $panelAuthState?.loginToken || ''
-				}
-			};
-		},
-		userDetails: (data: Record<string, any>) => {
-			let authData: AuthData = data?.auth;
-			return {
-				GetUserDetails: {
-					user_id: authData?.user_id || ''
-				}
-			};
-		},
-		userPerms: (data: Record<string, any>) => {
-			let authData: AuthData = data?.auth;
-			return {
-				GetUserPerms: {
-					user_id: authData?.user_id || ''
-				}
-			};
-		},
-		coreConstants: () => {
-			return {
-				GetCoreConstants: {
-					login_token: $panelAuthState?.loginToken || ''
-				}
-			};
-		},
-		rpcSupportedTargetTypes: () => {
-			return {
-				GetRpcTargetTypes: {
-					login_token: $panelAuthState?.loginToken || ''
-				}
-			};
-		}
-	};
 
 	const setupState = async () => {
 		if ($panelState) {
@@ -116,44 +68,46 @@
 
 		loadingMsg = 'Validating your existence...';
 
-		let data: Record<string, any> = {};
-
-		for (const key in coreQueries) {
-			logger.info('Panel', `CoreQuery: fetch ${key}`);
-			let query = coreQueries[key as keyof PanelState](data);
-
-			let resp = await panelQuery(query);
-
-			if (!resp.ok) {
-				loadingMsg = await resp.text();
-				throw new Error(loadingMsg);
+		let helloRes = await panelQuery({
+			Hello: {
+				version: panelHelloProtocolVersion,
+				login_token: $panelAuthState?.loginToken || ''
 			}
+		});
 
-			let json = await resp.json();
-			data[key] = json;
+		if (!helloRes.ok) {
+			let err = await helloRes.text();
+			throw new Error(err?.toString() || 'Unknown error');
 		}
 
-		$panelState = data as PanelState;
+		let helloData: Hello = await helloRes.json();
 
-		setInterval(checkAuth, 1000 * 60 * 1);
+		$panelState = helloData;
+
+		setInterval(updateAuthState, 1000 * 30);
 
 		return true;
 	};
 
-	const checkAuth = async () => {
+	const updateAuthState = async () => {
 		logger.info('Panel.CheckAuth', 'Checking auth...');
 
 		try {
-			let resp = await panelQuery({
-				GetIdentity: {
+			let helloRes = await panelQuery({
+				Hello: {
+					version: panelHelloProtocolVersion,
 					login_token: $panelAuthState?.loginToken || ''
 				}
 			});
 
-			if (!resp.ok) {
-				let err = await resp.text();
-				logger.error('Panel.CheckAuth', err);
+			if (!helloRes.ok) {
+				let err = await helloRes.text();
+				throw new Error(err?.toString() || 'Unknown error');
 			}
+
+			let helloData: Hello = await helloRes.json();
+
+			$panelState = helloData;
 		} catch (err) {
 			logger.error('Panel.CheckAuth', err);
 		}

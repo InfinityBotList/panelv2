@@ -72,7 +72,7 @@
 	const searchEntity = async () => {
 		let targetType = $page.params.targetType?.toString();
 
-		if (!$panelState?.rpcSupportedTargetTypes?.includes(targetType as TargetType)) {
+		if (!$panelState?.target_types?.includes(targetType as TargetType)) {
 			error('This target type is not supported!');
 			return false;
 		}

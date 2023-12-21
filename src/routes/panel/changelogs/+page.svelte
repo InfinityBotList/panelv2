@@ -119,13 +119,13 @@ export interface ChangelogEntry {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ["view"] // All staff can view changelog entries
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "create"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("changelogs", "create"))) {
                 perms.push("create")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "update"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("changelogs", "update"))) {
                 perms.push("update")
             }
-            if(hasPerm($panelState?.userPerms?.resolved_perms || [], build("changelogs", "delete"))) {
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("changelogs", "delete"))) {
                 perms.push("delete")
             }
 

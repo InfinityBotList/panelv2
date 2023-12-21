@@ -31,7 +31,7 @@
 			name: 'CDN',
 			description: 'Manage the CDN(s) modifiable by this Arcadia instance',
 			link: '/panel/cdn',
-			enabled: () => hasPerm($panelState?.userPerms?.resolved_perms || [], build("cdn", "list_scopes"))
+			enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("cdn", "list_scopes"))
 		},
 		{
 			name: 'Partners',
@@ -55,14 +55,14 @@
 			name: "Applications",
 			description: "Manage the applications for the list",
 			link: "/panel/apps",
-			enabled: () => hasPerm($panelState?.userPerms?.resolved_perms || [], build("apps", "view"))
+			enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "view"))
 		},
 		{
 			name: 'RPC Actions',
 			description: 'Manage entities!',
 			link: '/panel/rpc',
 			enabled: () => true,
-			options: () => ($panelState?.rpcSupportedTargetTypes || []).map((type) => {
+			options: () => ($panelState?.target_types || []).map((type) => {
 				return {
 					name: type,
 					description: `Manage ${type}s!`,
@@ -106,7 +106,7 @@
 
 			<span class="font-semibold">Permissions:</span>
 			<UnorderedList>
-				{#each ($panelState?.userPerms?.resolved_perms || []) as perm}
+				{#each ($panelState?.staff_member?.resolved_perms || []) as perm}
 					{#if perm.startsWith("~")}
 						<ListItem className="text-red-600 line-through">{perm}</ListItem>
 					{:else if perm.endsWith(".*")}
@@ -121,11 +121,11 @@
 		<PaneContent>
 			<div class="block mt-14">
 				<p>
-					{$panelState?.hello?.description}
+					{$panelState?.instance_config?.description}
 				</p>
-				{#if $panelState?.hello?.warnings}
+				{#if $panelState?.instance_config?.warnings}
 					<div class="text-yellow-500 rounded-lg">
-						{#each $panelState.hello.warnings as warning}
+						{#each $panelState.instance_config?.warnings as warning}
 							<p>{warning}</p>
 						{/each}
 					</div>

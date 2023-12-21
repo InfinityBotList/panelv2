@@ -37,10 +37,10 @@
 
     const getAllActions = (): AvailableActions[] => {
         if(!topUserPosition) {
-            topUserPosition = getTopPosition($panelState?.userPerms?.positions || [])
+            topUserPosition = getTopPosition($panelState?.staff_member?.positions || [])
         }
 
-        let canManageAll = hasPerm($panelState?.userPerms?.resolved_perms || [], build("staff_positions", "manage"))
+        let canManageAll = hasPerm($panelState?.staff_member?.resolved_perms || [], build("staff_positions", "manage"))
 
         let available: AvailableActions[] = []
 
@@ -50,7 +50,7 @@
             if(topUserPosition?.index && staffPosition.index <= topUserPosition?.index) {
                 continue
             }
-            if(canManageAll || hasPerm($panelState?.userPerms?.resolved_perms || [], build("staff_positions", perm))) {
+            if(canManageAll || hasPerm($panelState?.staff_member?.resolved_perms || [], build("staff_positions", perm))) {
                 available.push(perm)
             }
         }
@@ -98,7 +98,7 @@
         return true
     }
 
-    let topUserPosition: StaffPosition | null = getTopPosition($panelState?.userPerms?.positions || [])
+    let topUserPosition: StaffPosition | null = getTopPosition($panelState?.staff_member?.positions || [])
     let availableActions: AvailableActions[] = getAllActions()
 
     $: {
@@ -117,7 +117,7 @@
     }
 
     $: {
-        topUserPosition = getTopPosition($panelState?.userPerms?.positions || [])
+        topUserPosition = getTopPosition($panelState?.staff_member?.positions || [])
         availableActions = getAllActions()
     }
 </script>
