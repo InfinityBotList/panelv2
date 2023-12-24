@@ -29,13 +29,15 @@
 
 	{#if subMenuOpened}
 		{#each options as a}
-			<a
-				class="block text-center w-full border border-red-300 border-opacity-50 p-3 text-xl bg-black hover:bg-slate-800"
-				href={a.link}
-			>
-				{a.name}
-				<small class="text-sm text-gray-400 block">{a.description}</small>
-			</a>
+			{#if a.enabled()}
+				<a
+					class="block text-center w-full border border-red-300 border-opacity-50 p-3 text-xl bg-black hover:bg-slate-800"
+					href={a.link}
+				>
+					{a.name}
+					<small class="text-sm text-gray-400 block">{a.description}</small>
+				</a>
+			{/if}
 		{/each}
 	{/if}
 {:else}

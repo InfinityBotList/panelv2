@@ -30,34 +30,44 @@
 			enabled: () => true, // This is always available
 		},
 		{
-			name: 'CDN',
-			description: 'Manage the CDN(s) modifiable by this Arcadia instance',
-			link: '/panel/cdn',
-			enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("cdn", "list_scopes"))
-		},
-		{
-			name: 'Partners',
-			description: 'View and/or manage the partners on the list',
-			link: '/panel/partners',
-			enabled: () => true // All staff can view the partner list, other permissions are handled by admin panel code
-		},
-		{
-			name: "Changelogs",
-			description: "View and/or manage the changelogs for the list",
-			link: "/panel/changelogs",
-			enabled: () => true // All staff can view the changelog entry list, other permissions are handled by admin panel code
-		},
-		{
-			name: "Blog",
-			description: "Manage the blog posts for the list",
-			link: "/panel/blog",
-			enabled: () => true // All staff can view the blog post list, other permissions are handled by admin panel code
-		},
-		{
-			name: "Applications",
-			description: "Manage the applications for the list",
-			link: "/panel/apps",
-			enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "view"))
+			name: "List Management",
+			description: "Manage the list",
+			link: "",
+			enabled: () => true,
+			options: () => {
+				return [
+					{
+						name: 'CDN',
+						description: 'Manage the CDN(s) modifiable by this Arcadia instance',
+						link: '/panel/cdn',
+						enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("cdn", "list_scopes"))
+					},
+					{
+						name: 'Partners',
+						description: 'View and/or manage the partners on the list',
+						link: '/panel/partners',
+						enabled: () => true // All staff can view the partner list, other permissions are handled by admin panel code
+					},
+					{
+						name: "Changelogs",
+						description: "View and/or manage the changelogs for the list",
+						link: "/panel/changelogs",
+						enabled: () => true // All staff can view the changelog entry list, other permissions are handled by admin panel code
+					},
+					{
+						name: "Blog",
+						description: "Manage the blog posts for the list",
+						link: "/panel/blog",
+						enabled: () => true // All staff can view the blog post list, other permissions are handled by admin panel code
+					},
+					{
+						name: "Applications",
+						description: "Manage the applications for the list",
+						link: "/panel/apps",
+						enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "view"))
+					},
+				]
+			}
 		},
 		{
 			name: 'RPC Actions',
@@ -68,20 +78,29 @@
 				return {
 					name: type,
 					description: `Manage ${type}s!`,
-					link: `/panel/rpc/${type}`
+					link: `/panel/rpc/${type}`,
+					enabled: () => true,
 				};
 			})
+		},
+		{
+			name: "Staff Management",
+			description: "View and manage staff",
+			enabled: () => true,
+			link: "/panel/staff",
+			options: () => {
+				return [{
+					name: "Positions",
+					description: `Manage staff positions`,
+					link: `/panel/staff/positions`,
+					enabled: () => true,
+				}]
+			}
 		},
 		{
 			name: 'Settings',
 			description: 'Customize your experience!',
 			link: '/panel/settings',
-			enabled: () => true
-		},
-		{
-			name: "Staff Management",
-			description: "View and manage staff positions and permissions",
-			link: "/panel/staff",
 			enabled: () => true
 		},
 		{

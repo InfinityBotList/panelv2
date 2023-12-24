@@ -2,6 +2,7 @@ export interface Option {
 	name: string;
 	description: string;
 	link: string;
+	enabled: () => boolean;
 }
 
 export interface QuickAction {
