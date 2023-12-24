@@ -106,28 +106,31 @@
 
 			<div class="mt-4" />
 
-			<span class="font-semibold">Staff Positions:</span>
-			<UnorderedList>
-				{#each ($panelState?.staff_member?.positions || []) as staffPosition}
-					<ListItem>{title(staffPosition.name.replaceAll("_", " "))} <span class="opacity-80">({staffPosition.name})</ListItem>
-				{/each}
-			</UnorderedList>
-
-			{#if ($panelState?.staff_member?.perm_overrides || []).length > 0}
-				<span class="font-semibold">Permission Overrides:</span>
+			<details>
+				<summary class="hover:cursor-pointer">View Permissions</summary>
+				<span class="font-semibold">Staff Positions:</span>
 				<UnorderedList>
-					{#each ($panelState?.staff_member?.perm_overrides || []) as perm}
+					{#each ($panelState?.staff_member?.positions || []) as staffPosition}
+						<ListItem>{title(staffPosition.name.replaceAll("_", " "))} <span class="opacity-80">({staffPosition.name})</ListItem>
+					{/each}
+				</UnorderedList>
+	
+				{#if ($panelState?.staff_member?.perm_overrides || []).length > 0}
+					<span class="font-semibold">Permission Overrides:</span>
+					<UnorderedList>
+						{#each ($panelState?.staff_member?.perm_overrides || []) as perm}
+							<PermDisplay perm={perm} />
+						{/each}
+					</UnorderedList>
+				{/if}
+	
+				<span class="font-semibold">Resolved Permissions:</span>
+				<UnorderedList>
+					{#each ($panelState?.staff_member?.resolved_perms || []) as perm}
 						<PermDisplay perm={perm} />
 					{/each}
 				</UnorderedList>
-			{/if}
-
-			<span class="font-semibold">Resolved Permissions:</span>
-			<UnorderedList>
-				{#each ($panelState?.staff_member?.resolved_perms || []) as perm}
-					<PermDisplay perm={perm} />
-				{/each}
-			</UnorderedList>
+			</details>
 		</InfoPane>
 
 		<PaneContent>
