@@ -2,12 +2,14 @@
 	import logger from '$lib/logger';
 	import { panelState } from '$lib/panelState';
 	import { build, hasPerm } from '$lib/perms';
+	import { title } from '$lib/strings';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
 	import UnorderedList from '../../components/UnorderedList.svelte';
 	import InfoPane from '../../components/pane/InfoPane.svelte';
 	import PaneContent from '../../components/pane/PaneContent.svelte';
 	import PaneWrapper from '../../components/pane/PaneWrapper.svelte';
+	import PermDisplay from './_core/PermDisplay.svelte';
 	import type { QuickAction } from './_core/QuickAction';
 	import QuickMenuOption from './_core/QuickMenuOption.svelte';
 
@@ -104,16 +106,26 @@
 
 			<div class="mt-4" />
 
-			<span class="font-semibold">Permissions:</span>
+			<span class="font-semibold">Staff Positions:</span>
+			<UnorderedList>
+				{#each ($panelState?.staff_member?.positions || []) as staffPosition}
+					<ListItem>{title(staffPosition.name.replaceAll("_", " "))} <span class="opacity-80">({staffPosition.name})</ListItem>
+				{/each}
+			</UnorderedList>
+
+			{#if ($panelState?.staff_member?.perm_overrides || []).length > 0}
+				<span class="font-semibold">Permission Overrides:</span>
+				<UnorderedList>
+					{#each ($panelState?.staff_member?.perm_overrides || []) as perm}
+						<PermDisplay perm={perm} />
+					{/each}
+				</UnorderedList>
+			{/if}
+
+			<span class="font-semibold">Resolved Permissions:</span>
 			<UnorderedList>
 				{#each ($panelState?.staff_member?.resolved_perms || []) as perm}
-					{#if perm.startsWith("~")}
-						<ListItem className="text-red-600 line-through">{perm}</ListItem>
-					{:else if perm.endsWith(".*")}
-						<ListItem className="text-green-600 font-bold">{perm}</ListItem>
-					{:else}
-						<ListItem>{perm}</ListItem>
-					{/if}
+					<PermDisplay perm={perm} />
 				{/each}
 			</UnorderedList>
 		</InfoPane>
