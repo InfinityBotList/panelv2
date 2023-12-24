@@ -14,6 +14,25 @@
 	import { panelAuthState } from "$lib/panelAuthState";
 	import ButtonReact from "../../../../components/button/ButtonReact.svelte";
 	import { Color } from "../../../../components/button/colors";
+	import InputText from "../../../../components/inputs/InputText.svelte";
+	import MultiInput from "../../../../components/inputs/multi/simple/MultiInput.svelte";
+
+    const allActions = {
+        swap_index: ["ph:swap", "Change Position"],
+        edit: ["mdi:edit", "Edit"]
+    } as const
+
+    type Action = keyof typeof allActions 
+
+    let openAction: Action | null = null
+
+    const open = (action: Action) => {
+        if(openAction == action) {
+            openAction = null
+            return
+        }
+        openAction = action
+    }
 
     const getTopPosition = (spl: StaffPosition[]) => {
         let topPosition: StaffPosition | null = null
@@ -32,36 +51,33 @@
         return topPosition
     }
 
-    const allAvailableActions = ["swap_index"] as const
-    type AvailableActions = typeof allAvailableActions[number] // https://stackoverflow.com/questions/51521808/how-do-i-create-a-type-from-a-string-array-in-typescript
-
-    const getAllActions = (): AvailableActions[] => {
+    export let staffPositionList: StaffPosition[]
+    export let staffPosition: StaffPosition
+    
+    const getAllActions = (): Action[] => {
         if(!topUserPosition) {
             topUserPosition = getTopPosition($panelState?.staff_member?.positions || [])
         }
 
-        let canManageAll = hasPerm($panelState?.staff_member?.resolved_perms || [], build("staff_positions", "manage"))
+        let available: Action[] = []
 
-        let available: AvailableActions[] = []
-
-        let commonPerms: AvailableActions[] = ["swap_index"]
-
-        for(let perm of commonPerms) {
+        for(let perm of Object.keys(allActions)) {
             if(topUserPosition?.index && staffPosition.index <= topUserPosition?.index) {
                 continue
             }
-            if(canManageAll || hasPerm($panelState?.staff_member?.resolved_perms || [], build("staff_positions", perm))) {
-                available.push(perm)
+            if(hasPerm($panelState?.staff_member?.resolved_perms || [], build("staff_positions", perm))) {
+                available.push(perm as Action)
             }
         }
 
         return available
     }
 
-    export let staffPositionList: StaffPosition[]
-    export let staffPosition: StaffPosition
+    let topUserPosition: StaffPosition | null = getTopPosition($panelState?.staff_member?.positions || [])
+    let availableActions: Action[] = getAllActions()
 
-    let swapIndexOpen: boolean = false
+    // Actions
+
     let swapIndex: number | null = null
     let swapIndexProposed: string | undefined;
     const swapIndexExecute = async () => {
@@ -98,9 +114,33 @@
         return true
     }
 
-    let topUserPosition: StaffPosition | null = getTopPosition($panelState?.staff_member?.positions || [])
-    let availableActions: AvailableActions[] = getAllActions()
+    // Edit Position
+    let editPosition = staffPosition
+    const editPositionExecute = async () => {
+        let res = await panelQuery({
+            UpdateStaffPositions: {
+                login_token: $panelAuthState?.loginToken || '',
+                action: {
+                    EditPosition: {
+                        id: editPosition.id || staffPosition.id,
+                        name: editPosition.name || staffPosition.name,
+                        role_id: editPosition.role_id || staffPosition.role_id,
+                        perms: editPosition.perms || staffPosition.perms,
+                    }
+                },
+            }
+        })
 
+        if(!res.ok) {
+            let err = await res.text()
+            throw new Error(`Failed to edit position: ${err?.toString() || "Unknown error"}`)
+        }
+
+        success("Edited position!")
+        return true
+    }
+
+    // Bindings
     $: {
         logger.info("swapIndexProposed", swapIndexProposed)
         if(swapIndexProposed) {
@@ -133,20 +173,20 @@
     {#if availableActions.length > 0}
         <h2 class="mt-3 mb-1 text-xl">Actions</h2>
         <div class="mb-3 border rounded-md">
-            {#if availableActions.includes("swap_index")}
+            {#each availableActions as action}
                 <button 
                     on:click={() => {
-                        swapIndexOpen = !swapIndexOpen
+                        open(action)
                     }}
                     class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
                 >
-                    <Icon icon="ph:swap" class={"text-2xl inline-block align-bottom"} />
-                    {swapIndexOpen ? "Close" : "Change Position"}
+                    <Icon icon={allActions[action][0]} class={"text-2xl inline-block align-bottom"} />
+                    {openAction == action ? "Close" : allActions[action][1]}
                 </button> 
-            {/if}
+            {/each}
         </div>    
 
-        {#if swapIndexOpen}
+        {#if openAction == "swap_index"}
             <h1 class="text-2xl">Swap With Index</h1>
             <GreyText>A simple way to change position hierarchy is by swapping the permissions index with one that is lower (lower index = higher in hierarchy)</GreyText>
             
@@ -168,6 +208,25 @@
                     error: "Failed to swap index!"
                 }}
                 text="Swap Index"
+            />
+        {:else if openAction == "edit"}
+            <h1 class="text-2xl">Edit Position</h1>
+            
+            <InputText id="id" label="ID" value={editPosition.id} placeholder="ID cannot be changed" disabled minlength={0} showErrors={false} />
+            <InputText id="name" label="Name" bind:value={editPosition.name} placeholder="New name of the position" minlength={1} showErrors={false} />
+            <InputText id="role_id" label="Role ID" bind:value={editPosition.role_id} placeholder="New role id on the staff server of the position to set" minlength={1} showErrors={true} />
+            <MultiInput id="perms" title="Permissions" placeholder="Choose which permissions to add" label="Permission" showLabel={true} bind:values={editPosition.perms} minlength={1} showErrors={true} />
+
+            <ButtonReact 
+                color={Color.Themable}
+                icon="mdi:edit"
+                onClick={editPositionExecute}
+                states={{
+                    loading: "Editing position...",
+                    success: "Edited position!",
+                    error: "Failed to edit position!"
+                }}
+                text="Edit Position"
             />
         {/if}
     {/if}
