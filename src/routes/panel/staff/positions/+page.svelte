@@ -16,6 +16,7 @@
 	import { Color } from "../../../../components/button/colors";
 	import Select from "../../../../components/inputs/select/Select.svelte";
 	import { title } from "$lib/strings";
+	import ExtraLinks from "../../../../components/inputs/multi/extralinks/ExtraLinks.svelte";
 
     const allActions = {
         create: ["mdi:plus", "Create Position"],
@@ -73,6 +74,7 @@
         role_id: "",
         index: 0,
         perms: [],
+        corresponding_roles: []
     }
     const createPositionExecute = async () => {
         let res = await panelQuery({
@@ -84,6 +86,7 @@
                         role_id: createPosition.role_id,
                         index: createPosition.index,
                         perms: createPosition.perms,
+                        corresponding_roles: createPosition.corresponding_roles || [],
                     }
                 }
             }
@@ -154,6 +157,7 @@
                 <InputText id="role_id" label="Role ID" bind:value={createPosition.role_id} placeholder="New role id on the staff server of the position to set" minlength={1} showErrors={true} />
                 <MultiInput id="perms" title="Permissions" placeholder="Choose which permissions to add" label="Permission" showLabel={true} bind:values={createPosition.perms} minlength={1} showErrors={true} />
                 <IndexChooser bind:index={createPosition.index} staffPositionList={staffPositionList} />    
+                <ExtraLinks id="corresponding_roles" title="Corresponding Roles" placeholder="Server ID: Role ID" label="Corresponding Roles" bind:values={createPosition.corresponding_roles} minlength={1} showErrors={true} />
 
                 <ButtonReact 
                     color={Color.Themable}

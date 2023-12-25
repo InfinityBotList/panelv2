@@ -16,6 +16,7 @@
 	import { Color } from "../../../../components/button/colors";
 	import InputText from "../../../../components/inputs/InputText.svelte";
 	import MultiInput from "../../../../components/inputs/multi/simple/MultiInput.svelte";
+	import ExtraLinks from "../../../../components/inputs/multi/extralinks/ExtraLinks.svelte";
 
     const allActions = {
         swap_index: ["ph:swap", "Change Position"],
@@ -126,6 +127,7 @@
                         name: editPosition.name || staffPosition.name,
                         role_id: editPosition.role_id || staffPosition.role_id,
                         perms: editPosition.perms || staffPosition.perms,
+                        corresponding_roles: editPosition.corresponding_roles || staffPosition.corresponding_roles || [],
                     }
                 },
             }
@@ -216,6 +218,8 @@
             <InputText id="name" label="Name" bind:value={editPosition.name} placeholder="New name of the position" minlength={1} showErrors={false} />
             <InputText id="role_id" label="Role ID" bind:value={editPosition.role_id} placeholder="New role id on the staff server of the position to set" minlength={1} showErrors={true} />
             <MultiInput id="perms" title="Permissions" placeholder="Choose which permissions to add" label="Permission" showLabel={true} bind:values={editPosition.perms} minlength={1} showErrors={true} />
+            
+            <ExtraLinks id="corresponding_roles" title="Corresponding Roles" placeholder="Server ID: Role ID" label="Corresponding Roles" bind:values={editPosition.corresponding_roles} minlength={1} showErrors={true} />
 
             <ButtonReact 
                 color={Color.Themable}
