@@ -91,7 +91,13 @@
 
         let flag = false
 
-        let possibleLocs = document.querySelectorAll('.loc')
+        let text = document.querySelector("#text")
+        
+        if(!text) {
+            throw new Error("No text element")
+        }
+
+        let possibleLocs = text.querySelectorAll('p, li')
 
         if (!possibleLocs || possibleLocs.length == 0) {
             return false
@@ -127,7 +133,7 @@
     {#await fetchGuide()}
         <Loading msg="Fetching guide..." />
     {:then resp}
-        <div class="px-3 desc">
+        <div class="px-3 desc" id="text">
             {@html resp.text}
         </div>
         <div class="px-3 mb-2">
