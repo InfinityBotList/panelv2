@@ -3,3 +3,4 @@ typegen:
   projects:
     - arcadia
     - htmlsanitize
+    - persepolis

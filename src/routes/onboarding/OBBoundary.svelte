@@ -1,20 +1,49 @@
 <script lang="ts">
 	import { utf8ToHex } from "$lib/strings";
 	import Loading from "../../components/Loading.svelte";
-	import { obBoundary } from "./obBoundaryState";
+	import { obBoundary, type OBBoundary } from "./obBoundaryState";
     import ErrorComponent from "../../components/Error.svelte";
 	import { persepolisUrl } from "./onboardingConsts";
+	import type { AuthData } from "$lib/generated/persepolis/AuthData";
 
     const login = () => {
-        let url = window.location.toString()
-        // Hex encode the URL
-        url = utf8ToHex(url)
+        localStorage.setItem("obCurrentUrl", window.location.toString())
+
+        let finalPath = utf8ToHex(`${window.location.origin}/onboarding/authorize`)
 
         // Redirect to the login page
-        window.location.href = `${persepolisUrl}/create-login?state=create_session.${url}`
+        window.location.href = `${persepolisUrl}/create-login?state=create_session.${finalPath}`
     }
 
     const checkToken = async () => {
+        if (localStorage.getItem("obBoundary")) {
+            let obBoundaryData = JSON.parse(localStorage.getItem("obBoundary") || "{}")
+
+            let res = await fetch(`${persepolisUrl}/auth-data`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    login_token: obBoundaryData?.token
+                })
+            })
+
+            if(!res.ok) {
+                // Invalid token
+                login()
+                return "Invalid token, logging in..."
+            }
+
+            let authData: AuthData = await res.json()
+
+            $obBoundary = {
+                token: obBoundaryData?.token,
+                authData,
+            }
+            return false
+        }
+
         let searchParams = new URLSearchParams(window.location.search);
 
         if(!searchParams.get("token")) {
@@ -24,21 +53,11 @@
         } else {
             let token = searchParams.get("token")
 
-            let tokSplit = token?.split(".") || []
+            localStorage.setItem("obBoundary", JSON.stringify({
+                token: token
+            }))
 
-            if(tokSplit.length != 2) {
-                // Invalid token
-                login()
-                return "Invalid token, logging in..."
-            }
-
-            let userId = tokSplit[0]
-            let tokenBit = tokSplit[1]
-
-            $obBoundary = {
-                userId: userId,
-                token: tokenBit
-            }
+            window.location.href = localStorage.getItem("obCurrentUrl") || "/"
 
             return false
         }
