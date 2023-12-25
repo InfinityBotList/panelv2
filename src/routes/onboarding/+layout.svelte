@@ -5,9 +5,10 @@
     import ErrorComponent from "../../components/Error.svelte";
 	import { persepolisUrl } from "./onboardingConsts";
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
+	import logger from "$lib/logger";
 
     const login = () => {
-        localStorage.setItem("obCurrentUrl", window?.location?.toString())
+        localStorage?.setItem("obCurrentUrl", window?.location?.toString())
 
         let finalPath = utf8ToHex(`${window?.location?.origin}/onboarding/authorize`)
 
@@ -16,6 +17,7 @@
     }
 
     const checkToken = async () => {
+        logger.info("OBBoundary", "Checking token")
         if (localStorage?.getItem("obBoundary")) {
             let obBoundaryData = JSON.parse(localStorage.getItem("obBoundary") || "{}")
 
