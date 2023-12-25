@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { utf8ToHex } from "$lib/strings";
 	import Loading from "./Loading.svelte";
-	import { obBoundary } from "../routes/onboarding/obBoundaryState";
+	import { obBoundary } from "../lib/obBoundaryState";
     import ErrorComponent from "./Error.svelte";
 	import { persepolisUrl } from "../routes/onboarding/onboardingConsts";
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
