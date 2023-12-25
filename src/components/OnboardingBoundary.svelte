@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { utf8ToHex } from "$lib/strings";
-	import Loading from "../../components/Loading.svelte";
-	import { obBoundary } from "./obBoundaryState";
-    import ErrorComponent from "../../components/Error.svelte";
-	import { persepolisUrl } from "./onboardingConsts";
+	import Loading from "./Loading.svelte";
+	import { obBoundary } from "../routes/onboarding/obBoundaryState";
+    import ErrorComponent from "./Error.svelte";
+	import { persepolisUrl } from "../routes/onboarding/onboardingConsts";
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
 	import logger from "$lib/logger";
 
@@ -67,16 +67,14 @@
     }
 </script>
 
-<div>
-    {#await checkToken()}
-        <Loading msg="Checking token..." />
-    {:then resp}
-        {#if resp}
-            <ErrorComponent msg={`Please wait: ${resp}`} />
-        {:else}
-            <slot />
-        {/if}
-    {:catch error}
-        <ErrorComponent msg={error?.toString() || "Unknown error"} />
-    {/await}
-</div>
+{#await checkToken()}
+    <Loading msg="Checking token..." />
+{:then resp}
+    {#if resp}
+        <ErrorComponent msg={`Please wait: ${resp}`} />
+    {:else}
+        <slot />
+    {/if}
+{:catch error}
+    <ErrorComponent msg={error?.toString() || "Unknown error"} />
+{/await}

@@ -8,6 +8,7 @@
 	import { fetchClient } from "$lib/fetch";
 	import { obBoundary } from "../../obBoundaryState";
 	import { page } from "$app/stores";
+	import OnboardingBoundary from "../../../../components/OnboardingBoundary.svelte";
 
     const fetchGuide = async () => {
         const guideFile = await fetch(`${cdnUrl}/staff/guide.md?n=${Date.now()}`)
@@ -122,38 +123,40 @@
     }
 </script>
 
-{#await fetchGuide()}
-    <Loading msg="Fetching guide..." />
-{:then resp}
-    <div class="px-3 desc">
-        {@html resp.text}
-    </div>
-    <div class="px-3 mb-2">
-        {#if keyAdded}
-            <p class="text-white mt-5 font-semibold">
-                The staff verification code is somewhere in the guide.
-                <br />
-                Note that just trying to Ctrl-F it is not allowed and you may be demoted for lack of
-                knowledge of the rules. Read the whole guide at least 5-10 times.
-            </p>
-        {:else}
-            <p class="text-white mt-5 font-semibold">
-                Be sure to read the entire staff guide before continuing. You will be demoted if you
-                do not properly follow the rules
-            </p>
-            <ButtonReact
-                color={Color.Themable}
-                icon="fa-solid:code"
-                states={{
-                    loading: 'Please wait...',
-                    success: 'Loaded code successfully!',
-                    error: 'Failed to load code'
-                }}
-                onClick={addKeyToRandomLoc}
-                text="Show Code"
-            />
-        {/if}
-    </div>
-{:catch error}
-    <ErrorComponent msg={`Something went wrong: ${error.message}`} />
-{/await}
+<OnboardingBoundary>
+    {#await fetchGuide()}
+        <Loading msg="Fetching guide..." />
+    {:then resp}
+        <div class="px-3 desc">
+            {@html resp.text}
+        </div>
+        <div class="px-3 mb-2">
+            {#if keyAdded}
+                <p class="text-white mt-5 font-semibold">
+                    The staff verification code is somewhere in the guide.
+                    <br />
+                    Note that just trying to Ctrl-F it is not allowed and you may be demoted for lack of
+                    knowledge of the rules. Read the whole guide at least 5-10 times.
+                </p>
+            {:else}
+                <p class="text-white mt-5 font-semibold">
+                    Be sure to read the entire staff guide before continuing. You will be demoted if you
+                    do not properly follow the rules
+                </p>
+                <ButtonReact
+                    color={Color.Themable}
+                    icon="fa-solid:code"
+                    states={{
+                        loading: 'Please wait...',
+                        success: 'Loaded code successfully!',
+                        error: 'Failed to load code'
+                    }}
+                    onClick={addKeyToRandomLoc}
+                    text="Show Code"
+                />
+            {/if}
+        </div>
+    {:catch error}
+        <ErrorComponent msg={`Something went wrong: ${error.message}`} />
+    {/await}
+</OnboardingBoundary>
