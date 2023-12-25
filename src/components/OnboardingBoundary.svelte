@@ -58,6 +58,7 @@
                 token: obBoundaryData?.token,
                 authData,
             }
+            return
         }
 
         // No token
