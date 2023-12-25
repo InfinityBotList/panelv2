@@ -7,16 +7,16 @@
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
 
     const login = () => {
-        localStorage.setItem("obCurrentUrl", window.location.toString())
+        localStorage.setItem("obCurrentUrl", window?.location?.toString())
 
-        let finalPath = utf8ToHex(`${window.location.origin}/onboarding/authorize`)
+        let finalPath = utf8ToHex(`${window?.location?.origin}/onboarding/authorize`)
 
         // Redirect to the login page
         window.location.href = `${persepolisUrl}/create-login?state=create_session.${finalPath}`
     }
 
     const checkToken = async () => {
-        if (localStorage.getItem("obBoundary")) {
+        if (localStorage?.getItem("obBoundary")) {
             let obBoundaryData = JSON.parse(localStorage.getItem("obBoundary") || "{}")
 
             let res = await fetch(`${persepolisUrl}/auth-data`, {
@@ -73,5 +73,5 @@
         <slot />
     {/if}
 {:catch error}
-    <div>Something went wrong: {error.message}</div>
+    <div>Something went wrong: {error?.message}</div>
 {/await}
