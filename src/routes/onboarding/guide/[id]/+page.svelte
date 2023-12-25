@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Loading from "../../../../components/Loading.svelte";
-    import ObBoundary from "../../OBBoundary.svelte";
+    import ObBoundary from "../../+layout.svelte";
 	import { cdnUrl, htmlSanitizeUrl, persepolisUrl } from "../../onboardingConsts";
     import ErrorComponent from "../../../../components/Error.svelte";
 	import type { Query } from "$lib/generated/htmlsanitize/Query";
