@@ -30,7 +30,7 @@
 
             window.location.href = localStorage.getItem("obCurrentUrl") || "/"
 
-            return false
+            return
         }
 
         if (localStorage?.getItem("obBoundary")) {
@@ -49,7 +49,7 @@
             if(!res.ok) {
                 // Invalid token
                 login()
-                return "Invalid token, logging in..."
+                throw new Error("Invalid token, logging you in")
             }
 
             let authData: AuthData = await res.json()
@@ -58,23 +58,18 @@
                 token: obBoundaryData?.token,
                 authData,
             }
-            return false
         }
 
         // No token
         login()            
-        return "No token found, logging in..."
+        throw new Error("No token found, logging you in...")
     }
 </script>
 
 {#await checkToken()}
     <Loading msg="Checking token..." />
-{:then resp}
-    {#if !resp}
-        <slot />
-    {:else}
-        <ErrorComponent msg={`Please wait: ${resp}`} />
-    {/if}
+{:then _}
+    <slot />
 {:catch error}
     <ErrorComponent msg={error?.toString() || "Unknown error"} />
 {/await}
