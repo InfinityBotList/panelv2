@@ -6,7 +6,7 @@
 	import ButtonReact from "../../../../components/button/ButtonReact.svelte";
 	import { Color } from "../../../../components/button/colors";
 	import { fetchClient } from "$lib/fetch";
-	import { obBoundary } from "../../../../lib/obBoundaryState";
+	import { obBoundary } from "../../obBoundaryState";
 	import { page } from "$app/stores";
 
     const fetchGuide = async () => {

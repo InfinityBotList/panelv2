@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { utf8ToHex } from "$lib/strings";
 	import Loading from "../../components/Loading.svelte";
-	import { obBoundary } from "../../lib/obBoundaryState";
+	import { obBoundary } from "./obBoundaryState";
     import ErrorComponent from "../../components/Error.svelte";
 	import { persepolisUrl } from "./onboardingConsts";
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
@@ -18,6 +18,21 @@
 
     const checkToken = async () => {
         logger.info("OBBoundary", "Checking token")
+
+        let searchParams = new URLSearchParams(window.location.search);
+
+        if(searchParams.get("token")) {
+            let token = searchParams.get("token")
+
+            localStorage.setItem("obBoundary", JSON.stringify({
+                token: token
+            }))
+
+            window.location.href = localStorage.getItem("obCurrentUrl") || "/"
+
+            return false
+        }
+
         if (localStorage?.getItem("obBoundary")) {
             let obBoundaryData = JSON.parse(localStorage.getItem("obBoundary") || "{}")
 
@@ -46,34 +61,22 @@
             return false
         }
 
-        let searchParams = new URLSearchParams(window.location.search);
-
-        if(!searchParams.get("token")) {
-            // No token
-            login()            
-            return "No token found, logging in..."
-        } else {
-            let token = searchParams.get("token")
-
-            localStorage.setItem("obBoundary", JSON.stringify({
-                token: token
-            }))
-
-            window.location.href = localStorage.getItem("obCurrentUrl") || "/"
-
-            return false
-        }
+        // No token
+        login()            
+        return "No token found, logging in..."
     }
 </script>
 
-{#await checkToken()}
-    <Loading msg="Checking token..." />
-{:then resp}
-    {#if resp}
-        <ErrorComponent msg={`Please wait: ${resp}`} />
-    {:else}
-        <slot />
-    {/if}
-{:catch error}
-    <div>Something went wrong: {error?.message}</div>
-{/await}
+<div>
+    {#await checkToken()}
+        <Loading msg="Checking token..." />
+    {:then resp}
+        {#if resp}
+            <ErrorComponent msg={`Please wait: ${resp}`} />
+        {:else}
+            <slot />
+        {/if}
+    {:catch error}
+        <ErrorComponent msg={error?.toString() || "Unknown error"} />
+    {/await}
+</div>
