@@ -3,7 +3,7 @@
 	import Loading from "./Loading.svelte";
 	import { obBoundary } from "../lib/obBoundaryState";
     import ErrorComponent from "./Error.svelte";
-	import { persepolisUrl } from "../routes/onboarding/onboardingConsts";
+	import { persepolisUrl } from "../lib/onboardingConsts";
 	import type { AuthData } from "$lib/generated/persepolis/AuthData";
 	import logger from "$lib/logger";
 
@@ -70,10 +70,10 @@
 {#await checkToken()}
     <Loading msg="Checking token..." />
 {:then resp}
-    {#if resp}
-        <ErrorComponent msg={`Please wait: ${resp}`} />
-    {:else}
+    {#if !resp}
         <slot />
+    {:else}
+        <ErrorComponent msg={`Please wait: ${resp}`} />
     {/if}
 {:catch error}
     <ErrorComponent msg={error?.toString() || "Unknown error"} />

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Loading from "../../../../components/Loading.svelte";
-	import { cdnUrl, htmlSanitizeUrl, persepolisUrl } from "../../onboardingConsts";
+	import { cdnUrl, htmlSanitizeUrl, persepolisUrl } from "../../../../lib/onboardingConsts";
     import ErrorComponent from "../../../../components/Error.svelte";
 	import type { Query } from "$lib/generated/htmlsanitize/Query";
 	import ButtonReact from "../../../../components/button/ButtonReact.svelte";
