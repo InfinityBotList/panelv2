@@ -134,6 +134,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
             }
 
             let res = await fetchClient(hsUrl, {
+                method: "POST",
                 body: JSON.stringify(hs),
             })
 
