@@ -4,6 +4,7 @@ import type { Link } from './Link';
 export type StaffPositionAction =
 	| 'ListPositions'
 	| { SwapIndex: { a: string; b: string } }
+	| { SetIndex: { id: string; index: number } }
 	| {
 			CreatePosition: {
 				name: string;

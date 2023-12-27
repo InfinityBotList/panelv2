@@ -4,6 +4,7 @@ import type { CdnAssetAction } from './CdnAssetAction';
 import type { ChangelogAction } from './ChangelogAction';
 import type { PartnerAction } from './PartnerAction';
 import type { RPCMethod } from './RPCMethod';
+import type { StaffMemberAction } from './StaffMemberAction';
 import type { StaffPositionAction } from './StaffPositionAction';
 import type { TargetType } from './TargetType';
 
@@ -37,4 +38,5 @@ export type PanelQuery =
 	| { UpdateChangelog: { login_token: string; action: ChangelogAction } }
 	| { UpdateBlog: { login_token: string; action: BlogAction } }
 	| { UpdateStaffPositions: { login_token: string; action: StaffPositionAction } }
+	| { UpdateStaffMembers: { login_token: string; action: StaffMemberAction } }
 	| { PopplioStaff: { login_token: string; path: string; method: string; body: string } };

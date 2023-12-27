@@ -17,9 +17,11 @@
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import MultiInput from '../../../../components/inputs/multi/simple/MultiInput.svelte';
 	import ExtraLinks from '../../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
+	import IndexChooser from './IndexChooser.svelte';
 
 	const allActions = {
 		swap_index: ['ph:swap', 'Change Position'],
+		set_index: ['mdi:code', 'Set Index'],
 		edit: ['mdi:edit', 'Edit']
 	} as const;
 
@@ -116,6 +118,35 @@
 		}
 
 		success('Swapped index!');
+		return true;
+	};
+
+	// Set Index
+	let staffPositionUpdateIndex: number | undefined = undefined;
+	const setIndexExecute = async () => {
+		if (!staffPositionUpdateIndex) {
+			error('Please select an index');
+			return false;
+		}
+
+		let res = await panelQuery({
+			UpdateStaffPositions: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: {
+					SetIndex: {
+						id: staffPosition.id,
+						index: staffPositionUpdateIndex
+					}
+				}
+			}
+		});
+
+		if (!res.ok) {
+			let err = await res.text();
+			throw new Error(`Failed to set index: ${err?.toString() || 'Unknown error'}`);
+		}
+
+		success('Set index!');
 		return true;
 	};
 
@@ -232,6 +263,26 @@
 					error: 'Failed to swap index!'
 				}}
 				text="Swap Index"
+			/>
+		{:else if openAction == 'set_index'}
+			<h1 class="text-2xl">Set Index</h1>
+			<GreyText>
+				You can set the index of a position to a specific number. This will change the hierarchy of
+				the position.
+			</GreyText>
+
+			<IndexChooser {staffPositionList} bind:index={staffPositionUpdateIndex} />
+
+			<ButtonReact
+				color={Color.Themable}
+				icon="mdi:code"
+				onClick={setIndexExecute}
+				states={{
+					loading: 'Setting index...',
+					success: 'Set index!',
+					error: 'Failed to set index!'
+				}}
+				text="Set Index"
 			/>
 		{:else if openAction == 'edit'}
 			<h1 class="text-2xl">Edit Position</h1>

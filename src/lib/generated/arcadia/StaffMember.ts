@@ -7,5 +7,6 @@ export interface StaffMember {
 	perm_overrides: Array<string>;
 	resolved_perms: Array<string>;
 	no_autosync: boolean;
+	unaccounted: boolean;
 	created_at: string;
 }

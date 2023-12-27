@@ -117,7 +117,7 @@
 			initialData = {
 				target_id: selectedEntity?.Bot?.bot_id
 			};
-		} else if('Server' in selectedEntity) {
+		} else if ('Server' in selectedEntity) {
 			initialData = {
 				target_id: selectedEntity?.Server?.server_id
 			};
