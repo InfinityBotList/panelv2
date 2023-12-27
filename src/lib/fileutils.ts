@@ -135,6 +135,9 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
 
             let res = await fetchClient(`${hsUrl}/query`, {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify(hs),
             })
 
@@ -144,7 +147,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
 
             let mdContents: string = await res.text()
 
-            let mdData = document.createElement("pre")
+            let mdData = document.createElement("div")
             mdData.innerHTML = mdContents
             mdData.classList.add("max-w-full", "h-full")
             if(previewBox) {
