@@ -31,17 +31,22 @@
 	<GreyText
 		>A scope is essentially a network share of a CDN on the server that is exposed to the panel!</GreyText
 	>
-    <div id="link-box" class="border rounded-md">
-        {#each Object.entries(cdnScopes) as cdnScope, i}
-		    <a href={`/panel/cdn/${cdnScope[0]}`} class={`block rounded-t-md text-white hover:bg-slate-800 p-4 ${(i < Object.entries(cdnScopes).length - 1) ? "border-b" : "rounded-md"}`}>
-			    {cdnScope[0]}
-                <div class="mt-2 text-gray-400">
-					<span class="font-semibold">Path: </span>{cdnScope[1].path}<br/>
+	<div id="link-box" class="border rounded-md">
+		{#each Object.entries(cdnScopes) as cdnScope, i}
+			<a
+				href={`/panel/cdn/${cdnScope[0]}`}
+				class={`block rounded-t-md text-white hover:bg-slate-800 p-4 ${
+					i < Object.entries(cdnScopes).length - 1 ? 'border-b' : 'rounded-md'
+				}`}
+			>
+				{cdnScope[0]}
+				<div class="mt-2 text-gray-400">
+					<span class="font-semibold">Path: </span>{cdnScope[1].path}<br />
 					<span class="font-semibold">Exposed URL: </span>{cdnScope[1].exposed_url}
 				</div>
-            </a>
-	    {/each}
-    </div>
+			</a>
+		{/each}
+	</div>
 {:catch err}
 	<ErrorComponent msg={`Failed to fetch CDN scopes: ${err?.toString()}`} />
 {/await}

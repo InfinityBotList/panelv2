@@ -11,16 +11,20 @@
 	import logger from '$lib/logger';
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
-	import { panelStartAuthProtocolVersion, panelStartAuthRequestScope, panelStartAuthResponseScope } from '$lib/constants';
+	import {
+		panelStartAuthProtocolVersion,
+		panelStartAuthRequestScope,
+		panelStartAuthResponseScope
+	} from '$lib/constants';
 	import type { StartAuth } from '$lib/generated/arcadia/StartAuth';
 
 	// Safari needs this patch here
 	let navigating: boolean = false;
 	const goto = async (url: string) => {
-		if(navigating) return new Promise(() => {});
+		if (navigating) return new Promise(() => {});
 		navigating = true;
 		return await gotoOnce(url);
-	}
+	};
 
 	onMount(async () => {
 		if ($panelAuthState) {
@@ -36,7 +40,11 @@
 			return false;
 		}
 
-		if (!instanceUrl?.startsWith('https://') && !instanceUrl?.startsWith('http://localhost') && !instanceUrl?.startsWith('http://127.0.0.1')) {
+		if (
+			!instanceUrl?.startsWith('https://') &&
+			!instanceUrl?.startsWith('http://localhost') &&
+			!instanceUrl?.startsWith('http://127.0.0.1')
+		) {
 			error('Instance URL must either be HTTPS or localhost');
 			return false;
 		}
@@ -63,12 +71,12 @@
 
 		let loginData: StartAuth = await res.json();
 
-		if(loginData?.scope != panelStartAuthRequestScope) {
+		if (loginData?.scope != panelStartAuthRequestScope) {
 			error('Invalid request scope. Are you using a compatible instance URL?');
 			return false;
 		}
 
-		if(loginData?.response_scope != panelStartAuthResponseScope) {
+		if (loginData?.response_scope != panelStartAuthResponseScope) {
 			error('Invalid response scope. Are you using a compatible instance URL?');
 			return false;
 		}
@@ -112,7 +120,7 @@
 		}
 
 		return true;
-	}
+	};
 </script>
 
 <article class="p-4">
@@ -121,8 +129,8 @@
 		In order to login to the Arcadia instance, please input the 'Instance URL'.
 		<br />
 		<br />
-		Note that the default instance URL is <code>https://prod--panel-api.infinitybots.gg</code> and should
-		be valid. If you wish to use a custom instance URL, please change this URL here.
+		Note: The default instance URL is <a class="text-base font-semibold underline text-indigo-600 hover:text-indigo-400" href="https://prod--panel-api.infinitybots.gg">https://prod--panel-api.infinitybots.gg</a> and should
+		be valid. If you wish to use a custom instance URL, please change the URL below.
 	</p>
 	<OrderedList>
 		<ListItem>
@@ -130,8 +138,7 @@
 		</ListItem>
 		<ListItem>Copy-paste any special 'Instance URL' given to you here</ListItem>
 	</OrderedList>
-	<p class="font-semibold text-lg">And if you're not staff... then keep out!</p>
-
+    
 	<hr class="my-4" />
 
 	<InputText
@@ -155,4 +162,3 @@
 		onClick={login}
 	/>
 </article>
-

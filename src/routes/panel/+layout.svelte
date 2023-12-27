@@ -19,8 +19,8 @@
 			description: 'Index Page',
 			link: '/panel',
 			enabled: () => {
-				logger.info("QuickAction", $panelState)
-				return true
+				logger.info('QuickAction', $panelState);
+				return true;
 			}
 		},
 		{
@@ -36,12 +36,12 @@
 			name: 'Bot Queue',
 			description: 'View the bot queue',
 			link: '/panel/bots/queue',
-			enabled: () => true, // This is always available
+			enabled: () => true // This is always available
 		},
 		{
-			name: "List Management",
-			description: "Manage the list",
-			link: "",
+			name: 'List Management',
+			description: 'Manage the list',
+			link: '',
 			enabled: () => true,
 			options: () => {
 				return [
@@ -49,7 +49,8 @@
 						name: 'CDN',
 						description: 'Manage the CDN(s) modifiable by this Arcadia instance',
 						link: '/panel/cdn',
-						enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("cdn", "list_scopes"))
+						enabled: () =>
+							hasPerm($panelState?.staff_member?.resolved_perms || [], build('cdn', 'list_scopes'))
 					},
 					{
 						name: 'Partners',
@@ -58,24 +59,25 @@
 						enabled: () => true // All staff can view the partner list, other permissions are handled by admin panel code
 					},
 					{
-						name: "Changelogs",
-						description: "View and/or manage the changelogs for the list",
-						link: "/panel/changelogs",
+						name: 'Changelogs',
+						description: 'View and/or manage the changelogs for the list',
+						link: '/panel/changelogs',
 						enabled: () => true // All staff can view the changelog entry list, other permissions are handled by admin panel code
 					},
 					{
-						name: "Blog",
-						description: "Manage the blog posts for the list",
-						link: "/panel/blog",
+						name: 'Blog',
+						description: 'Manage the blog posts for the list',
+						link: '/panel/blog',
 						enabled: () => true // All staff can view the blog post list, other permissions are handled by admin panel code
 					},
 					{
-						name: "Applications",
-						description: "Manage the applications for the list",
-						link: "/panel/apps",
-						enabled: () => hasPerm($panelState?.staff_member?.resolved_perms || [], build("apps", "view"))
-					},
-				]
+						name: 'Applications',
+						description: 'Manage the applications for the list',
+						link: '/panel/apps',
+						enabled: () =>
+							hasPerm($panelState?.staff_member?.resolved_perms || [], build('apps', 'view'))
+					}
+				];
 			}
 		},
 		{
@@ -83,27 +85,30 @@
 			description: 'Manage entities!',
 			link: '/panel/rpc',
 			enabled: () => true,
-			options: () => ($panelState?.target_types || []).map((type) => {
-				return {
-					name: type,
-					description: `Manage ${type}s!`,
-					link: `/panel/rpc/${type}`,
-					enabled: () => true,
-				};
-			})
+			options: () =>
+				($panelState?.target_types || []).map((type) => {
+					return {
+						name: type,
+						description: `Manage ${type}s!`,
+						link: `/panel/rpc/${type}`,
+						enabled: () => true
+					};
+				})
 		},
 		{
-			name: "Staff Management",
-			description: "View and manage staff",
+			name: 'Staff Management',
+			description: 'View and manage staff',
 			enabled: () => true,
-			link: "/panel/staff",
+			link: '/panel/staff',
 			options: () => {
-				return [{
-					name: "Positions",
-					description: `Manage staff positions`,
-					link: `/panel/staff/positions`,
-					enabled: () => true,
-				}]
+				return [
+					{
+						name: 'Positions',
+						description: `Manage staff positions`,
+						link: `/panel/staff/positions`,
+						enabled: () => true
+					}
+				];
 			}
 		},
 		{
@@ -117,8 +122,8 @@
 			description: 'Logout from the panel',
 			link: '/panel/logout',
 			enabled: () => true
-		},
-	];
+		}
+	]; // cum
 </script>
 
 <AuthBoundary>
@@ -138,24 +143,27 @@
 				<summary class="hover:cursor-pointer">View Permissions</summary>
 				<span class="font-semibold">Staff Positions:</span>
 				<UnorderedList>
-					{#each ($panelState?.staff_member?.positions || []) as staffPosition}
-						<ListItem>{title(staffPosition.name.replaceAll("_", " "))} <span class="opacity-80">({staffPosition.name})</ListItem>
+					{#each $panelState?.staff_member?.positions || [] as staffPosition}
+						<ListItem
+							>{title(staffPosition.name.replaceAll('_', ' '))}
+							<span class="opacity-80">({staffPosition.name})</span></ListItem
+						>
 					{/each}
 				</UnorderedList>
-	
+
 				{#if ($panelState?.staff_member?.perm_overrides || []).length > 0}
 					<span class="font-semibold">Permission Overrides:</span>
 					<UnorderedList>
-						{#each ($panelState?.staff_member?.perm_overrides || []) as perm}
-							<PermDisplay perm={perm} />
+						{#each $panelState?.staff_member?.perm_overrides || [] as perm}
+							<PermDisplay {perm} />
 						{/each}
 					</UnorderedList>
 				{/if}
-	
+
 				<span class="font-semibold">Resolved Permissions:</span>
 				<UnorderedList>
-					{#each ($panelState?.staff_member?.resolved_perms || []) as perm}
-						<PermDisplay perm={perm} />
+					{#each $panelState?.staff_member?.resolved_perms || [] as perm}
+						<PermDisplay {perm} />
 					{/each}
 				</UnorderedList>
 			</details>

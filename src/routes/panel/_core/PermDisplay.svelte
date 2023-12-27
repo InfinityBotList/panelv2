@@ -1,13 +1,13 @@
 <script lang="ts">
-	import ListItem from "../../../components/ListItem.svelte";
+	import ListItem from '../../../components/ListItem.svelte';
 
-    export let perm: string
+	export let perm: string;
 </script>
 
-{#if perm.startsWith("~")}
-    <ListItem className="text-red-600 line-through">{perm}</ListItem>
-{:else if perm.endsWith(".*")}
-    <ListItem className="text-green-600 font-bold">{perm}</ListItem>
+{#if perm.startsWith('~')}
+	<ListItem className="text-red-600 line-through">{perm}</ListItem>
+{:else if perm.endsWith('.*')}
+	<ListItem className="text-green-600 font-bold">{perm}</ListItem>
 {:else}
-    <ListItem>{perm}</ListItem>
+	<ListItem>{perm}</ListItem>
 {/if}

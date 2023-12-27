@@ -14,7 +14,7 @@
 		let res = await panelQuery({
 			UpdatePartners: {
 				login_token: $panelAuthState?.loginToken || '',
-				action: "List"
+				action: 'List'
 			}
 		});
 
@@ -26,9 +26,9 @@
 			GetMainCdnScope: {
 				login_token: $panelAuthState?.loginToken || ''
 			}
-		})
+		});
 
-		if(!scopeRes.ok) {
+		if (!scopeRes.ok) {
 			let err = await scopeRes.text();
 			throw new Error(`Failed to fetch main CDN scope: ${err}`);
 		}

@@ -36,7 +36,7 @@
 		let botsObj = [];
 
 		for (let bot of bots) {
-			if('Bot' in bot) {
+			if ('Bot' in bot) {
 				botsObj.push(bot.Bot);
 			}
 		}

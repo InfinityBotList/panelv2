@@ -15,10 +15,10 @@
 
 	// Safari needs this patch here
 	const goto = async (url: string) => {
-		if(navigating) return new Promise(() => {});
+		if (navigating) return new Promise(() => {});
 		navigating = true;
 		return await gotoOnce(url);
-	}
+	};
 
 	const setupState = async () => {
 		if ($panelState) {
@@ -100,8 +100,8 @@
 
 			if (!helloRes.ok) {
 				let err = await helloRes.text();
-				if($panelAuthState) {
-					$panelAuthState.authErr = "hello_failed"
+				if ($panelAuthState) {
+					$panelAuthState.authErr = 'hello_failed';
 				}
 				throw new Error(err?.toString() || 'Unknown error');
 			}

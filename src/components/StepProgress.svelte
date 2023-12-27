@@ -18,13 +18,17 @@
 	const nextStep = async () => {
 		try {
 			let currentStepData = steps[currentStep];
-			if(currentStepData.onClick) {
+			if (currentStepData.onClick) {
 				currentStepData.onClick();
 			}
 			currentStep = currentStep + 1;
 			return true;
 		} catch (err) {
-			error(`${err?.toString() || 'Could not go to the next step! Ensure you have filled out all fields!'}`);
+			error(
+				`${
+					err?.toString() || 'Could not go to the next step! Ensure you have filled out all fields!'
+				}`
+			);
 			return false;
 		}
 	};
@@ -34,7 +38,8 @@
 		return true;
 	};
 
-	$: if(currentStep === undefined) currentStep = steps.findIndex((step) => step.current === true) || 0
+	$: if (currentStep === undefined)
+		currentStep = steps.findIndex((step) => step.current === true) || 0;
 </script>
 
 <ol
