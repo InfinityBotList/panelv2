@@ -144,7 +144,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
             let mdContents: string = await res.text()
 
             let mdData = document.createElement("pre")
-            mdData.innerText = mdContents
+            mdData.innerHTML = mdContents
             mdData.classList.add("max-w-full", "h-full")
             if(previewBox) {
                 previewBox.appendChild(mdData)
