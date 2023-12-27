@@ -129,8 +129,11 @@
 		In order to login to the Arcadia instance, please input the 'Instance URL'.
 		<br />
 		<br />
-		Note: The default instance URL is <a class="text-base font-semibold underline text-indigo-600 hover:text-indigo-400" href="https://prod--panel-api.infinitybots.gg">https://prod--panel-api.infinitybots.gg</a> and should
-		be valid. If you wish to use a custom instance URL, please change the URL below.
+		Note: The default instance URL is
+		<a
+			class="text-base font-semibold underline text-indigo-600 hover:text-indigo-400"
+			href="https://prod--panel-api.infinitybots.gg">https://prod--panel-api.infinitybots.gg</a
+		> and should be valid. If you wish to use a custom instance URL, please change the URL below.
 	</p>
 	<OrderedList>
 		<ListItem>
@@ -138,7 +141,7 @@
 		</ListItem>
 		<ListItem>Copy-paste any special 'Instance URL' given to you here</ListItem>
 	</OrderedList>
-    
+
 	<hr class="my-4" />
 
 	<InputText

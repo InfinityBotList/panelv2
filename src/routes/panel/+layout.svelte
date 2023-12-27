@@ -28,8 +28,8 @@
 			description: 'View our staff guides for guidance on doing stuff!',
 			link: '/panel/staffguide',
 			enabled: () => {
-				logger.info("QuickAction", $panelState)
-				return true
+				logger.info('QuickAction', $panelState);
+				return true;
 			}
 		},
 		{
@@ -141,10 +141,13 @@
 
 			<details>
 				<summary class="hover:cursor-pointer">View Permissions</summary>
+
+				<div class="p-2" />
+
 				<span class="font-semibold">Staff Positions:</span>
 				<UnorderedList>
 					{#each $panelState?.staff_member?.positions || [] as staffPosition}
-						<ListItem
+						<ListItem className="ml-3"
 							>{title(staffPosition.name.replaceAll('_', ' '))}
 							<span class="opacity-80">({staffPosition.name})</span></ListItem
 						>

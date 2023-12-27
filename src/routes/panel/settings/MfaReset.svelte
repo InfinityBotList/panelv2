@@ -45,6 +45,8 @@
 	>Reset Panel 2FA here. Note that you will need access to your current OTP in order to continue.</GreyText
 >
 
+<div class="p-2" />
+
 <InputText
 	id="otp"
 	minlength={6}

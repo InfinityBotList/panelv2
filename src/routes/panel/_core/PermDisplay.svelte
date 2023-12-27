@@ -5,9 +5,9 @@
 </script>
 
 {#if perm.startsWith('~')}
-	<ListItem className="text-red-600 line-through">{perm}</ListItem>
+	<ListItem className="text-red-600 line-through ml-3">{perm}</ListItem>
 {:else if perm.endsWith('.*')}
-	<ListItem className="text-green-600 font-bold">{perm}</ListItem>
+	<ListItem className="text-green-600 font-bold ml-3">{perm}</ListItem>
 {:else}
-	<ListItem>{perm}</ListItem>
+	<ListItem className="ml-3">{perm}</ListItem>
 {/if}

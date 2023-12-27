@@ -126,11 +126,14 @@
 					{mfaData?.info?.secret}
 				</code>
 			</p>
-        {:else}
-            <p class="text-base font-semibold text-gray-300">For our security, we require a One-Time Password to access this panel. You can access this password by going to your Authenticator App of choice (such as Authy, Google Authenticator).</p>
+		{:else}
+			<p class="text-base font-semibold text-gray-300">
+				For our security, we require a One-Time Password to access this panel. You can access this
+				password by going to your Authenticator App of choice (such as Authy, Google Authenticator).
+			</p>
 		{/if}
 
-        <div class="p-3" />
+		<div class="p-3" />
 
 		<InputText
 			id="otp"

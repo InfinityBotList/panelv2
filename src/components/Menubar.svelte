@@ -22,7 +22,13 @@
 	};
 
 	$: {
-		Navigation = Navigation;
+		Navigation = [
+			{
+				Name: 'Home',
+				Href: '/',
+				Current: true
+			}
+		];
 
 		Navigation.map((p) => {
 			if (p.Href === $page.url.pathname) p.Current = true;
@@ -115,7 +121,7 @@
 						alt="Infinity Panel"
 					/>
 
-                    <h2 class="text-base font-bold text-white ml-2">Infinity Panel</h2>
+					<h2 class="text-base font-bold text-white ml-2">Infinity Panel</h2>
 				</div>
 				<div class="hidden sm:ml-6 sm:block">
 					<div class="flex space-x-4">
