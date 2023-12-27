@@ -154,7 +154,7 @@ export const renderPreview = async (
 
 			let mdData = document.createElement('div');
 			mdData.innerHTML = mdContents;
-			mdData.classList.add('max-w-full', 'h-full desc');
+			mdData.classList.add('max-w-full', 'h-full', 'desc');
 			if (previewBox) {
 				previewBox.appendChild(mdData);
 			}
