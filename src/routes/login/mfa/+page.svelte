@@ -24,11 +24,11 @@
 
 	const loadMfa = async () => {
 		let panelStateData = localStorage.getItem('panelStateData');
-		
-		logger.info("MFA", panelStateData)
+
+		logger.info('MFA', panelStateData);
 
 		if (!panelStateData) {
-			throw new Error("Couldn't find panel state data in localStorage")
+			throw new Error("Couldn't find panel state data in localStorage");
 		}
 
 		try {
@@ -53,7 +53,7 @@
 
 		if (!res.ok) {
 			let err = await res.text();
-			if(err == "sessionAlreadyActive") {
+			if (err == 'sessionAlreadyActive') {
 				localStorage.setItem(
 					'panelStateData',
 					JSON.stringify({
@@ -112,7 +112,7 @@
 	<Loading {msg} />
 {:then mfaData}
 	<article class="p-4">
-		<h1 class="text-3xl font-semibold">MFA</h1>
+		<h1 class="text-2xl font-semibold">Multi-Factor Authentication</h1>
 
 		{#if mfaData?.info}
 			<h2 class="text-xl font-semibold">First Time Setup</h2>
@@ -126,13 +126,20 @@
 					{mfaData?.info?.secret}
 				</code>
 			</p>
+		{:else}
+			<p class="text-base font-semibold text-gray-300">
+				For our security, we require a One-Time Password to access this panel. You can access this
+				password by going to your Authenticator App of choice (such as Authy, Google Authenticator).
+			</p>
 		{/if}
+
+		<div class="p-3" />
 
 		<InputText
 			id="otp"
 			minlength={6}
 			label="Enter OTP"
-			description="Please open your authenticator app and enter the <span class='font-bold'>One-Time Password</span> you have recieved now!"
+			description="Please open your authenticator app and enter the <span class='font-bold'>One-Time Password</span> displayed!"
 			placeholder="Code"
 			bind:value={inputtedCode}
 			showErrors={false}

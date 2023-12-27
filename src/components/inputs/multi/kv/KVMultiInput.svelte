@@ -26,7 +26,16 @@
 <Label {id} {label} />
 <div {id}>
 	{#each values as value, i}
-		<KvMultiInputElement {title} {placeholder} {minlength} {showErrors} {i} bind:value {required} {disabled} />
+		<KvMultiInputElement
+			{title}
+			{placeholder}
+			{minlength}
+			{showErrors}
+			{i}
+			bind:value
+			{required}
+			{disabled}
+		/>
 		<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
 		<ButtonReact onclick={() => addValue(i)}>Add</ButtonReact>
 	{/each}

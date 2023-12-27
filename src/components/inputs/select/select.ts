@@ -1,5 +1,5 @@
 export interface SMOption {
-    label: string;
-    id: string;
-    value: string;
+	label: string;
+	id: string;
+	value: string;
 }

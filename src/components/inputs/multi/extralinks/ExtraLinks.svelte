@@ -6,10 +6,10 @@
 	import logger from '$lib/logger';
 
 	export let id: string = 'extra-links';
-	export let title: string = "Links"
+	export let title: string = 'Links';
 	export let label = title;
 	export let values: Link[];
-	export let placeholder: string = "Link";
+	export let placeholder: string = 'Link';
 	export let minlength: number = 5;
 	export let showErrors: boolean = false;
 	export let required: boolean = true;
@@ -19,7 +19,7 @@
 
 	$: {
 		values = internalValues.map(([k, v]) => ({ name: k, value: v }));
-		logger.info('ExtraLinks.onMount', values, internalValues)
+		logger.info('ExtraLinks.onMount', values, internalValues);
 	}
 </script>
 

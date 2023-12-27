@@ -10,10 +10,10 @@
 	// Safari needs this patch here
 	let navigating: boolean = false;
 	const goto = async (url: string) => {
-		if(navigating) return new Promise(() => {});
+		if (navigating) return new Promise(() => {});
 		navigating = true;
 		return await gotoOnce(url);
-	}
+	};
 
 	let msg: string = 'Logging you in now...';
 
@@ -65,11 +65,11 @@
 
 		localStorage.setItem('panelStateData', JSON.stringify(ps));
 
-		if(!localStorage.getItem('panelStateData')) {
+		if (!localStorage.getItem('panelStateData')) {
 			throw new Error('Failed to save panel state data to localStorage');
 		}
 
-		logger.info("Panel", "Login", localStorage.getItem('panelStateData'));
+		logger.info('Panel', 'Login', localStorage.getItem('panelStateData'));
 
 		if (window.opener) {
 			window?.opener?.postMessage('login', location.origin);

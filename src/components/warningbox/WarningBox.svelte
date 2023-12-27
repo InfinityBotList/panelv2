@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { error } from "$lib/toast";
-	import Modal from "../Modal.svelte";
-	import ButtonReact from "../button/ButtonReact.svelte";
-	import { Color } from "../button/colors";
-	import InputText from "../inputs/InputText.svelte";
-	import type { WarningBox } from "./warningBox";
+	import { error } from '$lib/toast';
+	import Modal from '../Modal.svelte';
+	import ButtonReact from '../button/ButtonReact.svelte';
+	import { Color } from '../button/colors';
+	import InputText from '../inputs/InputText.svelte';
+	import type { WarningBox } from './warningBox';
 
-    export let show: boolean = false
-    export let warningBox: WarningBox | null = null;
+	export let show: boolean = false;
+	export let warningBox: WarningBox | null = null;
 </script>
 
 {#if show && warningBox && warningBox.nonce}

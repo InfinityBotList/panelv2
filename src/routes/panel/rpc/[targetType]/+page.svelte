@@ -27,17 +27,17 @@
 			name: 'Find',
 			current: true,
 			onClick: () => {
-				if(!selectedId && selectedId !== 0) {
+				if (!selectedId && selectedId !== 0) {
 					throw new Error('No entity selected');
 				}
-				
-				selectedEntity = results[selectedId]
+
+				selectedEntity = results[selectedId];
 			}
 		},
 		{
 			name: 'Confirm',
 			onClick: () => {
-				if(!selectedEntity) {
+				if (!selectedEntity) {
 					throw new Error('No entity selected');
 				}
 
@@ -45,7 +45,7 @@
 			}
 		},
 		{
-			name: 'Action',
+			name: 'Action'
 		}
 	];
 
@@ -94,7 +94,7 @@
 			let err = await res.text();
 
 			error(err || 'Unknown error while fetching');
-			return false
+			return false;
 		}
 
 		let resultsJson: PartialEntity[] = await res.json();
@@ -121,9 +121,9 @@
 
 		return {
 			targetType: $page.params.targetType as TargetType,
-			initialData,
-		}
-	}
+			initialData
+		};
+	};
 
 	afterNavigate(() => {
 		query = '';
@@ -199,10 +199,8 @@
 
 						<Column>
 							{#each results as result, i}
-								<PartialEntityCard 
-									{result}
-								>
-									<svelte:fragment slot="index">#{i+1}</svelte:fragment>
+								<PartialEntityCard {result}>
+									<svelte:fragment slot="index">#{i + 1}</svelte:fragment>
 									<svelte:fragment slot="extra">
 										<Select index={i} bind:selected={selectedId} />
 									</svelte:fragment>
@@ -222,13 +220,9 @@
 
 				<div class="p-3" />
 
-				<PartialEntityCard 
-					result={selectedEntity}
-				>
+				<PartialEntityCard result={selectedEntity}>
 					<svelte:fragment slot="index">#1</svelte:fragment>
-					<svelte:fragment slot="extra">
-						Selected
-					</svelte:fragment>
+					<svelte:fragment slot="extra">Selected</svelte:fragment>
 				</PartialEntityCard>
 			{:else if currentStep == 2}
 				<h2 class="text-white font-black text-xl">Ready, set, action!</h2>

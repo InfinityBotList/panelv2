@@ -1,5 +1,5 @@
 <script lang="ts">
-	import logger from "$lib/logger";
+	import logger from '$lib/logger';
 
 	// The index that selected should be set to when a bot is selected
 	export let index: number;
@@ -8,17 +8,17 @@
 
 	let checked: boolean;
 
-	$: checked = (selected === index)
+	$: checked = selected === index;
 </script>
 
 <button
 	class="flex justify-center hover:opacity-75 focus:outline-none mt-3 w-full rounded-lg bg-black/90 p-3 text-center text-white"
 	on:click={() => {
 		if (checked === false) {
-			logger.info("Select", "Selected bot", index)
+			logger.info('Select', 'Selected bot', index);
 			selected = index;
 		} else {
-			logger.info("Select", "Deselected bot", index)
+			logger.info('Select', 'Deselected bot', index);
 			selected = null;
 		}
 	}}
