@@ -1,7 +1,9 @@
-import { panelQuery } from '$lib/fetch';
+import { fetchClient, panelQuery } from '$lib/fetch';
 import { get } from 'svelte/store';
 import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
 import { panelAuthState } from '$lib/panelAuthState';
+import type { Query } from './generated/htmlsanitize/Query';
+import { panelState } from './panelState';
 
 // The maximum size of a chunk of data to send to the server when adding new files
 export const maxChunkSizeSmall = 1024 * 1024 * 4; // 4MB, for now
@@ -103,6 +105,58 @@ export const renderPreview = async (
 			json.classList.add('max-w-full', 'h-full');
 			if (previewBox) {
 				previewBox.appendChild(json);
+			}
+			break;
+		case 'txt':
+		case 'log':
+		case 'text':
+			data = await loadData(scope, file);
+
+			let textContents: string = await data.text();
+
+			let textData = document.createElement('pre');
+			textData.innerText = textContents;
+			textData.classList.add('max-w-full', 'h-full');
+			if (previewBox) {
+				previewBox.appendChild(textData);
+			}
+			break;
+		case 'htm':
+		case 'html':
+		case 'md':
+			data = await loadData(scope, file);
+
+			let hs: Query = {
+				SanitizeRaw: {
+					body: await data.text()
+				}
+			};
+
+			let hsUrl = get(panelState)?.core_constants?.htmlsanitize_url;
+
+			if (!hsUrl) {
+				throw new Error('Failed to get HTMLSanitize URL');
+			}
+
+			let res = await fetchClient(`${hsUrl}/query`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(hs)
+			});
+
+			if (!res.ok) {
+				throw new Error(`Failed to sanitize HTML: ${await res.text()} [${res.status}]`);
+			}
+
+			let mdContents: string = await res.text();
+
+			let mdData = document.createElement('div');
+			mdData.innerHTML = mdContents;
+			mdData.classList.add('max-w-full', 'h-full desc');
+			if (previewBox) {
+				previewBox.appendChild(mdData);
 			}
 			break;
 		default:
