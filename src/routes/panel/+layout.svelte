@@ -24,6 +24,15 @@
 			}
 		},
 		{
+			name: 'Staff Guide',
+			description: 'View our staff guides for guidance on doing stuff!',
+			link: '/panel/staffguide',
+			enabled: () => {
+				logger.info("QuickAction", $panelState)
+				return true
+			}
+		},
+		{
 			name: 'Bot Queue',
 			description: 'View the bot queue',
 			link: '/panel/bots/queue',

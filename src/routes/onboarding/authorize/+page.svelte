@@ -1,5 +1,5 @@
 <script lang="ts">
-	import OnboardingBoundary from "../../../components/OnboardingBoundary.svelte";
+	import OnboardingBoundary from "../OnboardingBoundary.svelte";
 </script>
 
 <OnboardingBoundary>
