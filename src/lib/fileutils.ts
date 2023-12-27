@@ -133,7 +133,7 @@ export const renderPreview = async (loadData: (scope: string, file: CdnAssetItem
                 throw new Error("Failed to get HTMLSanitize URL")
             }
 
-            let res = await fetchClient(hsUrl, {
+            let res = await fetchClient(`${hsUrl}/query`, {
                 method: "POST",
                 body: JSON.stringify(hs),
             })
