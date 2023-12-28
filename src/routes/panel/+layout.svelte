@@ -12,6 +12,7 @@
 	import PermDisplay from './_core/PermDisplay.svelte';
 	import type { QuickAction } from './_core/QuickAction';
 	import QuickMenuOption from './_core/QuickMenuOption.svelte';
+	import { staffQuickActions } from './staff/quickActions';
 
 	let quickActions: QuickAction[] = [
 		{
@@ -101,14 +102,7 @@
 			enabled: () => true,
 			link: '/panel/staff',
 			options: () => {
-				return [
-					{
-						name: 'Positions',
-						description: `Manage staff positions`,
-						link: `/panel/staff/positions`,
-						enabled: () => true
-					}
-				];
+				return staffQuickActions
 			}
 		},
 		{
