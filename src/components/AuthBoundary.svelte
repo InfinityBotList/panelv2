@@ -9,6 +9,7 @@
 	import ErrorComponent from './Error.svelte';
 	import { panelHelloProtocolVersion } from '$lib/constants';
 	import type { Hello } from '$lib/generated/arcadia/Hello';
+	import { globalUserCache } from '$lib/globalUserCache';
 
 	let loadingMsg = 'Waiting for monkeys?';
 	let navigating: boolean = false;
@@ -107,6 +108,9 @@
 			}
 
 			let helloData: Hello = await helloRes.json();
+
+			$globalUserCache?.set(helloData?.user?.id || '', helloData?.user || {});
+			$globalUserCache = $globalUserCache; // Force update
 
 			$panelState = helloData;
 		} catch (err) {
