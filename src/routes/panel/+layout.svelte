@@ -102,7 +102,7 @@
 			enabled: () => true,
 			link: '/panel/staff',
 			options: () => {
-				return staffQuickActions
+				return staffQuickActions;
 			}
 		},
 		{

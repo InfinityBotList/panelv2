@@ -1,4 +1,4 @@
-import type { PartialUser } from '$lib/generated/arcadia/PartialUser';
+import type { PlatformUser } from '$lib/generated/arcadia/PlatformUser';
 
 export interface Question {
 	id: string;
@@ -23,7 +23,7 @@ export interface AppMeta {
 export interface AppResponse {
 	app_id: string;
 	user_id: string;
-	user: PartialUser;
+	user: PlatformUser;
 	questions: Question[];
 	answers: { [key: string]: string };
 	state: string;

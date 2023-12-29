@@ -9,6 +9,7 @@
 	import { error as errorToast } from '$lib/toast';
 	import { panelQuery } from '$lib/fetch';
 	import { Color } from '../../../components/button/colors';
+	import { panelAuthProtocolVersion } from '$lib/constants';
 
 	let msg: string = 'Loading MFA...';
 
@@ -46,8 +47,13 @@
 		}
 
 		let res = await panelQuery({
-			LoginMfaCheckStatus: {
-				login_token: $panelAuthState?.loginToken || ''
+			Authorize: {
+				version: panelAuthProtocolVersion,
+				action: {
+					CheckMfaState: {
+						login_token: $panelAuthState?.loginToken || ''
+					}
+				}
 			}
 		});
 
@@ -79,16 +85,32 @@
 
 		try {
 			let res = await panelQuery({
-				LoginActivateSession: {
-					login_token: $panelAuthState?.loginToken || '',
-					otp: inputtedCode
+				Authorize: {
+					version: panelAuthProtocolVersion,
+					action: {
+						ActivateSession: {
+							login_token: $panelAuthState?.loginToken || '',
+							otp: inputtedCode
+						}
+					}
 				}
 			});
 
 			if (!res.ok) {
 				let err = await res.text();
-				errorToast(err);
-				return false;
+				if (err == 'sessionAlreadyActive') {
+					localStorage.setItem(
+						'panelStateData',
+						JSON.stringify({
+							...$panelAuthState,
+							sessionState: 'active'
+						})
+					);
+
+					goto(redirect());
+					return true;
+				}
+				throw new Error(err);
 			}
 
 			localStorage.setItem(

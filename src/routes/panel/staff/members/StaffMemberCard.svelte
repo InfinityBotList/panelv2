@@ -21,8 +21,7 @@
 	import UnorderedList from '../../../../components/UnorderedList.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
 
-	const allActions = {
-	} as const;
+	const allActions = {} as const;
 
 	type Action = keyof typeof allActions;
 
@@ -64,9 +63,7 @@
 		let available: Action[] = [];
 
 		for (let perm of Object.keys(allActions)) {
-			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_members', perm))
-			) {
+			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_members', perm))) {
 				available.push(perm as Action);
 			}
 		}
@@ -90,25 +87,30 @@
 
 <SmallCard>
 	<h1 class="text-2xl font-semibold">
-		{staffMember.user_id}
+        {staffMember?.user?.display_name}
+		<span class="opacity-80">[{staffMember?.user?.username}]</span>
 	</h1>
 
-    <h2 class="text-xl font-semibold">Positions</h2>
+    <h2 class="text-xl font-semibold">User ID</h2>
 
-    {#each staffMember?.positions?.sort((a, b) => {
-        // Sort based on index in ascending order
-        return a.index - b.index;
-    }) || [] as p, i}
-        <UnorderedList>
-            <ListItem>
-                {title(p.name.replaceAll('_', ' '))}
-                <span class="opacity-80">({p.name})</span>       
-                {#if i == 0}
-                    <span class="text-green-500"> (Top Position)</span>
-                {/if}
-            </ListItem>
-        </UnorderedList>
-    {/each}
+    <p>{staffMember?.user_id}</p>
+
+	<h2 class="text-xl font-semibold">Positions</h2>
+
+	{#each staffMember?.positions?.sort((a, b) => {
+		// Sort based on index in ascending order
+		return a.index - b.index;
+	}) || [] as p, i}
+		<UnorderedList>
+			<ListItem>
+				{title(p.name.replaceAll('_', ' '))}
+				<span class="opacity-80">({p.name})</span>
+				{#if i == 0}
+					<span class="text-green-500"> (Top Position)</span>
+				{/if}
+			</ListItem>
+		</UnorderedList>
+	{/each}
 
 	<details>
 		<summary class="hover:cursor-pointer">View Advanced Information</summary>

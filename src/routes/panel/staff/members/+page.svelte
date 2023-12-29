@@ -18,8 +18,7 @@
 	import type { StaffPosition } from '$lib/generated/arcadia/StaffPosition';
 	import StaffMemberCard from './StaffMemberCard.svelte';
 
-	const allActions = {
-	} as const;
+	const allActions = {} as const;
 
 	type Action = keyof typeof allActions;
 
@@ -63,22 +62,22 @@
 
 		let staffPositionList: StaffPosition[] = await positionRes.json();
 
-        let membersRes = await panelQuery({
-            UpdateStaffMembers: {
-                login_token: $panelAuthState?.loginToken || '',
-                action: 'ListMembers'
-            }
-        });
+		let membersRes = await panelQuery({
+			UpdateStaffMembers: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: 'ListMembers'
+			}
+		});
 
-        if (!membersRes.ok) {
-            throw new Error('Failed to fetch staff members list');
-        }
+		if (!membersRes.ok) {
+			throw new Error('Failed to fetch staff members list');
+		}
 
-        let staffMembersList: StaffMember[] = await membersRes.json();
+		let staffMembersList: StaffMember[] = await membersRes.json();
 
 		return {
 			staffPositionList,
-            staffMembersList
+			staffMembersList
 		};
 	};
 
@@ -112,7 +111,7 @@
 	{/if}
 
 	{#each data?.staffMembersList as member}
-		<StaffMemberCard staffMember={member} staffPositionList={data?.staffPositionList || []}/>
+		<StaffMemberCard staffMember={member} staffPositionList={data?.staffPositionList || []} />
 	{/each}
 {:catch error}
 	<ErrorComponent msg={error?.toString() || 'Unknown erro'} />

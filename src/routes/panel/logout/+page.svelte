@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { panelState } from '$lib/panelState';
+	import { panelAuthProtocolVersion } from '$lib/constants';
 
 	const clear = () => {
 		localStorage.removeItem('panelStateData');
@@ -23,8 +24,13 @@
 
 	const logout = async () => {
 		let res = await panelQuery({
-			Logout: {
-				login_token: $panelAuthState?.loginToken || ''
+			Authorize: {
+				version: panelAuthProtocolVersion,
+				action: {
+					Logout: {
+						login_token: $panelAuthState?.loginToken || ''
+					}
+				}
 			}
 		});
 

@@ -7,6 +7,7 @@
 	import GreyText from '../../../components/GreyText.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { Color } from '../../../components/button/colors';
+	import { panelAuthProtocolVersion } from '$lib/constants';
 
 	let mfaOtp: string = '';
 
@@ -18,9 +19,14 @@
 
 		try {
 			let res = await panelQuery({
-				LoginResetMfa: {
-					login_token: $panelAuthState?.loginToken || '',
-					otp: mfaOtp
+				Authorize: {
+					version: panelAuthProtocolVersion,
+					action: {
+						ResetMfaTotp: {
+							login_token: $panelAuthState?.loginToken || '',
+							otp: mfaOtp
+						}
+					}
 				}
 			});
 

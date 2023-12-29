@@ -1,3 +1,4 @@
+import { panelAuthProtocolVersion } from './constants';
 import { panelQuery } from './fetch';
 import logger from './logger';
 import type { PanelAuthState } from './panelAuthState';
@@ -11,8 +12,13 @@ export const logoutUser = async (sendLogout: boolean) => {
 			let json: PanelAuthState = JSON.parse(panelStateData || 'null');
 
 			let resp = await panelQuery({
-				Logout: {
-					login_token: json?.loginToken
+				Authorize: {
+					version: panelAuthProtocolVersion,
+					action: {
+						Logout: {
+							login_token: json?.loginToken
+						}
+					}
 				}
 			});
 

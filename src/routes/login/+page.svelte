@@ -12,11 +12,12 @@
 	import { utf8ToHex } from '$lib/strings';
 	import { Color } from '../../components/button/colors';
 	import {
-		panelStartAuthProtocolVersion,
+		panelAuthProtocolVersion,
 		panelStartAuthRequestScope,
 		panelStartAuthResponseScope
 	} from '$lib/constants';
 	import type { StartAuth } from '$lib/generated/arcadia/StartAuth';
+	import type { ILoginState } from '$lib/iloginState';
 
 	// Safari needs this patch here
 	let navigating: boolean = false;
@@ -56,10 +57,14 @@
 		};
 
 		let res = await panelQuery({
-			StartAuth: {
-				version: panelStartAuthProtocolVersion,
-				scope: panelStartAuthRequestScope,
-				redirect_url: `${window.location.origin}/login/authorize`
+			Authorize: {
+				version: panelAuthProtocolVersion,
+				action: {
+					Begin: {
+						scope: panelStartAuthRequestScope,
+						redirect_url: `${window.location.origin}/login/authorize`
+					}
+				}
 			}
 		});
 
@@ -87,7 +92,7 @@
 			redirect = '/';
 		}
 
-		let loginState: LoginState = {
+		let loginState: ILoginState = {
 			instanceUrl,
 			redirectUrl: redirect
 		};

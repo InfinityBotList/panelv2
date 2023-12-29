@@ -6,6 +6,8 @@
 	import { goto as gotoOnce } from '$app/navigation';
 	import { hexToUtf8 } from '$lib/strings';
 	import logger from '$lib/logger';
+	import { panelAuthProtocolVersion } from '$lib/constants';
+	import type { ILoginState } from '$lib/iloginState';
 
 	// Safari needs this patch here
 	let navigating: boolean = false;
@@ -32,7 +34,7 @@
 			throw new Error('Failed to get state from URL');
 		}
 
-		let loginState: LoginState = JSON.parse(hexToUtf8(state));
+		let loginState: ILoginState = JSON.parse(hexToUtf8(state));
 
 		if (!loginState) {
 			throw new Error('Failed to parse login state');
@@ -45,9 +47,14 @@
 		};
 
 		let res = await panelQuery({
-			Login: {
-				code: code,
-				redirect_url: `${window.location.origin}/login/authorize`
+			Authorize: {
+				version: panelAuthProtocolVersion,
+				action: {
+					CreateSession: {
+						code: code,
+						redirect_url: `${window.location.origin}/login/authorize`
+					}
+				}
 			}
 		});
 

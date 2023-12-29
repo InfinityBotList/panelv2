@@ -1,4 +1,4 @@
-interface LoginState {
+export interface ILoginState {
 	instanceUrl: string;
 	redirectUrl: string;
 }
