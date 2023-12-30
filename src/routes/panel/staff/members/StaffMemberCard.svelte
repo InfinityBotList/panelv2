@@ -97,6 +97,7 @@
 			throw new Error('Failed to edit staff member');
 		}
 
+        success('Edited staff member');
 		return true;
 	};
 
