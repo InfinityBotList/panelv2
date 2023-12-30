@@ -136,20 +136,22 @@
 {#await fetchStaffPositionList()}
 	<Loading msg={'Loading staff positions...'} />
 {:then { staffPositionList }}
-	<h2 class="mt-3 mb-1 text-xl">Actions</h2>
-	<div class="mb-7 border rounded-md">
-		{#each availableActions as action}
-			<button
-				on:click={() => {
-					open(action);
-				}}
-				class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
-			>
-				<Icon icon={allActions[action][0]} class={'text-2xl inline-block align-bottom'} />
-				{openAction == action ? 'Close' : allActions[action][1]}
-			</button>
-		{/each}
-	</div>
+	{#if availableActions?.length}
+		<h2 class="mt-3 mb-1 text-xl">Actions</h2>
+		<div class="mb-7 border rounded-md">
+			{#each availableActions as action}
+				<button
+					on:click={() => {
+						open(action);
+					}}
+					class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+				>
+					<Icon icon={allActions[action][0]} class={'text-2xl inline-block align-bottom'} />
+					{openAction == action ? 'Close' : allActions[action][1]}
+				</button>
+			{/each}
+		</div>
+	{/if}
 
 	{#if openAction}
 		<div class="mb-7 border rounded-md p-3">

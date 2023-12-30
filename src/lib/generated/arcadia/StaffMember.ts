@@ -10,5 +10,6 @@ export interface StaffMember {
 	resolved_perms: Array<string>;
 	no_autosync: boolean;
 	unaccounted: boolean;
+	mfa_verified: boolean;
 	created_at: string;
 }

@@ -225,125 +225,125 @@
 				</button>
 			{/each}
 		</div>
+	{/if}
 
-		{#if openAction == 'swap_index'}
-			<h1 class="text-2xl">Swap With Index</h1>
-			<GreyText
-				>A simple way to change position hierarchy is by swapping the permissions index with one
-				that is lower (lower index = higher in hierarchy)</GreyText
-			>
+	{#if openAction == 'swap_index'}
+		<h1 class="text-2xl">Swap With Index</h1>
+		<GreyText
+			>A simple way to change position hierarchy is by swapping the permissions index with one that
+			is lower (lower index = higher in hierarchy)</GreyText
+		>
 
-			<Select
-				bind:value={swapIndexProposed}
-				id="indexswap"
-				label="Choose Permission To Swap With"
-				choices={staffPositionList
-					?.filter(
-						(sp) =>
-							sp.id != staffPosition.id &&
-							(topUserPosition?.index || topUserPosition?.index == 0) &&
-							topUserPosition.index < sp.index
-					)
-					.map((sp) => {
-						return {
-							label: `${title(sp.name.replaceAll('_', ' '))} (${sp.name}) [${sp.index}]`,
-							value: sp.index.toString(),
-							id: sp.id
-						};
-					})}
-			/>
+		<Select
+			bind:value={swapIndexProposed}
+			id="indexswap"
+			label="Choose Permission To Swap With"
+			choices={staffPositionList
+				?.filter(
+					(sp) =>
+						sp.id != staffPosition.id &&
+						(topUserPosition?.index || topUserPosition?.index == 0) &&
+						topUserPosition.index < sp.index
+				)
+				.map((sp) => {
+					return {
+						label: `${title(sp.name.replaceAll('_', ' '))} (${sp.name}) [${sp.index}]`,
+						value: sp.index.toString(),
+						id: sp.id
+					};
+				})}
+		/>
 
-			<ButtonReact
-				color={Color.Themable}
-				icon="ph:swap"
-				onClick={swapIndexExecute}
-				states={{
-					loading: 'Swapping index...',
-					success: 'Swapped index!',
-					error: 'Failed to swap index!'
-				}}
-				text="Swap Index"
-			/>
-		{:else if openAction == 'set_index'}
-			<h1 class="text-2xl">Set Index</h1>
-			<GreyText>
-				You can set the index of a position to a specific number. This will change the hierarchy of
-				the position.
-			</GreyText>
+		<ButtonReact
+			color={Color.Themable}
+			icon="ph:swap"
+			onClick={swapIndexExecute}
+			states={{
+				loading: 'Swapping index...',
+				success: 'Swapped index!',
+				error: 'Failed to swap index!'
+			}}
+			text="Swap Index"
+		/>
+	{:else if openAction == 'set_index'}
+		<h1 class="text-2xl">Set Index</h1>
+		<GreyText>
+			You can set the index of a position to a specific number. This will change the hierarchy of
+			the position.
+		</GreyText>
 
-			<IndexChooser {staffPositionList} bind:index={staffPositionUpdateIndex} />
+		<IndexChooser {staffPositionList} bind:index={staffPositionUpdateIndex} />
 
-			<ButtonReact
-				color={Color.Themable}
-				icon="mdi:code"
-				onClick={setIndexExecute}
-				states={{
-					loading: 'Setting index...',
-					success: 'Set index!',
-					error: 'Failed to set index!'
-				}}
-				text="Set Index"
-			/>
-		{:else if openAction == 'edit'}
-			<h1 class="text-2xl">Edit Position</h1>
+		<ButtonReact
+			color={Color.Themable}
+			icon="mdi:code"
+			onClick={setIndexExecute}
+			states={{
+				loading: 'Setting index...',
+				success: 'Set index!',
+				error: 'Failed to set index!'
+			}}
+			text="Set Index"
+		/>
+	{:else if openAction == 'edit'}
+		<h1 class="text-2xl">Edit Position</h1>
 
-			<InputText
-				id="id"
-				label="ID"
-				value={editPosition.id}
-				placeholder="ID cannot be changed"
-				disabled
-				minlength={0}
-				showErrors={false}
-			/>
-			<InputText
-				id="name"
-				label="Name"
-				bind:value={editPosition.name}
-				placeholder="New name of the position"
-				minlength={1}
-				showErrors={false}
-			/>
-			<InputText
-				id="role_id"
-				label="Role ID"
-				bind:value={editPosition.role_id}
-				placeholder="New role id on the staff server of the position to set"
-				minlength={1}
-				showErrors={true}
-			/>
-			<MultiInput
-				id="perms"
-				title="Permissions"
-				placeholder="Choose which permissions to add"
-				label="Permission"
-				showLabel={true}
-				bind:values={editPosition.perms}
-				minlength={1}
-				showErrors={true}
-			/>
+		<InputText
+			id="id"
+			label="ID"
+			value={editPosition.id}
+			placeholder="ID cannot be changed"
+			disabled
+			minlength={0}
+			showErrors={false}
+		/>
+		<InputText
+			id="name"
+			label="Name"
+			bind:value={editPosition.name}
+			placeholder="New name of the position"
+			minlength={1}
+			showErrors={false}
+		/>
+		<InputText
+			id="role_id"
+			label="Role ID"
+			bind:value={editPosition.role_id}
+			placeholder="New role id on the staff server of the position to set"
+			minlength={1}
+			showErrors={true}
+		/>
+		<MultiInput
+			id="perms"
+			title="Permissions"
+			placeholder="Choose which permissions to add"
+			label="Permission"
+			showLabel={true}
+			bind:values={editPosition.perms}
+			minlength={1}
+			showErrors={true}
+		/>
 
-			<ExtraLinks
-				id="corresponding_roles"
-				title="Corresponding Roles"
-				placeholder="Server ID: Role ID"
-				label="Corresponding Roles"
-				bind:values={editPosition.corresponding_roles}
-				minlength={1}
-				showErrors={true}
-			/>
+		<ExtraLinks
+			id="corresponding_roles"
+			title="Corresponding Roles"
+			placeholder="Server ID: Role ID"
+			label="Corresponding Roles"
+			bind:values={editPosition.corresponding_roles}
+			minlength={1}
+			showErrors={true}
+		/>
 
-			<ButtonReact
-				color={Color.Themable}
-				icon="mdi:edit"
-				onClick={editPositionExecute}
-				states={{
-					loading: 'Editing position...',
-					success: 'Edited position!',
-					error: 'Failed to edit position!'
-				}}
-				text="Edit Position"
-			/>
-		{/if}
+		<ButtonReact
+			color={Color.Themable}
+			icon="mdi:edit"
+			onClick={editPositionExecute}
+			states={{
+				loading: 'Editing position...',
+				success: 'Edited position!',
+				error: 'Failed to edit position!'
+			}}
+			text="Edit Position"
+		/>
 	{/if}
 </SmallCard>

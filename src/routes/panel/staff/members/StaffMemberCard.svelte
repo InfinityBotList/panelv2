@@ -4,8 +4,6 @@
 	import Icon from '@iconify/svelte';
 	import ObjectRender from '../../../../components/ObjectRender.svelte';
 	import SmallCard from '../../../../components/SmallCard.svelte';
-	import GreyText from '../../../../components/GreyText.svelte';
-	import Select from '../../../../components/inputs/select/Select.svelte';
 	import { panelState } from '$lib/panelState';
 	import { build, hasPerm } from '$lib/perms';
 	import { error, success } from '$lib/toast';
@@ -20,8 +18,11 @@
 	import type { StaffMember } from '$lib/generated/arcadia/StaffMember';
 	import UnorderedList from '../../../../components/UnorderedList.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
+	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
 
-	const allActions = {} as const;
+	const allActions = {
+		edit: ['mdi:edit', 'Edit']
+	} as const;
 
 	type Action = keyof typeof allActions;
 
@@ -52,7 +53,6 @@
 		return topPosition;
 	};
 
-	export let staffPositionList: StaffPosition[];
 	export let staffMember: StaffMember;
 
 	const getAllActions = (): Action[] => {
@@ -77,6 +77,30 @@
 	let availableActions: Action[] = getAllActions();
 
 	// Actions
+	let editMember = staffMember;
+	const editMemberExecute = async () => {
+		let res = await panelQuery({
+			UpdateStaffMembers: {
+				login_token: $panelAuthState?.loginToken || '',
+				action: {
+					EditMember: {
+						user_id: editMember.user_id,
+						perm_overrides: editMember.perm_overrides || [],
+						no_autosync: editMember.no_autosync || false,
+						unaccounted: editMember.unaccounted || false
+					}
+				}
+			}
+		});
+
+		if (!res.ok) {
+			throw new Error('Failed to edit staff member');
+		}
+
+		let staffMember: StaffMember = await res.json();
+
+		return true;
+	};
 
 	// Bindings
 	$: {
@@ -87,13 +111,13 @@
 
 <SmallCard>
 	<h1 class="text-2xl font-semibold">
-        {staffMember?.user?.display_name}
+		{staffMember?.user?.display_name}
 		<span class="opacity-80">[{staffMember?.user?.username}]</span>
 	</h1>
 
-    <h2 class="text-xl font-semibold">User ID</h2>
+	<h2 class="text-xl font-semibold">User ID</h2>
 
-    <p>{staffMember?.user_id}</p>
+	<p>{staffMember?.user_id}</p>
 
 	<h2 class="text-xl font-semibold">Positions</h2>
 
@@ -132,5 +156,54 @@
 				</button>
 			{/each}
 		</div>
+	{/if}
+
+	{#if openAction == 'edit'}
+		<h1 class="text-2xl">Edit Member</h1>
+
+		<InputText
+			id="user_id"
+			value={editMember?.user?.id}
+			label="User ID"
+			disabled={true}
+			placeholder="User ID"
+			minlength={0}
+			showErrors={false}
+		/>
+		<MultiInput
+			id="perm_overrides"
+			bind:values={editMember.perm_overrides}
+			title="Permission Overrides"
+			label="Permission Overrides"
+			placeholder="Permission Overrides"
+			minlength={0}
+			showErrors={false}
+		/>
+		<BoolInput
+			id="no_autosync"
+			bind:value={editMember.no_autosync}
+			description="Whether or not the staff positions of this member should be synced when they change on the staff server, Leave enabled if unsure"
+			label="No Autosync"
+			disabled={false}
+		/>
+		<BoolInput
+			id="unaccounted"
+			bind:value={editMember.unaccounted}
+			description="Whether or not this member has been accounted for correctly during sync (if they leave server with perm_overrides, this is set), Do not change unless you know what you're doing!"
+			label="Unaccounted"
+			disabled={false}
+		/>
+
+		<ButtonReact
+			color={Color.Themable}
+			icon="mdi:edit"
+			onClick={editMemberExecute}
+			states={{
+				loading: 'Editing member...',
+				success: 'Edited member!',
+				error: 'Failed to edit member!'
+			}}
+			text="Edit Member"
+		/>
 	{/if}
 </SmallCard>
