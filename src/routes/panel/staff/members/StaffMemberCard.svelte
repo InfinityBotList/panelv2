@@ -97,8 +97,6 @@
 			throw new Error('Failed to edit staff member');
 		}
 
-		let staffMember: StaffMember = await res.json();
-
 		return true;
 	};
 
