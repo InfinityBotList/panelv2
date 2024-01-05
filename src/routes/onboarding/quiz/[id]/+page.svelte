@@ -80,6 +80,9 @@
 
         let res = await fetchClient(`${persepolisUrl}/submit-quiz`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 id: $page?.params?.id || '',
                 login_token: $obBoundary?.token,
