@@ -66,7 +66,7 @@
                     throw new Error(`Question ${i + 1} is too short!`);
                 }
             } else if (question.data.multiple_choice) {
-                if (resp == 'select-option') {
+                if (!resp) {
                     throw new Error(`Question ${i + 1} is not answered!`);
                 }
             } else {
@@ -139,7 +139,6 @@
                     required={true}
                     bind:value={respData[i]}
                     choices={[
-                        { id: "select-option", label: 'Select an option', value: '' },
                         ...question.data['multiple_choice'].map((option, i) => {
                             return {
                                 id: i.toString(),
