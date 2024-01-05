@@ -19,7 +19,7 @@
 
     let quizRequest: CreateQuizResponse;
     const fetchQuiz = async () => {
-        let quizDat = await fetchClient(`${persepolisUrl}/onboarding-code`, {
+        let quizDat = await fetchClient(`${persepolisUrl}/quiz`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
