@@ -74,6 +74,7 @@
 	let createPosition = {
 		name: '',
 		role_id: '',
+		icon: '',
 		index: 0,
 		perms: [],
 		corresponding_roles: []
@@ -86,6 +87,7 @@
 					CreatePosition: {
 						name: createPosition.name,
 						role_id: createPosition.role_id,
+						icon: createPosition.icon,
 						index: createPosition.index,
 						perms: createPosition.perms,
 						corresponding_roles: createPosition.corresponding_roles || []
@@ -173,6 +175,14 @@
 					minlength={1}
 					showErrors={true}
 				/>
+		                <InputText
+                		        id="icon"
+                        		label="Role Icon [iconify]"
+                        		bind:value={createPosition.icon}
+                        		placeholder="Role Icon from iconify for displaying on the website [about page]"
+                        		minlength={1}
+                        		showErrors={true}
+                		/>
 				<MultiInput
 					id="perms"
 					title="Permissions"

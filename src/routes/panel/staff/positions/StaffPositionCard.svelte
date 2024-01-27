@@ -162,6 +162,7 @@
 						name: editPosition.name || staffPosition.name,
 						role_id: editPosition.role_id || staffPosition.role_id,
 						perms: editPosition.perms || staffPosition.perms,
+						icon: editPosition.icon || staffPosition.icon,
 						corresponding_roles:
 							editPosition.corresponding_roles || staffPosition.corresponding_roles || []
 					}
@@ -313,6 +314,14 @@
 			minlength={1}
 			showErrors={true}
 		/>
+                <InputText
+                        id="icon"
+                        label="Role Icon [iconify]"
+                        bind:value={editPosition.icon}
+                        placeholder="Role Icon from iconify for displaying on the website [about page]"
+                        minlength={1}
+                        showErrors={true}
+                />
 		<MultiInput
 			id="perms"
 			title="Permissions"
