@@ -120,8 +120,8 @@
 		} catch (err) {
 			logger.error('Popups seem to be disabled, falling back to redirect auth');
 
-			// Open login URL in current tab using goto
-			await goto(loginUrl);
+			// Open login URL in current tab
+			window.location.href = loginUrl;
 		}
 
 		return true;
