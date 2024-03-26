@@ -2,13 +2,13 @@
 	import { goto } from '$app/navigation';
 	import logger from '$lib/logger';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
-	import ErrorComponent from '../../../components/Error.svelte';
-	import Loading from '../../../components/Loading.svelte';
-	import InputText from '../../../components/inputs/InputText.svelte';
-	import ButtonReact from '../../../components/button/ButtonReact.svelte';
+	import ErrorComponent from '../../components/Error.svelte';
+	import Loading from '../../components/Loading.svelte';
+	import InputText from '../../components/inputs/InputText.svelte';
+	import ButtonReact from '../../components/button/ButtonReact.svelte';
 	import { error as errorToast } from '$lib/toast';
 	import { panelQuery } from '$lib/fetch';
-	import { Color } from '../../../components/button/colors';
+	import { Color } from '../../components/button/colors';
 	import { panelAuthProtocolVersion } from '$lib/constants';
 
 	let msg: string = 'Loading MFA...';

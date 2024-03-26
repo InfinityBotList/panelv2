@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Loading from '../../../../components/Loading.svelte';
+	import Loading from '../../../components/Loading.svelte';
 	import { cdnUrl, htmlSanitizeUrl, persepolisUrl } from '../../onboardingConsts';
-	import ErrorComponent from '../../../../components/Error.svelte';
+	import ErrorComponent from '../../../components/Error.svelte';
 	import type { Query } from '$lib/generated/htmlsanitize/Query';
-	import ButtonReact from '../../../../components/button/ButtonReact.svelte';
-	import { Color } from '../../../../components/button/colors';
+	import ButtonReact from '../../../components/button/ButtonReact.svelte';
+	import { Color } from '../../../components/button/colors';
 	import { fetchClient } from '$lib/fetch';
 	import { obBoundary } from '../../obBoundaryState';
 	import { page } from '$app/stores';

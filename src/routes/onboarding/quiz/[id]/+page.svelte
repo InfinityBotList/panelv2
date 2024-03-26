@@ -1,18 +1,18 @@
 <script lang="ts">
-    import Loading from '../../../../components/Loading.svelte';
-    import ErrorComponent from '../../../../components/Error.svelte';
+    import Loading from '../../../components/Loading.svelte';
+    import ErrorComponent from '../../../components/Error.svelte';
 	import { page } from "$app/stores";
 	import { fetchClient } from "$lib/fetch";
 	import type { CreateQuizResponse } from "$lib/generated/persepolis/CreateQuizResponse";
 	import OnboardingBoundary from "../../OnboardingBoundary.svelte";
 	import { obBoundary } from "../../obBoundaryState";
 	import { persepolisUrl } from "../../onboardingConsts";
-	import InputText from '../../../../components/inputs/InputText.svelte';
-	import InputTextArea from '../../../../components/inputs/InputTextArea.svelte';
-	import Select from '../../../../components/inputs/select/Select.svelte';
+	import InputText from '../../../components/inputs/InputText.svelte';
+	import InputTextArea from '../../../components/inputs/InputTextArea.svelte';
+	import Select from '../../../components/inputs/select/Select.svelte';
 	import { success } from '$lib/toast';
-	import ButtonReact from '../../../../components/button/ButtonReact.svelte';
-	import { Color } from '../../../../components/button/colors';
+	import ButtonReact from '../../../components/button/ButtonReact.svelte';
+	import { Color } from '../../../components/button/colors';
 
     const minShortAnswerLength = 50;
     const minLongAnswerLength = 750

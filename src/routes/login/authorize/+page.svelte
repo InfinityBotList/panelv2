@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Loading from '../../../components/Loading.svelte';
-	import ErrorComponent from '../../../components/Error.svelte';
+	import Loading from '../../components/Loading.svelte';
+	import ErrorComponent from '../../components/Error.svelte';
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState, type PanelAuthState } from '$lib/panelAuthState';
 	import { goto as gotoOnce } from '$app/navigation';
