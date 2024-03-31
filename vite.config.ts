@@ -1,4 +1,3 @@
-import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import { exec } from 'child_process';
@@ -19,11 +18,6 @@ let [version, lastmod] = (
 export default defineConfig({
 	plugins: [
 		sveltekit(),
-		sentryVitePlugin({
-			org: 'infinity-panel',
-			project: 'panel',
-			url: 'https://trace.infinitybots.gg/'
-		})
 	],
 	define: {
 		I_NODE_ENV: `"${process.env.NODE_ENV}"`,
