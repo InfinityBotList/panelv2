@@ -26,10 +26,7 @@
 		message: string;
 	}
 
-	export let rpcState: RPCStatus = {
-		state: 'pending',
-		message: 'Loading actions...'
-	};
+	export let rpcState: RPCStatus;
 
 	export let actions: RPCWebAction[];
 	export let targetType: TargetType;
@@ -46,6 +43,10 @@
 		let action = actions.find((a) => a.id == selected);
 
 		if (!action) {
+			rpcState = {
+				state: 'error',
+				message: 'Unknown action'
+			};
 			error('Unknown action');
 			return false;
 		}
@@ -61,6 +62,10 @@
 					break;
 				case 'Hour':
 					if (!Array.isArray(actionData[field.id])) {
+						rpcState = {
+							state: 'error',
+							message: `Internal error: not an array: ${field.label}`
+						};
 						error(`Internal error: not an array: ${field.label}`);
 						return false;
 					}
@@ -68,11 +73,19 @@
 					logger.info('RPC', actionData[field.id]);
 
 					if (!actionData[field.id][1]) {
+						rpcState = {
+							state: 'error',
+							message: `Please select a time unit for ${field.label}`
+						};
 						error(`Please select a time unit for ${field.label}`);
 						return false;
 					}
 
 					if (!actionData[field.id][0]) {
+						rpcState = {
+							state: 'error',
+							message: `Please enter a value for ${field.label}`
+						};
 						error(`Please enter a value for ${field.label}`);
 						return false;
 					}
@@ -96,12 +109,20 @@
 							parsedData[field.id] = actionData[field.id][0] * 24 * 365;
 							break;
 						default:
+							rpcState = {
+								state: 'error',
+								message: `Unknown time unit ${unit}`
+							};
 							error(`Unknown time unit ${unit}`);
 							return false;
 					}
 					break;
 				default:
 					if (!actionData[field.id]) {
+						rpcState = {
+							state: 'error',
+							message: `Please enter a value for ${field.label}`
+						};
 						error(`Please enter a value for ${field.label}`);
 						return false;
 					}
@@ -123,6 +144,10 @@
 
 			if (!res.ok) {
 				let err = await res.text();
+				rpcState = {
+					state: 'error',
+					message: `Failed to execute action: ${err}`
+				};
 				error(err);
 				return false;
 			}
@@ -161,8 +186,6 @@
 			error(`Failed to execute action: ${e}`);
 			return false;
 		}
-
-		return true;
 	};
 
 	let actionData: ActionData = {};
@@ -279,7 +302,7 @@
 	/>
 {/if}
 
-{#if rpcState.state != "pending"}
+{#if rpcState}
 	{#if rpcState.state == "success"}
 		<section class="rpc-status rpc-status-success bg-green-600 text-white font-semibold">
 			{rpcState.message}
