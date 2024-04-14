@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { panelQuery } from '$lib/fetch';
+	import { fetchClient, panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { error, success } from '$lib/toast';
 	import { onMount } from 'svelte';
@@ -14,8 +14,8 @@
 	import InputNumber from '../inputs/InputNumber.svelte';
 	import logger from '$lib/logger';
 	import Hour from './Hour.svelte';
-	import marked from 'marked';
-	import DOMPurify from 'dompurify';
+	import { panelState } from '$lib/panelState';
+	import type { Query } from '$lib/generated/htmlsanitize/Query';
 
 	interface ActionData {
 		[key: string]: any;
@@ -190,6 +190,34 @@
 		}
 	};
 
+	const parseMd = async (str: string): Promise<string> => {
+		let hs: Query = {
+			SanitizeRaw: {
+				body: str
+			}
+		};
+
+		let hsUrl = $panelState?.core_constants?.htmlsanitize_url;
+
+		if (!hsUrl) {
+			throw new Error('Failed to get HTMLSanitize URL');
+		}
+
+		let res = await fetchClient(`${hsUrl}/query`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(hs)
+		});
+
+		if (!res.ok) {
+			throw new Error(`Failed to sanitize HTML: ${await res.text()} [${res.status}]`);
+		}
+
+		return await res.text();
+	}
+
 	let actionData: ActionData = {};
 
 	onMount(() => {
@@ -307,11 +335,30 @@
 {#if rpcState}
 	{#if rpcState.state == "success"}
 		<section class="rpc-status rpc-status-success mt-1 bg-green-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all">
-			{@html DOMPurify.sanitize(marked.parse(rpcState.message))}
+			{#await parseMd(rpcState.message)}
+				{@html rpcState.message}
+			{:then parsed}
+				{@html parsed}
+			{:catch e}
+				{@html rpcState.message}
+				{#if e}
+					HTMLSanitize Error: {e}
+				{/if}
+			{/await}
 		</section>
 	{:else if rpcState.state == "error"}
 		<section class="rpc-status rpc-status-error mt-1 bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all">
-			{@html DOMPurify.sanitize(marked.parse(rpcState.message))}
+			{#await parseMd(rpcState.message)}
+				{@html rpcState.message}
+			{:then parsed}
+				{@html parsed}
+			{:catch e}
+				{@html rpcState.message}
+				{#if e}
+					HTMLSanitize Error: {e}
+				{/if}
+			{/await}
+
 		</section>
 	{/if}
 {/if}
