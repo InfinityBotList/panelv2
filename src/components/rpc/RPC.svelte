@@ -348,7 +348,7 @@
 		</section>
 	{:else if rpcState.state == "error"}
 		<section class="rpc-status rpc-status-error mt-1 bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all">
-			{#await parseMd(rpcState.message)}
+			{#await parseMd(rpcState.message.replaceAll("\n", "\n\n"))}
 				{@html rpcState.message}
 			{:then parsed}
 				{@html parsed}
