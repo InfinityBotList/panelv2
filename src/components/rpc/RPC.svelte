@@ -304,11 +304,11 @@
 
 {#if rpcState}
 	{#if rpcState.state == "success"}
-		<section class="rpc-status rpc-status-success bg-green-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold">
+		<section class="rpc-status rpc-status-success mt-1 bg-green-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold">
 			{rpcState.message}
 		</section>
 	{:else if rpcState.state == "error"}
-		<section class="rpc-status rpc-status-error bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold">
+		<section class="rpc-status rpc-status-error mt-1 bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold">
 			{rpcState.message}
 		</section>
 	{/if}
