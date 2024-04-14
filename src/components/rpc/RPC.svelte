@@ -19,6 +19,18 @@
 		[key: string]: any;
 	}
 
+	type RPCStatusState = 'pending' | 'error' | 'success';
+
+	interface RPCStatus {
+		state: RPCStatusState;
+		message: string;
+	}
+
+	export let rpcState: RPCStatus = {
+		state: 'pending',
+		message: 'Loading actions...'
+	};
+
 	export let actions: RPCWebAction[];
 	export let targetType: TargetType;
 	export let initialData: ActionData;
@@ -116,6 +128,10 @@
 			}
 
 			if (res.status == 204) {
+				rpcState = {
+					state: 'success',
+					message: 'Successfully executed action [204]'
+				};
 				success('Successfully executed action [204]');
 				return true;
 			}
@@ -123,17 +139,25 @@
 			let data = await res.text();
 
 			if (data) {
+				rpcState = {
+					state: 'success',
+					message: `${data}\n\nStatus Code: 200`
+				};
 				success(`${data} [200]`);
 				return true;
+			} else {
+				rpcState = {
+					state: 'success',
+					message: 'Successfully executed action [200]'
+				};
+				success('Successfully executed action [200]');
+				return true;
 			}
-
-			if (selected == 'Approve') {
-				// Open in new tab
-				window.open(data, '_blank');
-			}
-
-			success('Successfully executed action [200]');
 		} catch (e: any) {
+			rpcState = {
+				state: 'error',
+				message: `Failed to execute action: ${e}`
+			};
 			error(`Failed to execute action: ${e}`);
 			return false;
 		}
@@ -253,4 +277,16 @@
 		icon="mdi:send"
 		text="Execute"
 	/>
+{/if}
+
+{#if rpcState.state != "pending"}
+	{#if rpcState.state == "success"}
+		<section class="rpc-status rpc-status-success bg-green-600 text-white font-semibold">
+			{rpcState.message}
+		</section>
+	{:else if rpcState.state == "error"}
+		<section class="rpc-status rpc-status-error bg-red-600 text-white font-semibold">
+			{rpcState.message}
+		</section>
+	{/if}
 {/if}
