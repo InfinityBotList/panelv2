@@ -3,11 +3,9 @@
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
 	import Loading from '../../../../components/Loading.svelte';
-	import type { ChangelogEntry } from '$lib/generated/arcadia/ChangelogEntry';
 	import type {
 		BaseSchema,
 		Capability,
-		CustomAction,
 		Entry,
 		FieldFetch,
 		Schema
@@ -33,7 +31,7 @@ export interface StaffDisciplinaryType {
 	*/
 
 	class DisciplinaryTypeSchema implements BaseSchema<StaffDisciplinaryType>, Schema<StaffDisciplinaryType> {
-		name: string = 'changelog';
+		name: string = 'disciplinary_types';
 		fields: FieldFetch<StaffDisciplinaryType> = [
             async (cap) => {
                 return {
