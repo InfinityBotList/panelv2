@@ -12,5 +12,11 @@ export let staffQuickActions: QuickAction[] = [
 		description: 'View and/or manage staff members',
 		link: '/panel/staff/members',
 		enabled: () => true
+	},
+	{
+		name: "Staff Disciplinary Types",
+		description: "View and/or manage staff disciplinary types",
+		link: "/panel/staff/disciplinary_types",
+		enabled: () => true
 	}
 ];
