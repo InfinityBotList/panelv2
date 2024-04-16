@@ -15,6 +15,8 @@
 	import { newField } from '../../../components/admin/helpers';
 	import { build, hasPerm } from '$lib/perms';
 	import type { VoteCreditTier } from '$lib/generated/arcadia/VoteCreditTier';
+	import OrderedList from '../../../components/OrderedList.svelte';
+	import ListItem from '../../../components/ListItem.svelte';
 
 	/* 
 export interface VoteCreditTier { 
@@ -237,20 +239,20 @@ export interface VoteCreditTier {
             
             (e.g.)For the following tiers<br/><br/>
         </p>
-        <ol>
-            <li>Tier 1: 100 votes at 0.10 cents</li>
-            <li>Tier 2: 200 votes at 0.05 cents</li>
-            <li>Tier 3: 50 votes at 0.025 cents</li>
-        </ol>
+        <OrderedList>
+            <ListItem>Tier 1: 100 votes at 0.10 cents</ListItem>
+            <ListItem>Tier 2: 200 votes at 0.05 cents</ListItem>
+            <ListItem>Tier 3: 50 votes at 0.025 cents</ListItem>
+        </OrderedList>
         <p>
             Would mean 625 votes would be split as the following:
         </p>
-        <ol>
-            <li>100 votes: 0.10 cents [Tier 1]</li>
-            <li>Next 200 votes: 0.05 cents [Tier 2]</li>
-            <li>Next 50 votes: 0.025 cents [Tier 3]</li>
-            <li>Last 275 votes: 0.025 cents [last tier used at end of tiering]</li>
-        </ol>
+        <OrderedList>
+            <ListItem>100 votes: 0.10 cents [Tier 1]</ListItem>
+            <ListItem>Next 200 votes: 0.05 cents [Tier 2]</ListItem>
+            <ListItem>Next 50 votes: 0.025 cents [Tier 3]</ListItem>
+            <ListItem>Last 275 votes: 0.025 cents [last tier used at end of tiering]</ListItem>
+        </OrderedList>
     </div>
 	<View {schema} />
 {:else}
