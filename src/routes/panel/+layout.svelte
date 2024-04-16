@@ -54,6 +54,12 @@
 							hasPerm($panelState?.staff_member?.resolved_perms || [], build('cdn', 'list_scopes'))
 					},
 					{
+						name: 'Bot Whitelist',
+						description: 'Bots whitelisted for the main server',
+						link: '/panel/bots/whitelist',
+						enabled: () => true // All staff can view the partner list, other permissions are handled by admin panel code
+					},
+					{
 						name: 'Vote Credit Tiers',
 						description: 'View and/or manage the vote credit tiers for the list',
 						link: '/panel/vote_credit_tiers',

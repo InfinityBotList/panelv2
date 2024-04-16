@@ -27,7 +27,7 @@ export interface VoteCreditTier {
     created_at: string, 
 }	*/
 
-	class DisciplinaryTypeSchema implements BaseSchema<VoteCreditTier>, Schema<VoteCreditTier> {
+	class VoteCreditTierSchema implements BaseSchema<VoteCreditTier>, Schema<VoteCreditTier> {
 		name: string = 'vote credit tiers';
 		fields: FieldFetch<VoteCreditTier> = [
             async (cap) => {
@@ -225,10 +225,10 @@ export interface VoteCreditTier {
 		}
 	}
 
-	let schema: DisciplinaryTypeSchema | undefined;
+	let schema: VoteCreditTierSchema | undefined;
 
 	$: {
-		schema = new DisciplinaryTypeSchema();
+		schema = new VoteCreditTierSchema();
 	}
 </script>
 
