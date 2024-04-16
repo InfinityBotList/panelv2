@@ -31,7 +31,7 @@ export interface StaffDisciplinaryType {
 	*/
 
 	class DisciplinaryTypeSchema implements BaseSchema<StaffDisciplinaryType>, Schema<StaffDisciplinaryType> {
-		name: string = 'disciplinary_types';
+		name: string = 'disciplinary types';
 		fields: FieldFetch<StaffDisciplinaryType> = [
             async (cap) => {
                 return {
