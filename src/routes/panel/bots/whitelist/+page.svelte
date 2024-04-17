@@ -63,7 +63,7 @@ export interface BotWhitelist {
 							this.users[data.bot_id] = await user.json();
 						}
 												
-						return `${this.users[data.bot_id].display_name} (${this.users[data.bot_id].username})`;
+						return `${this.users[data.bot_id].username}`;
 					},
 				}
 			},
