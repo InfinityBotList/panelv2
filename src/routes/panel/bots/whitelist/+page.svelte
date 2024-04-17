@@ -63,7 +63,7 @@ export interface BotWhitelist {
 							this.users[data.bot_id] = await user.json();
 						}
 												
-						return `${this.users[data.bot_id].username}`;
+						return this.users[data.bot_id].username;
 					},
 				}
 			},
@@ -79,6 +79,32 @@ export interface BotWhitelist {
                     renderMethod: 'text'
                 }
             },
+			async (cap) => {
+				if(cap != 'view') return null
+				return {
+					id: 'user_name',
+					label: 'User Name',
+					type: 'text',
+					helpText: 'The name of the user who created the entry',
+					required: false,
+					disabled: true,
+					renderMethod: 'custom[html]',
+					customRenderer: async (cap, data) => {	
+						if(!this.users[data.user_id]) {
+							let user = await panelQuery({
+								GetUser: {
+									login_token: $panelAuthState?.loginToken || '',
+									user_id: data.user_id
+								}
+							});
+
+							this.users[data.user_id] = await user.json();
+						}
+												
+						return this.users[data.user_id].username;
+					},
+				}
+			},
 			{
 				id: 'reason',
 				label: 'Reason',
@@ -134,10 +160,23 @@ export interface BotWhitelist {
 
 			let entries: BotWhitelist[] = await res.json();
 
-			// Add bot_name as seperate field to continue allowing strict schema validation otherwise
+			// Add bot_name/user_name as seperate field to continue allowing strict schema validation otherwise
 			for (let entry of entries) {
 				// @ts-ignore
 				entry.bot_name = ""
+				// @ts-ignore
+				entry.user_name = ""
+
+				if(!this.users[entry.user_id]) {
+					let user = await panelQuery({
+						GetUser: {
+							login_token: $panelAuthState?.loginToken || '',
+							user_id: entry.user_id
+						}
+					});
+
+					this.users[entry.user_id] = await user.json();
+				}
 			}
 
 			return entries;
