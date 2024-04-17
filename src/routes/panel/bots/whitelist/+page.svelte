@@ -38,10 +38,20 @@ export interface BotWhitelist {
                     helpText: 'The Bot ID to whitelist. Cannot be changed once set.',
                     required: true,
                     disabled: cap != "create",
-                    renderMethod: 'custom[html]',
-					customRenderer: async (cap, data) => {
-						if (cap != 'view') return data.bot_id;
-						
+                    renderMethod: 'text',
+                }
+            },
+			async (cap) => {
+				if(cap != 'view') return null
+				return {
+					id: 'bot_name',
+					label: 'Bot Name',
+					type: 'text',
+					helpText: 'The name of the bot',
+					required: false,
+					disabled: true,
+					renderMethod: 'custom[html]',
+					customRenderer: async (cap, data) => {						
 						if(this.users[data.bot_id]) return `${data.bot_id} (${this.users[data.bot_id].username})`;
 						
 						let user = await panelQuery({
@@ -54,8 +64,8 @@ export interface BotWhitelist {
 						this.users[data.bot_id] = await user.json();
 						return `${data.bot_id} (${this.users[data.bot_id].username})`;
 					},
-                }
-            },
+				}
+			},
             async (cap) => {
 				if (cap == 'create') return null
                 return {
@@ -122,6 +132,12 @@ export interface BotWhitelist {
 			if (!res.ok) throw new Error(`Failed to fetch bot whitelist: ${await res.text()}`);
 
 			let entries: BotWhitelist[] = await res.json();
+
+			// Add bot_name as seperate field to continue allowing strict schema validation otherwise
+			for (let entry of entries) {
+				// @ts-ignore
+				entry.bot_name = ""
+			}
 
 			return entries;
 		}
