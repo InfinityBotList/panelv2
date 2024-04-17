@@ -38,6 +38,18 @@ export interface BotWhitelist {
                     renderMethod: 'text'
                 }
             },
+            async (cap) => {
+				if (cap == 'create') return null
+                return {
+                    id: 'user_id',
+                    label: 'User ID',
+                    type: 'text',
+                    helpText: 'The User ID who created the entry.',
+                    required: true,
+                    disabled: true,
+                    renderMethod: 'text'
+                }
+            },
 			{
 				id: 'reason',
 				label: 'Reason',
@@ -78,7 +90,7 @@ export interface BotWhitelist {
 		}
 
 		getPrimaryKey(cap: Capability) {
-			return 'id';
+			return 'bot_id';
 		}
 
 		async viewAll() {
