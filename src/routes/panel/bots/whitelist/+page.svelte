@@ -51,18 +51,19 @@ export interface BotWhitelist {
 					required: false,
 					disabled: true,
 					renderMethod: 'custom[html]',
-					customRenderer: async (cap, data) => {						
-						if(this.users[data.bot_id]) return `${data.bot_id} (${this.users[data.bot_id].username})`;
-						
-						let user = await panelQuery({
-							GetUser: {
-								login_token: $panelAuthState?.loginToken || '',
-								user_id: data.bot_id
-							}
-						});
+					customRenderer: async (cap, data) => {	
+						if(!this.users[data.bot_id]) {
+							let user = await panelQuery({
+								GetUser: {
+									login_token: $panelAuthState?.loginToken || '',
+									user_id: data.bot_id
+								}
+							});
 
-						this.users[data.bot_id] = await user.json();
-						return `${data.bot_id} (${this.users[data.bot_id].username})`;
+							this.users[data.bot_id] = await user.json();
+						}
+												
+						return `${this.users[data.bot_id].display_name} (${this.users[data.bot_id].username})`;
 					},
 				}
 			},
