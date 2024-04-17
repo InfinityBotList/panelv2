@@ -15,6 +15,7 @@
 	import { newField } from '../../../../components/admin/helpers';
 	import { build, hasPerm } from '$lib/perms';
 	import type { BotWhitelist } from '$lib/generated/arcadia/BotWhitelist';
+	import type { PlatformUser } from '$lib/generated/arcadia/PlatformUser';
 
 	/* 
 export interface BotWhitelist { 
@@ -25,6 +26,8 @@ export interface BotWhitelist {
 	*/
 
 	class WhitelistSchema implements BaseSchema<BotWhitelist>, Schema<BotWhitelist> {
+		users: Record<string, PlatformUser> = {};
+
 		name: string = 'bot whitelist';
 		fields: FieldFetch<BotWhitelist> = [
             async (cap) => {
@@ -35,7 +38,22 @@ export interface BotWhitelist {
                     helpText: 'The Bot ID to whitelist. Cannot be changed once set.',
                     required: true,
                     disabled: cap != "create",
-                    renderMethod: 'text'
+                    renderMethod: 'custom[html]',
+					customRenderer: async (cap, data) => {
+						if (cap != 'view') return data.bot_id;
+						
+						if(this.users[data.bot_id]) return `${data.bot_id} (${this.users[data.bot_id].username})`;
+						
+						let user = await panelQuery({
+							GetUser: {
+								login_token: $panelAuthState?.loginToken || '',
+								user_id: data.bot_id
+							}
+						});
+
+						this.users[data.bot_id] = await user.json();
+						return `${data.bot_id} (${this.users[data.bot_id].username})`;
+					},
                 }
             },
             async (cap) => {
