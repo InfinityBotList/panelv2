@@ -5,7 +5,6 @@
 	import '$lib/styles/mainsite/global.css';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import Menubar from '../components/Menubar.svelte';
-	import { onMount } from 'svelte';
 
 	const options = {};
 

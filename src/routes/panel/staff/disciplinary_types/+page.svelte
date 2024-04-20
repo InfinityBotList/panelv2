@@ -30,20 +30,22 @@ export interface StaffDisciplinaryType {
 }
 	*/
 
-	class DisciplinaryTypeSchema implements BaseSchema<StaffDisciplinaryType>, Schema<StaffDisciplinaryType> {
+	class DisciplinaryTypeSchema
+		implements BaseSchema<StaffDisciplinaryType>, Schema<StaffDisciplinaryType>
+	{
 		name: string = 'disciplinary types';
 		fields: FieldFetch<StaffDisciplinaryType> = [
-            async (cap) => {
-                return {
-                    id: 'id',
-                    label: 'ID',
-                    type: 'text',
-                    helpText: 'The ID of the disciplinary type. Cannot be changed once set.',
-                    required: true,
-                    disabled: cap != "create",
-                    renderMethod: 'text'
-                }
-            },
+			async (cap) => {
+				return {
+					id: 'id',
+					label: 'ID',
+					type: 'text',
+					helpText: 'The ID of the disciplinary type. Cannot be changed once set.',
+					required: true,
+					disabled: cap != 'create',
+					renderMethod: 'text'
+				};
+			},
 			{
 				id: 'name',
 				label: 'Name',
@@ -53,7 +55,7 @@ export interface StaffDisciplinaryType {
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
+			{
 				id: 'description',
 				label: 'Description',
 				type: 'textarea',
@@ -66,12 +68,13 @@ export interface StaffDisciplinaryType {
 				id: 'self_assignable',
 				label: 'Self Assignable',
 				type: 'boolean',
-				helpText: 'Whether or not this disciplinary type can be self-assigned by users through the panel',
+				helpText:
+					'Whether or not this disciplinary type can be self-assigned by users through the panel',
 				required: false,
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
+			{
 				id: 'perm_limits',
 				label: 'Permission Limits',
 				type: 'text[]',
@@ -80,7 +83,7 @@ export interface StaffDisciplinaryType {
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
+			{
 				id: 'additory',
 				label: 'Additory Permission Limits',
 				type: 'boolean',
@@ -89,7 +92,7 @@ export interface StaffDisciplinaryType {
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
+			{
 				id: 'needs_approval',
 				label: 'Needs Approval',
 				type: 'boolean',
@@ -98,15 +101,15 @@ export interface StaffDisciplinaryType {
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
-                id: 'max_expiry',
-                label: 'Max Expiry',
-                type: 'number',
-                helpText: 'The maximum expiry time for this disciplinary type in days',
-                required: false,
-                disabled: false,
-                renderMethod: 'text'
-            },
+			{
+				id: 'max_expiry',
+				label: 'Max Expiry',
+				type: 'number',
+				helpText: 'The maximum expiry time for this disciplinary type in days',
+				required: false,
+				disabled: false,
+				renderMethod: 'text'
+			},
 			async (cap: Capability) => {
 				if (cap == 'create') return null;
 				return newField(
@@ -124,13 +127,28 @@ export interface StaffDisciplinaryType {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view changelog entries
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_disciplinary_types', 'create'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('staff_disciplinary_types', 'create')
+				)
+			) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_disciplinary_types', 'update'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('staff_disciplinary_types', 'update')
+				)
+			) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_disciplinary_types', 'delete'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('staff_disciplinary_types', 'delete')
+				)
+			) {
 				perms.push('delete');
 			}
 
@@ -172,13 +190,13 @@ export interface StaffDisciplinaryType {
 					action: {
 						CreateDisciplinaryType: {
 							id: data.data.id,
-                            name: data.data.name,
-                            description: data.data.description,
-                            self_assignable: data.data.self_assignable,
-                            perm_limits: data.data.perm_limits,
-                            additory: data.data.additory,
-                            needs_approval: data.data.needs_approval,
-                            max_expiry: data.data.max_expiry
+							name: data.data.name,
+							description: data.data.description,
+							self_assignable: data.data.self_assignable,
+							perm_limits: data.data.perm_limits,
+							additory: data.data.additory,
+							needs_approval: data.data.needs_approval,
+							max_expiry: data.data.max_expiry
 						}
 					}
 				}
@@ -194,13 +212,13 @@ export interface StaffDisciplinaryType {
 					action: {
 						EditDisciplinaryType: {
 							id: data.data.id,
-                            name: data.data.name,
-                            description: data.data.description,
-                            self_assignable: data.data.self_assignable,
-                            perm_limits: data.data.perm_limits,
-                            additory: data.data.additory,
-                            needs_approval: data.data.needs_approval,
-                            max_expiry: data.data.max_expiry
+							name: data.data.name,
+							description: data.data.description,
+							self_assignable: data.data.self_assignable,
+							perm_limits: data.data.perm_limits,
+							additory: data.data.additory,
+							needs_approval: data.data.needs_approval,
+							max_expiry: data.data.max_expiry
 						}
 					}
 				}

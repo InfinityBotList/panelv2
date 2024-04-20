@@ -30,17 +30,17 @@ export interface VoteCreditTier {
 	class VoteCreditTierSchema implements BaseSchema<VoteCreditTier>, Schema<VoteCreditTier> {
 		name: string = 'vote credit tiers';
 		fields: FieldFetch<VoteCreditTier> = [
-            async (cap) => {
-                return {
-                    id: 'id',
-                    label: 'ID',
-                    type: 'text',
-                    helpText: 'The ID of the vote credit tier. Cannot be changed once set.',
-                    required: true,
-                    disabled: cap != "create",
-                    renderMethod: 'text'
-                }
-            },
+			async (cap) => {
+				return {
+					id: 'id',
+					label: 'ID',
+					type: 'text',
+					helpText: 'The ID of the vote credit tier. Cannot be changed once set.',
+					required: true,
+					disabled: cap != 'create',
+					renderMethod: 'text'
+				};
+			},
 			{
 				id: 'position',
 				label: 'Position',
@@ -50,7 +50,7 @@ export interface VoteCreditTier {
 				disabled: false,
 				renderMethod: 'text'
 			},
-            {
+			{
 				id: 'cents',
 				label: 'Cents',
 				type: 'number',
@@ -85,13 +85,28 @@ export interface VoteCreditTier {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view entries
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('vote_credit_tiers', 'create'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('vote_credit_tiers', 'create')
+				)
+			) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('vote_credit_tiers', 'update'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('vote_credit_tiers', 'update')
+				)
+			) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('vote_credit_tiers', 'delete'))) {
+			if (
+				hasPerm(
+					$panelState?.staff_member?.resolved_perms || [],
+					build('vote_credit_tiers', 'delete')
+				)
+			) {
 				perms.push('delete');
 			}
 
@@ -133,9 +148,9 @@ export interface VoteCreditTier {
 					action: {
 						CreateTier: {
 							id: data.data.id,
-                            position: data.data.position,
-                            cents: data.data.cents,
-                            votes: data.data.votes
+							position: data.data.position,
+							cents: data.data.cents,
+							votes: data.data.votes
 						}
 					}
 				}
@@ -151,9 +166,9 @@ export interface VoteCreditTier {
 					action: {
 						EditTier: {
 							id: data.data.id,
-                            position: data.data.position,
-                            cents: data.data.cents,
-                            votes: data.data.votes
+							position: data.data.position,
+							cents: data.data.cents,
+							votes: data.data.votes
 						}
 					}
 				}
@@ -233,27 +248,25 @@ export interface VoteCreditTier {
 </script>
 
 {#if schema}
-    <div class="system">
-        <p>
-            Vote credits are tier based through slabs<br/><br/>
-            
-            (e.g.)For the following tiers<br/><br/>
-        </p>
-        <OrderedList>
-            <ListItem>Tier 1: 100 votes at 0.10 cents</ListItem>
-            <ListItem>Tier 2: 200 votes at 0.05 cents</ListItem>
-            <ListItem>Tier 3: 50 votes at 0.025 cents</ListItem>
-        </OrderedList>
-        <p>
-            Would mean 625 votes would be split as the following:
-        </p>
-        <OrderedList>
-            <ListItem>100 votes: 0.10 cents [Tier 1]</ListItem>
-            <ListItem>Next 200 votes: 0.05 cents [Tier 2]</ListItem>
-            <ListItem>Next 50 votes: 0.025 cents [Tier 3]</ListItem>
-            <ListItem>Last 275 votes: 0.025 cents [last tier used at end of tiering]</ListItem>
-        </OrderedList>
-    </div>
+	<div class="system">
+		<p>
+			Vote credits are tier based through slabs<br /><br />
+
+			(e.g.)For the following tiers<br /><br />
+		</p>
+		<OrderedList>
+			<ListItem>Tier 1: 100 votes at 0.10 cents</ListItem>
+			<ListItem>Tier 2: 200 votes at 0.05 cents</ListItem>
+			<ListItem>Tier 3: 50 votes at 0.025 cents</ListItem>
+		</OrderedList>
+		<p>Would mean 625 votes would be split as the following:</p>
+		<OrderedList>
+			<ListItem>100 votes: 0.10 cents [Tier 1]</ListItem>
+			<ListItem>Next 200 votes: 0.05 cents [Tier 2]</ListItem>
+			<ListItem>Next 50 votes: 0.025 cents [Tier 3]</ListItem>
+			<ListItem>Last 275 votes: 0.025 cents [last tier used at end of tiering]</ListItem>
+		</OrderedList>
+	</div>
 	<View {schema} />
 {:else}
 	<Loading msg="Internally creating vote credit tiers schema..." />

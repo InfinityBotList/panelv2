@@ -314,14 +314,14 @@
 			minlength={1}
 			showErrors={true}
 		/>
-                <InputText
-                        id="icon"
-                        label="Role Icon [iconify]"
-                        bind:value={editPosition.icon}
-                        placeholder="Role Icon from iconify for displaying on the website [about page]"
-                        minlength={1}
-                        showErrors={true}
-                />
+		<InputText
+			id="icon"
+			label="Role Icon [iconify]"
+			bind:value={editPosition.icon}
+			placeholder="Role Icon from iconify for displaying on the website [about page]"
+			minlength={1}
+			showErrors={true}
+		/>
 		<MultiInput
 			id="perms"
 			title="Permissions"
