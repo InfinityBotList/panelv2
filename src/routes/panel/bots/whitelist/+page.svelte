@@ -30,19 +30,19 @@ export interface BotWhitelist {
 
 		name: string = 'bot whitelist';
 		fields: FieldFetch<BotWhitelist> = [
-            async (cap) => {
-                return {
-                    id: 'bot_id',
-                    label: 'Bot ID',
-                    type: 'text',
-                    helpText: 'The Bot ID to whitelist. Cannot be changed once set.',
-                    required: true,
-                    disabled: cap != "create",
-                    renderMethod: 'text',
-                }
-            },
 			async (cap) => {
-				if(cap != 'view') return null
+				return {
+					id: 'bot_id',
+					label: 'Bot ID',
+					type: 'text',
+					helpText: 'The Bot ID to whitelist. Cannot be changed once set.',
+					required: true,
+					disabled: cap != 'create',
+					renderMethod: 'text'
+				};
+			},
+			async (cap) => {
+				if (cap != 'view') return null;
 				return {
 					id: 'bot_name',
 					label: 'Bot Name',
@@ -51,8 +51,8 @@ export interface BotWhitelist {
 					required: false,
 					disabled: true,
 					renderMethod: 'custom[html]',
-					customRenderer: async (cap, data) => {	
-						if(!this.users[data.bot_id]) {
+					customRenderer: async (cap, data) => {
+						if (!this.users[data.bot_id]) {
 							let user = await panelQuery({
 								GetUser: {
 									login_token: $panelAuthState?.loginToken || '',
@@ -62,25 +62,25 @@ export interface BotWhitelist {
 
 							this.users[data.bot_id] = await user.json();
 						}
-												
+
 						return this.users[data.bot_id].username;
-					},
-				}
+					}
+				};
 			},
-            async (cap) => {
-				if (cap == 'create') return null
-                return {
-                    id: 'user_id',
-                    label: 'User ID',
-                    type: 'text',
-                    helpText: 'The User ID who created the entry.',
-                    required: true,
-                    disabled: true,
-                    renderMethod: 'text'
-                }
-            },
 			async (cap) => {
-				if(cap != 'view') return null
+				if (cap == 'create') return null;
+				return {
+					id: 'user_id',
+					label: 'User ID',
+					type: 'text',
+					helpText: 'The User ID who created the entry.',
+					required: true,
+					disabled: true,
+					renderMethod: 'text'
+				};
+			},
+			async (cap) => {
+				if (cap != 'view') return null;
 				return {
 					id: 'user_name',
 					label: 'User Name',
@@ -89,8 +89,8 @@ export interface BotWhitelist {
 					required: false,
 					disabled: true,
 					renderMethod: 'custom[html]',
-					customRenderer: async (cap, data) => {	
-						if(!this.users[data.user_id]) {
+					customRenderer: async (cap, data) => {
+						if (!this.users[data.user_id]) {
 							let user = await panelQuery({
 								GetUser: {
 									login_token: $panelAuthState?.loginToken || '',
@@ -100,10 +100,12 @@ export interface BotWhitelist {
 
 							this.users[data.user_id] = await user.json();
 						}
-												
-						return `${this.users[data.user_id].username} (${this.users[data.user_id].display_name})`;
-					},
-				}
+
+						return `${this.users[data.user_id].username} (${
+							this.users[data.user_id].display_name
+						})`;
+					}
+				};
 			},
 			{
 				id: 'reason',
@@ -131,13 +133,19 @@ export interface BotWhitelist {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view changelog entries
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'create'))) {
+			if (
+				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'create'))
+			) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'update'))) {
+			if (
+				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'update'))
+			) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'delete'))) {
+			if (
+				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'delete'))
+			) {
 				perms.push('delete');
 			}
 
@@ -163,11 +171,11 @@ export interface BotWhitelist {
 			// Add bot_name/user_name as seperate field to continue allowing strict schema validation otherwise
 			for (let entry of entries) {
 				// @ts-ignore
-				entry.bot_name = ""
+				entry.bot_name = '';
 				// @ts-ignore
-				entry.user_name = ""
+				entry.user_name = '';
 
-				if(!this.users[entry.user_id]) {
+				if (!this.users[entry.user_id]) {
 					let user = await panelQuery({
 						GetUser: {
 							login_token: $panelAuthState?.loginToken || '',
@@ -198,7 +206,7 @@ export interface BotWhitelist {
 					action: {
 						Add: {
 							bot_id: data.data.bot_id,
-                            reason: data.data.reason
+							reason: data.data.reason
 						}
 					}
 				}
@@ -214,7 +222,7 @@ export interface BotWhitelist {
 					action: {
 						Edit: {
 							bot_id: data.data.bot_id,
-                            reason: data.data.reason
+							reason: data.data.reason
 						}
 					}
 				}

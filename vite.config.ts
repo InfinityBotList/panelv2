@@ -16,9 +16,7 @@ let [version, lastmod] = (
 	.map((v) => JSON.stringify(v.value?.stdout.trim()));
 
 export default defineConfig({
-	plugins: [
-		sveltekit(),
-	],
+	plugins: [sveltekit()],
 	define: {
 		I_NODE_ENV: `"${process.env.NODE_ENV}"`,
 		I_COMMIT: version,

@@ -216,7 +216,7 @@
 		}
 
 		return await res.text();
-	}
+	};
 
 	let actionData: ActionData = {};
 
@@ -333,8 +333,10 @@
 {/if}
 
 {#if rpcState}
-	{#if rpcState.state == "success"}
-		<section class="rpc-status rpc-status-success mt-1 bg-green-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all">
+	{#if rpcState.state == 'success'}
+		<section
+			class="rpc-status rpc-status-success mt-1 bg-green-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all"
+		>
 			{#await parseMd(rpcState.message)}
 				{@html rpcState.message}
 			{:then parsed}
@@ -346,9 +348,11 @@
 				{/if}
 			{/await}
 		</section>
-	{:else if rpcState.state == "error"}
-		<section class="rpc-status rpc-status-error mt-1 bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all">
-			{#await parseMd(rpcState.message.replaceAll("\n", "\n\n"))}
+	{:else if rpcState.state == 'error'}
+		<section
+			class="rpc-status rpc-status-error mt-1 bg-red-600 bg-opacity-80 rounded-sm p-2 text-white font-semibold break-words break-all"
+		>
+			{#await parseMd(rpcState.message.replaceAll('\n', '\n\n'))}
 				{@html rpcState.message}
 			{:then parsed}
 				{@html parsed}
@@ -358,7 +362,6 @@
 					HTMLSanitize Error: {e}
 				{/if}
 			{/await}
-
 		</section>
 	{/if}
 {/if}
