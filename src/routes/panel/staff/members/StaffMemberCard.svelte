@@ -5,20 +5,18 @@
 	import ObjectRender from '../../../../components/ObjectRender.svelte';
 	import SmallCard from '../../../../components/SmallCard.svelte';
 	import { panelState } from '$lib/panelState';
-	import { build, hasPerm } from '$lib/perms';
-	import { error, success } from '$lib/toast';
-	import logger from '$lib/logger';
+	import { success } from '$lib/toast';
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import ButtonReact from '../../../../components/button/ButtonReact.svelte';
 	import { Color } from '../../../../components/button/colors';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import MultiInput from '../../../../components/inputs/multi/simple/MultiInput.svelte';
-	import ExtraLinks from '../../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
 	import type { StaffMember } from '$lib/generated/arcadia/StaffMember';
 	import UnorderedList from '../../../../components/UnorderedList.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
 	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	const allActions = {
 		edit: ['mdi:edit', 'Edit']
@@ -63,7 +61,7 @@
 		let available: Action[] = [];
 
 		for (let perm of Object.keys(allActions)) {
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_members', perm))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], `staff_members.${perm}`)) {
 				available.push(perm as Action);
 			}
 		}
@@ -148,7 +146,7 @@
 					on:click={() => {
 						open(action);
 					}}
-					class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+					class="px-2 py-3 text-white border-r hover:text-gray-300 focus:outline-none"
 				>
 					<Icon icon={allActions[action][0]} class={'text-2xl inline-block align-bottom'} />
 					{openAction == action ? 'Close' : allActions[action][1]}

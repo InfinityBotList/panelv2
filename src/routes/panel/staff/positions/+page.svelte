@@ -6,7 +6,6 @@
 	import ErrorComponent from '../../../../components/Error.svelte';
 	import StaffPositionCard from './StaffPositionCard.svelte';
 	import { panelState } from '$lib/panelState';
-	import { build, hasPerm } from '$lib/perms';
 	import Icon from '@iconify/svelte';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import MultiInput from '../../../../components/inputs/multi/simple/MultiInput.svelte';
@@ -17,6 +16,7 @@
 	import Select from '../../../../components/inputs/select/Select.svelte';
 	import { title } from '$lib/strings';
 	import ExtraLinks from '../../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	const allActions = {
 		create: ['mdi:plus', 'Create Position'],
@@ -40,7 +40,7 @@
 
 		for (let perm of Object.keys(allActions)) {
 			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_positions', perm))
+				hasPermString($panelState?.staff_member?.resolved_perms || [], `staff_positions.${perm}`)
 			) {
 				available.push(perm as Action);
 			}
@@ -140,13 +140,13 @@
 {:then { staffPositionList }}
 	{#if availableActions?.length}
 		<h2 class="mt-3 mb-1 text-xl">Actions</h2>
-		<div class="mb-7 border rounded-md">
+		<div class="border rounded-md mb-7">
 			{#each availableActions as action}
 				<button
 					on:click={() => {
 						open(action);
 					}}
-					class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+					class="px-2 py-3 text-white border-r hover:text-gray-300 focus:outline-none"
 				>
 					<Icon icon={allActions[action][0]} class={'text-2xl inline-block align-bottom'} />
 					{openAction == action ? 'Close' : allActions[action][1]}
@@ -156,7 +156,7 @@
 	{/if}
 
 	{#if openAction}
-		<div class="mb-7 border rounded-md p-3">
+		<div class="p-3 border rounded-md mb-7">
 			{#if openAction == 'create'}
 				<h1 class="text-2xl">Create Position</h1>
 				<InputText

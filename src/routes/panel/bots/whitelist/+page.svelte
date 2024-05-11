@@ -13,9 +13,9 @@
 	import logger from '$lib/logger';
 	import View from '../../../../components/admin/View.svelte';
 	import { newField } from '../../../../components/admin/helpers';
-	import { build, hasPerm } from '$lib/perms';
 	import type { BotWhitelist } from '$lib/generated/arcadia/BotWhitelist';
 	import type { PlatformUser } from '$lib/generated/arcadia/PlatformUser';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	/* 
 export interface BotWhitelist { 
@@ -134,17 +134,17 @@ export interface BotWhitelist {
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view changelog entries
 			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'create'))
+				hasPermString($panelState?.staff_member?.resolved_perms || [], 'bot_whitelist.create')
 			) {
 				perms.push('create');
 			}
 			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'update'))
+				hasPermString($panelState?.staff_member?.resolved_perms || [], 'bot_whitelist.update')
 			) {
 				perms.push('update');
 			}
 			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('bot_whitelist', 'delete'))
+				hasPermString($panelState?.staff_member?.resolved_perms || [], 'bot_whitelist.delete')
 			) {
 				perms.push('delete');
 			}

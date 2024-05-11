@@ -94,6 +94,14 @@ export type PanelQuery =
 			};
 	  }
 	| {
+			GetRpcLogEntries: {
+				/**
+				 * Login token
+				 */
+				login_token: string;
+			};
+	  }
+	| {
 			SearchEntitys: {
 				/**
 				 * Login token

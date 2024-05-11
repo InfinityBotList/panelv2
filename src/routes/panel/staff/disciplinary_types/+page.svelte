@@ -13,7 +13,7 @@
 	import logger from '$lib/logger';
 	import View from '../../../../components/admin/View.svelte';
 	import { newField } from '../../../../components/admin/helpers';
-	import { build, hasPerm } from '$lib/perms';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 	import type { StaffDisciplinaryType } from '$lib/generated/arcadia/StaffDisciplinaryType';
 
 	/* 
@@ -128,25 +128,25 @@ export interface StaffDisciplinaryType {
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view changelog entries
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('staff_disciplinary_types', 'create')
+					"staff_disciplinary_types.create"
 				)
 			) {
 				perms.push('create');
 			}
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('staff_disciplinary_types', 'update')
+					'staff_disciplinary_types.update'
 				)
 			) {
 				perms.push('update');
 			}
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('staff_disciplinary_types', 'delete')
+					'staff_disciplinary_types.delete'
 				)
 			) {
 				perms.push('delete');

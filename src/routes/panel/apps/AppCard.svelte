@@ -4,7 +4,6 @@
 	import type { Query } from '$lib/generated/htmlsanitize/Query';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
-	import { build, hasPerm } from '$lib/perms';
 	import { title } from '$lib/strings';
 	import { error, success } from '$lib/toast';
 	import Card from '../../../components/Card.svelte';
@@ -15,6 +14,7 @@
 	import { Color } from '../../../components/button/colors';
 	import InputTextArea from '../../../components/inputs/InputTextArea.svelte';
 	import Select from '../../../components/inputs/select/Select.svelte';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	export let app: AppResponse;
 	export let index: number;
@@ -115,7 +115,7 @@
 				<p class="font-semibold"><em>Question {i + 1}</em></p>
 				<p><strong>{question?.question}</strong></p>
 				{#if question?.id in showHtmlForQuestions}
-					<div class="desc prose text-white">
+					<div class="prose text-white desc">
 						{@html showHtmlForQuestions[question?.id]}
 					</div>
 				{:else}
@@ -144,7 +144,7 @@
 		{title(app?.position)} [{title(app?.state)}]
 	</svelte:fragment>
 	<svelte:fragment slot="actionA">
-		{#if app?.state == 'pending' && hasPerm($panelState?.staff_member?.resolved_perms || [], build('apps', 'approve_deny'))}
+		{#if app?.state == 'pending' && hasPermString($panelState?.staff_member?.resolved_perms || [], 'apps.approve_deny')}
 			<CardButton icon="mdi:edit" onClick={() => (showActionsModal = true)}>
 				Approve/Deny
 			</CardButton>
@@ -154,7 +154,7 @@
 
 {#if showActionsModal}
 	<Modal bind:showModal={showActionsModal}>
-		<h1 slot="header" class="font-semibold text-2xl">Approve/Deny Application</h1>
+		<h1 slot="header" class="text-2xl font-semibold">Approve/Deny Application</h1>
 
 		<p class="break-all"><strong>App ID:</strong> {app?.app_id}</p>
 		<p class="break-all"><strong>Position:</strong> {app?.position}</p>
@@ -191,7 +191,7 @@
 			]}
 		/>
 
-		{#if hasPerm($panelState?.staff_member?.resolved_perms || [], build('apps', 'approve_deny'))}
+		{#if hasPermString($panelState?.staff_member?.resolved_perms || [], 'apps.approve_deny')}
 			<ButtonReact
 				color={Color.Themable}
 				text={actionApproveDenyApp == 'approve' ? 'Approve' : 'Deny'}

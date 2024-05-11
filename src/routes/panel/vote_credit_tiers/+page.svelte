@@ -13,10 +13,10 @@
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 	import { newField } from '../../../components/admin/helpers';
-	import { build, hasPerm } from '$lib/perms';
 	import type { VoteCreditTier } from '$lib/generated/arcadia/VoteCreditTier';
 	import OrderedList from '../../../components/OrderedList.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	/* 
 export interface VoteCreditTier { 
@@ -86,25 +86,25 @@ export interface VoteCreditTier {
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view entries
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('vote_credit_tiers', 'create')
+					'vote_credit_tiers.create'
 				)
 			) {
 				perms.push('create');
 			}
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('vote_credit_tiers', 'update')
+					'vote_credit_tiers.update'
 				)
 			) {
 				perms.push('update');
 			}
 			if (
-				hasPerm(
+				hasPermString(
 					$panelState?.staff_member?.resolved_perms || [],
-					build('vote_credit_tiers', 'delete')
+					'vote_credit_tiers.delete'
 				)
 			) {
 				perms.push('delete');

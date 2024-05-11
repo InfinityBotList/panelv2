@@ -7,7 +7,6 @@
 	import GreyText from '../../../../components/GreyText.svelte';
 	import Select from '../../../../components/inputs/select/Select.svelte';
 	import { panelState } from '$lib/panelState';
-	import { build, hasPerm } from '$lib/perms';
 	import { error, success } from '$lib/toast';
 	import logger from '$lib/logger';
 	import { panelQuery } from '$lib/fetch';
@@ -18,6 +17,7 @@
 	import MultiInput from '../../../../components/inputs/multi/simple/MultiInput.svelte';
 	import ExtraLinks from '../../../../components/inputs/multi/extralinks/ExtraLinks.svelte';
 	import IndexChooser from './IndexChooser.svelte';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	const allActions = {
 		swap_index: ['ph:swap', 'Change Position'],
@@ -69,7 +69,7 @@
 				continue;
 			}
 			if (
-				hasPerm($panelState?.staff_member?.resolved_perms || [], build('staff_positions', perm))
+				hasPermString($panelState?.staff_member?.resolved_perms || [], `staff_positions.${perm}`)
 			) {
 				available.push(perm as Action);
 			}
@@ -219,7 +219,7 @@
 					on:click={() => {
 						open(action);
 					}}
-					class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
+					class="px-2 py-3 text-white border-r hover:text-gray-300 focus:outline-none"
 				>
 					<Icon icon={allActions[action][0]} class={'text-2xl inline-block align-bottom'} />
 					{openAction == action ? 'Close' : allActions[action][1]}

@@ -15,7 +15,7 @@
 	import logger from '$lib/logger';
 	import View from '../../../components/admin/View.svelte';
 	import { newField } from '../../../components/admin/helpers';
-	import { build, hasPerm } from '$lib/perms';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	/* 
 export interface ChangelogEntry { 
@@ -132,13 +132,13 @@ export interface ChangelogEntry {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view changelog entries
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('changelogs', 'create'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'changelogs.create')) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('changelogs', 'update'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'changelogs.update')) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('changelogs', 'delete'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'changelogs.delete')) {
 				perms.push('delete');
 			}
 

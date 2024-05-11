@@ -18,7 +18,7 @@
 	import type { PartnerType } from '$lib/generated/arcadia/PartnerType';
 	import type { CdnAssetItem } from '$lib/generated/arcadia/CdnAssetItem';
 	import { convertImage, renderPreview, uploadFileChunks } from '$lib/fileutils';
-	import { build, hasPerm } from '$lib/perms';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	/* 
 export interface Partner { 
@@ -160,13 +160,13 @@ export interface Partner {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view partners
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('partners', 'create'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'partners.create')) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('partners', 'update'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'partners.update')) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('partners', 'delete'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'partners.delete')) {
 				perms.push('delete');
 			}
 

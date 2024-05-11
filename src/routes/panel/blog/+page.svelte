@@ -18,7 +18,7 @@
 	import Loading from '../../../components/Loading.svelte';
 	import { Color } from '../../../components/button/colors';
 	import type { Query } from '$lib/generated/htmlsanitize/Query';
-	import { build, hasPerm } from '$lib/perms';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	/* 
 export interface BlogPost { 
@@ -88,13 +88,13 @@ export interface BlogPost {
 
 		getCaps(): Capability[] {
 			let perms: Capability[] = ['view']; // All staff can view partners
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('blog', 'create_entry'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], "blog.create_entry")) {
 				perms.push('create');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('blog', 'update_entry'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'blog.update_entry')) {
 				perms.push('update');
 			}
-			if (hasPerm($panelState?.staff_member?.resolved_perms || [], build('blog', 'delete_entry'))) {
+			if (hasPermString($panelState?.staff_member?.resolved_perms || [], 'blog.delete_entry')) {
 				perms.push('delete');
 			}
 

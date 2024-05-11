@@ -1,7 +1,6 @@
 <script lang="ts">
 	import logger from '$lib/logger';
 	import { panelState } from '$lib/panelState';
-	import { build, hasPerm } from '$lib/perms';
 	import { title } from '$lib/strings';
 	import AuthBoundary from '../../components/AuthBoundary.svelte';
 	import ListItem from '../../components/ListItem.svelte';
@@ -13,6 +12,7 @@
 	import type { QuickAction } from './_core/QuickAction';
 	import QuickMenuOption from './_core/QuickMenuOption.svelte';
 	import { staffQuickActions } from './staff/quickActions';
+	import { hasPermString } from '@infinitybots/kittycat/perms';
 
 	let quickActions: QuickAction[] = [
 		{
@@ -51,7 +51,7 @@
 						description: 'Manage the CDN(s) modifiable by this Arcadia instance',
 						link: '/panel/cdn',
 						enabled: () =>
-							hasPerm($panelState?.staff_member?.resolved_perms || [], build('cdn', 'list_scopes'))
+							hasPermString($panelState?.staff_member?.resolved_perms || [], 'cdn.list_scopes')
 					},
 					{
 						name: 'Bot Whitelist',
@@ -88,7 +88,7 @@
 						description: 'Manage the applications for the list',
 						link: '/panel/apps',
 						enabled: () =>
-							hasPerm($panelState?.staff_member?.resolved_perms || [], build('apps', 'view'))
+							hasPermString($panelState?.staff_member?.resolved_perms || [], 'apps.view')
 					}
 				];
 			}
