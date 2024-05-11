@@ -14,9 +14,15 @@ export let staffQuickActions: QuickAction[] = [
 		enabled: () => true
 	},
 	{
+		name: 'RPC Logs',
+		description: 'View RPC-Logs',
+		link: '/panel/staff/rpclogs',
+		enabled: () => true
+	},
+	{
 		name: 'Staff Disciplinary Types',
 		description: 'View and/or manage staff disciplinary types',
 		link: '/panel/staff/disciplinary_types',
 		enabled: () => true
-	}
+	},
 ];
