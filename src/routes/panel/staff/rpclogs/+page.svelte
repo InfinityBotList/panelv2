@@ -30,7 +30,7 @@ export type RPCLogEntry = {
      */
 
 	class RPCLogEntrySchema implements BaseSchema<RPCLogEntry>, Schema<RPCLogEntry> {
-		name: string = 'vote credit tiers';
+		name: string = 'rpc logs';
 		fields: FieldFetch<RPCLogEntry> = [
 			async (cap) => {
 				return {
@@ -79,6 +79,15 @@ export type RPCLogEntry = {
 				disabled: false,
 				renderMethod: 'text'
 			},
+                        {
+                                id: 'created_at',
+                                label: 'Created At',
+                                type: 'text',
+                                helpText: 'The date/time the entry was created at',
+                                required: true,
+                                disabled: false,
+                                renderMethod: 'text'
+                        },
 		];
 
 		strictSchemaValidation: boolean = true;
