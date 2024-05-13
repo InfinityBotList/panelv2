@@ -102,6 +102,14 @@
 
 	let respData: any = {};
 	let svCode: string = '';
+
+	$: {
+		if(localStorage.getItem("quizResponse") && Object.keys(respData).length == 0) {
+			respData = JSON.parse(localStorage.getItem("quizResponse") || '{}');
+		} else if(respData) {
+			localStorage.setItem("quizResponse", JSON.stringify(respData));
+		}
+	}
 </script>
 
 <OnboardingBoundary>
