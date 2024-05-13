@@ -13,6 +13,7 @@
 	import { success } from '$lib/toast';
 	import ButtonReact from '../../../../components/button/ButtonReact.svelte';
 	import { Color } from '../../../../components/button/colors';
+	import { browser } from '$app/environment';
 
 	const minShortAnswerLength = 50;
 	const minLongAnswerLength = 750;
@@ -104,10 +105,12 @@
 	let svCode: string = '';
 
 	$: {
-		if(localStorage.getItem("quizResponse") && Object.keys(respData).length == 0) {
-			respData = JSON.parse(localStorage.getItem("quizResponse") || '{}');
-		} else if(respData) {
-			localStorage.setItem("quizResponse", JSON.stringify(respData));
+		if(browser) {
+			if(localStorage.getItem("quizResponse") && Object.keys(respData).length == 0) {
+				respData = JSON.parse(localStorage.getItem("quizResponse") || '{}');
+			} else if(respData) {
+				localStorage.setItem("quizResponse", JSON.stringify(respData));
+			}
 		}
 	}
 </script>
