@@ -18,15 +18,6 @@
 	import ListItem from '../../../components/ListItem.svelte';
 	import { hasPermString } from '@infinitybots/kittycat/perms';
 
-	/* 
-export interface VoteCreditTier { 
-    id: string, 
-    position: number, 
-    cents: number, 
-    votes: number, 
-    created_at: string, 
-}	*/
-
 	class VoteCreditTierSchema implements BaseSchema<VoteCreditTier>, Schema<VoteCreditTier> {
 		name: string = 'vote credit tiers';
 		fields: FieldFetch<VoteCreditTier> = [
@@ -41,6 +32,15 @@ export interface VoteCreditTier {
 					renderMethod: 'text'
 				};
 			},
+                        {
+                                id: 'target_type',
+                                label: 'Target Type',
+                                type: 'text',
+                                helpText: 'The target type the tier applies to. Must be 'bot' or 'server'',
+                                required: true,
+                                disabled: false,
+                                renderMethod: 'text'
+                        },
 			{
 				id: 'position',
 				label: 'Position',
@@ -148,6 +148,7 @@ export interface VoteCreditTier {
 					action: {
 						CreateTier: {
 							id: data.data.id,
+							target_type: data.data.target_type,
 							position: data.data.position,
 							cents: data.data.cents,
 							votes: data.data.votes
@@ -166,6 +167,7 @@ export interface VoteCreditTier {
 					action: {
 						EditTier: {
 							id: data.data.id,
+							target_type: data.data.target_type,
 							position: data.data.position,
 							cents: data.data.cents,
 							votes: data.data.votes

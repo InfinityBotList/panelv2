@@ -3,17 +3,16 @@
 /**
  * StartAuth contains the needed data to begin a login
  */
-export type StartAuth = {
-	/**
-	 * The URL to redirect to
-	 */
-	login_url: string;
-	/**
-	 * The request scope
-	 */
-	scope: string;
-	/**
-	 * Response Scope is just a key to allow for the frontend to verify the backend as compatible
-	 */
-	response_scope: string;
-};
+export type StartAuth = { 
+/**
+ * The URL to redirect to
+ */
+login_url: string, 
+/**
+ * The request scope
+ */
+scope: string, 
+/**
+ * Response Scope is just a key to allow for the frontend to verify the backend as compatible
+ */
+response_scope: string, };

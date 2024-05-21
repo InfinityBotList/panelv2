@@ -3,4 +3,4 @@
 /**
  * Same as CONFIG.servers but using strings instead of NonZeroU64s
  */
-export type PanelServers = { main: string; staff: string; testing: string };
+export type PanelServers = { main: string, staff: string, testing: string, };

@@ -3,4 +3,4 @@
 /**
  * Primitive link type used throughout the list
  */
-export type Link = { name: string; value: string };
+export type Link = { name: string, value: string, };

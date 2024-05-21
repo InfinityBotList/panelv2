@@ -15,25 +15,28 @@
  * Next 50 votes: 0.025 cents [Tier 3]
  * Last 275 votes: 0.025 cents [last tier used at end of tiering]
  */
-export type VoteCreditTier = {
-	/**
-	 * The ID of the tier
-	 */
-	id: string;
-	/**
-	 * The position of the tier
-	 */
-	position: number;
-	/**
-	 * The cents per vote
-	 */
-	cents: number;
-	/**
-	 * The number of votes in this tier
-	 */
-	votes: number;
-	/**
-	 * The time the tier was created
-	 */
-	created_at: string;
-};
+export type VoteCreditTier = { 
+/**
+ * The ID of the tier
+ */
+id: string, 
+/**
+ * The target type of the tier
+ */
+target_type: string, 
+/**
+ * The position of the tier
+ */
+position: number, 
+/**
+ * The cents per vote
+ */
+cents: number, 
+/**
+ * The number of votes in this tier
+ */
+votes: number, 
+/**
+ * The time the tier was created
+ */
+created_at: string, };

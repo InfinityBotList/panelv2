@@ -3,4 +3,4 @@
 /**
  * Represents a field type
  */
-export type FieldType = 'Text' | 'Textarea' | 'Number' | 'Hour' | 'Boolean';
+export type FieldType = "Text" | "Textarea" | "Number" | "Hour" | "Boolean";

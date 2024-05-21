@@ -3,13 +3,12 @@
 /**
  * Represents a user
  */
-export type InstanceConfig = {
-	/**
-	 * Description of the instance
-	 */
-	description: string;
-	/**
-	 * Any warnings for the instance
-	 */
-	warnings: Array<string>;
-};
+export type InstanceConfig = { 
+/**
+ * Description of the instance
+ */
+description: string, 
+/**
+ * Any warnings for the instance
+ */
+warnings: Array<string>, };

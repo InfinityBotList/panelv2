@@ -3,4 +3,4 @@
 /**
  * MFA Login Secret Data
  */
-export type MfaLoginSecret = { secret: string; otp_url: string; qr_code: string };
+export type MfaLoginSecret = { secret: string, otp_url: string, qr_code: string, };
