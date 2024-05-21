@@ -36,7 +36,7 @@
                                 id: 'target_type',
                                 label: 'Target Type',
                                 type: 'text',
-                                helpText: 'The target type the tier applies to. Must be 'bot' or 'server'',
+                                helpText: 'The target type the tier applies to. Must be "bot" or "server"',
                                 required: true,
                                 disabled: false,
                                 renderMethod: 'text'
