@@ -122,7 +122,7 @@
 						enabled: () => true
 					},
 					{
-						name: 'Benefits',
+						name: 'Items',
 						description: 'Manage the items within the shop',
 						link: '/panel/shop_items',
 						enabled: () => true
