@@ -109,6 +109,28 @@
 				})
 		},
 		{
+			name: 'Shop',
+			description: 'Manage the paid shop',
+			link: '',
+			enabled: () => true,
+			options: () => {
+				return [
+					{
+						name: 'Benefits',
+						description: 'Manage the benefits grantable the shop',
+						link: '/panel/shop_items/benefits',
+						enabled: () => true
+					},
+					{
+						name: 'Benefits',
+						description: 'Manage the items within the shop',
+						link: '/panel/shop_items',
+						enabled: () => true
+					},
+				]
+			},
+		},
+		{
 			name: 'Staff Management',
 			description: 'View and manage staff',
 			enabled: () => true,

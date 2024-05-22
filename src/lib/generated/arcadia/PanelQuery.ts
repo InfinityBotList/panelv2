@@ -6,6 +6,8 @@ import type { CdnAssetAction } from "./CdnAssetAction";
 import type { ChangelogAction } from "./ChangelogAction";
 import type { PartnerAction } from "./PartnerAction";
 import type { RPCMethod } from "./RPCMethod";
+import type { ShopItemAction } from "./ShopItemAction";
+import type { ShopItemBenefitAction } from "./ShopItemBenefitAction";
 import type { StaffDisciplinaryTypeAction } from "./StaffDisciplinaryTypeAction";
 import type { StaffMemberAction } from "./StaffMemberAction";
 import type { StaffPositionAction } from "./StaffPositionAction";
@@ -178,7 +180,23 @@ login_token: string,
 /**
  * Action
  */
-action: VoteCreditTierAction, } } | { "UpdateBotWhitelist": { 
+action: VoteCreditTierAction, } } | { "UpdateShopItems": { 
+/**
+ * Login token
+ */
+login_token: string, 
+/**
+ * Action
+ */
+action: ShopItemAction, } } | { "UpdateShopItemBenefits": { 
+/**
+ * Login token
+ */
+login_token: string, 
+/**
+ * Action
+ */
+action: ShopItemBenefitAction, } } | { "UpdateBotWhitelist": { 
 /**
  * Login token
  */
