@@ -62,7 +62,7 @@
 				if (cap == 'create') return null;
 				return newField(
 					'last_updated',
-					'Created At',
+					'Last Updated',
 					'The date the shop item was last updated',
 					false,
 					true
