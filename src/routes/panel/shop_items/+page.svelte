@@ -17,7 +17,7 @@
 	import type { ShopItem } from '$lib/generated/arcadia/ShopItem';
 
 	class ShopItemSchema implements BaseSchema<ShopItem>, Schema<ShopItem> {
-		name: string = 'shop item benefits';
+		name: string = 'shop item';
 		fields: FieldFetch<ShopItem> = [
 			async (cap) => {
 				return {
