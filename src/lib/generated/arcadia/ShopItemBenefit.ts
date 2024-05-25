@@ -25,6 +25,10 @@ created_at: string,
  */
 last_updated: string, 
 /**
+ * The target types the benefit can be applied to
+ */
+target_types: Array<string>, 
+/**
  * Who created the shop item benefit
  */
 created_by: string, 

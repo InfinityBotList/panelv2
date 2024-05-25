@@ -48,6 +48,15 @@
                 disabled: false,
                 renderMethod: 'text'
             },
+			{
+                id: 'target_types',
+                label: 'Target Types',
+                type: 'text[]',
+                helpText: 'The target types this benefit internally supports',
+                required: true,
+                disabled: false,
+                renderMethod: 'text'
+            },
 			async (cap: Capability) => {
 				if (cap == 'create') return null;
 				return newField(
@@ -160,6 +169,7 @@
                             id: data.data.id,
                             name: data.data.name,
                             description: data.data.description,
+							target_types: data.data.target_types
                         }
 					}
 				}
@@ -177,6 +187,7 @@
                             id: data.data.id,
                             name: data.data.name,
                             description: data.data.description,
+							target_types: data.data.target_types
 						}
 					}
 				}

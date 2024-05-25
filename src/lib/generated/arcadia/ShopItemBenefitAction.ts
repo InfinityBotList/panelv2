@@ -12,7 +12,11 @@ name: string,
 /**
  * The description of the shop item benefit
  */
-description: string, } } | { "Edit": { 
+description: string, 
+/**
+ * The target types the benefit can be applied to
+ */
+target_types: Array<string>, } } | { "Edit": { 
 /**
  * The ID of the shop item benefit
  */
@@ -24,7 +28,11 @@ name: string,
 /**
  * The description of the shop item benefit
  */
-description: string, } } | { "Delete": { 
+description: string, 
+/**
+ * The target types the benefit can be applied to
+ */
+target_types: Array<string>, } } | { "Delete": { 
 /**
  * The ID of the shop item benefit
  */
