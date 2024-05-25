@@ -2,17 +2,17 @@
 	import { panelQuery } from '$lib/fetch';
 	import { panelAuthState } from '$lib/panelAuthState';
 	import { panelState } from '$lib/panelState';
-	import Loading from '../../../components/Loading.svelte';
+	import Loading from '../../../../components/Loading.svelte';
 	import type {
 		BaseSchema,
 		Capability,
 		Entry,
 		FieldFetch,
 		Schema
-	} from '../../../components/admin/types';
+	} from '../../../../components/admin/types';
 	import logger from '$lib/logger';
-	import View from '../../../components/admin/View.svelte';
-	import { newField } from '../../../components/admin/helpers';
+	import View from '../../../../components/admin/View.svelte';
+	import { newField } from '../../../../components/admin/helpers';
 	import { hasPermString } from '@infinitybots/kittycat/perms';
 	import type { ShopItem } from '$lib/generated/arcadia/ShopItem';
 

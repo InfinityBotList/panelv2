@@ -110,7 +110,7 @@
 		},
 		{
 			name: 'Shop',
-			description: 'Manage the paid shop',
+			description: 'Manage the shop',
 			link: '',
 			enabled: () => true,
 			options: () => {
@@ -118,13 +118,13 @@
 					{
 						name: 'Benefits',
 						description: 'Manage the benefits grantable the shop',
-						link: '/panel/shop_items/benefits',
+						link: '/panel/shop/benefits',
 						enabled: () => true
 					},
 					{
 						name: 'Items',
 						description: 'Manage the items within the shop',
-						link: '/panel/shop_items',
+						link: '/panel/shop/items',
 						enabled: () => true
 					},
 				]
