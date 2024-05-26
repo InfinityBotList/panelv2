@@ -52,7 +52,7 @@
                 id: 'target_types',
                 label: 'Target Types',
                 type: 'text[]',
-                helpText: 'The target types this benefit internally supports',
+                helpText: 'The target types this benefit internally supports. If empty, it supports all types.',
                 required: true,
                 disabled: false,
                 renderMethod: 'text'

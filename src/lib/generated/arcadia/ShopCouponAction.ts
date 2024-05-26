@@ -44,7 +44,23 @@ cents: number | null,
 /**
  * The requirements to use the shop coupon
  */
-requirements: Array<string>, } } | { "Edit": { 
+requirements: Array<string>, 
+/**
+ * The users the coupon is applicable for
+ *
+ * If empty, the coupon is applicable to all users
+ */
+allowed_users: Array<string>, 
+/**
+ * Whether or not the coupon is usable or not
+ */
+usable: boolean, 
+/**
+ * The target types the coupon can be applied to
+ *
+ * If empty, the coupon is applicable to all target types
+ */
+target_types: Array<string>, } } | { "Edit": { 
 /**
  * The ID of the shop coupon
  */
@@ -88,7 +104,23 @@ cents: number | null,
 /**
  * The requirements to use the shop coupon
  */
-requirements: Array<string>, } } | { "Delete": { 
+requirements: Array<string>, 
+/**
+ * The users the coupon is applicable for
+ *
+ * If empty, the coupon is applicable to all users
+ */
+allowed_users: Array<string>, 
+/**
+ * Whether or not the coupon is usable or not
+ */
+usable: boolean, 
+/**
+ * The target types the coupon can be applied to
+ *
+ * If empty, the coupon is applicable to all target types
+ */
+target_types: Array<string>, } } | { "Delete": { 
 /**
  * The ID of the shop coupon
  */
