@@ -113,7 +113,9 @@ export interface ChangelogEntry {
 			},
 			async (cap: Capability) => {
 				if (cap == 'create') return null;
-				return newField('published', 'Published', 'Is this published?', false, false);
+				return newField('published', 'Published', 'Is this published?', false, false, {
+                                    type: "boolean"
+				});
 			},
 			async (cap: Capability) => {
 				if (cap == 'create') return null;
