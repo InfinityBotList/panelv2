@@ -20,18 +20,6 @@
 	import { convertImage, renderPreview, uploadFileChunks } from '$lib/fileutils';
 	import { hasPermString } from '@infinitybots/kittycat/perms';
 
-	/* 
-export interface Partner { 
-    id: string, 
-    name: string, 
-    short: string, 
-    links: Array<Link>, 
-    type: string, 
-    created_at: string, 
-    user_id: string, 
-}
-	*/
-
 	class PartnerSchema implements BaseSchema<Partner>, Schema<Partner> {
 		name: string = 'partner';
 		fields: FieldFetch<Partner> = [
@@ -152,7 +140,16 @@ export interface Partner {
 				required: true,
 				disabled: false,
 				renderMethod: 'text'
-			}
+			},
+			{
+				id: 'bot_id',
+				label: 'Short',
+				type: 'text', 
+				helpText: 'The associated bot ID of the partner',
+				required: false,
+				disabled: false,
+				renderMethod: 'text'
+			},
 		];
 
 		strictSchemaValidation: boolean = true;
