@@ -203,6 +203,7 @@
 
 		async create(data: Entry<Partner>) {
 			await this.parseEdit('create', data);
+			data.data.bot_id = data.data.bot_id || null;
 			let res = await panelQuery({
 				UpdatePartners: {
 					login_token: $panelAuthState?.loginToken || '',
@@ -218,6 +219,7 @@
 		}
 
 		async update(data: Entry<Partner>) {
+			data.data.bot_id = data.data.bot_id || null;
 			await this.parseEdit('update', data);
 			let res = await panelQuery({
 				UpdatePartners: {
