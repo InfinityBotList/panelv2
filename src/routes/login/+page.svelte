@@ -153,7 +153,7 @@
 		bind:value={instanceUrl}
 		id="url"
 		label="Instance URL"
-		placeholder="https://prod--panel-api.infinitybots.gg"
+		placeholder="https://prod--panel-api.omniplex.gg"
 		minlength={1}
 		showErrors={false}
 	/>
