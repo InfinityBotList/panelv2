@@ -33,7 +33,7 @@
 		}
 	});
 
-	let instanceUrl = 'https://prod--panel-api.infinitybots.gg';
+	let instanceUrl = 'https://prod--panel-api.omniplex.gg';
 
 	const login = async () => {
 		if (!instanceUrl) {
